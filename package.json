@@ -1,0 +1,34 @@
+{
+  "name": "said-switch",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Said: a bilateral consent notary for Switch rooms. Work starts only when both people accept the same terms.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "setup": "tsx scripts/setup.ts",
+    "register": "tsx scripts/register.ts",
+    "enroll": "tsx scripts/enroll.ts",
+    "doctor": "tsx scripts/doctor.ts",
+    "reset": "tsx scripts/reset.ts",
+    "dev": "concurrently -k -n notary,builder,console,site -c magenta,yellow,cyan,green \"npm -w @said/notary run dev\" \"npm -w @said/builder run dev\" \"npm -w @said/console run dev\" \"npm --prefix work/client-site run dev\"",
+    "demo:offline": "tsx scripts/demo-offline.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "concurrently": "^10.0.6",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0"
+  }
+}

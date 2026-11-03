@@ -1,0 +1,27 @@
+{
+  "name": "@said/console",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port ${CONSOLE_PORT:-7400} --strictPort",
+    "build": "vite build",
+    "preview": "vite preview --port ${CONSOLE_PORT:-7400}",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@said/core": "0.1.0",
+    "lucide-react": "^1.67.0",
+    "motion": "^14.9.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.2.1",
+    "tailwindcss": "^4.3.4",
+    "vite": "^8.3.5"
+  }
+}
