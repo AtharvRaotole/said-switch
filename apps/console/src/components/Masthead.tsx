@@ -1,3 +1,4 @@
+import { SaidMark } from '@said/brand';
 import type { Ledger } from '@said/core';
 import { AnimatePresence, motion } from 'motion/react';
 import type { ConsoleData } from '../api/types';
@@ -14,10 +15,10 @@ export function Masthead({ data, ledger }: { data: ConsoleData; ledger: Ledger |
     <header className="pt-7">
       <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4 pb-5">
         <div>
-          <h1 className="font-display text-[54px] font-semibold leading-[0.85] tracking-[-0.02em] text-ink">
-            Said<span className="text-wax">.</span>
+          <h1 className="text-ink">
+            <SaidMark width={168} height={40} title="Said" />
           </h1>
-          <p className="mt-3 font-display text-[18px] italic leading-none text-ink-2">Nothing starts until you both say so.</p>
+          <p className="mt-3 font-display text-[20px] italic leading-none text-ink-2">Nothing starts until both of you say yes.</p>
         </div>
         {state && (
           <div className="flex min-w-0 flex-col items-start gap-1.5 sm:items-end sm:text-right">

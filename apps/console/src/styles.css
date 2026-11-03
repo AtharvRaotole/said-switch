@@ -1,45 +1,44 @@
 @import "tailwindcss";
+@import "@said/brand/fonts.css";
+@import "@said/brand/tokens.css";
+@import "@said/brand/seal.css";
 
 @theme {
-  /* Paper and ink */
-  --color-paper: #f1ecdf;
-  --color-bond: #f8f5ec;
-  --color-vellum: #e8e1ce;
-  --color-ink: #17213a;
-  --color-ink-2: #3a4460;
-  --color-ink-3: #5f667c;
-  --color-ink-4: #9398a6;
-  --color-rule: #d9d0bc;
-  --color-rule-strong: #b8ad94;
-  /* Faint red double rule of an account-book margin */
-  --color-margin: #ddb2a8;
+  --color-paper: var(--said-vellum);
+  --color-bond: var(--said-paper);
+  --color-vellum: var(--said-mist);
+  --color-ink: var(--said-ink);
+  --color-ink-2: var(--said-ink-2);
+  --color-ink-3: var(--said-ink-3);
+  --color-ink-4: #93a0ad;
+  --color-rule: var(--said-line);
+  --color-rule-strong: #9aa8b6;
+  --color-margin: var(--said-wax-light);
 
-  /* Status: always paired with words */
-  --color-agree: #1d5a3c;
-  --color-agree-line: #8db299;
-  --color-agree-wash: #e2eadb;
-  --color-await: #86510a;
-  --color-await-line: #c4871d;
-  --color-await-wash: #f6e8c9;
-  --color-wax: #7a1d29;
-  --color-wax-deep: #4f111c;
-  --color-wax-light: #a8424c;
-  --color-wax-wash: #f1e0da;
+  --color-agree: var(--said-teal);
+  --color-agree-line: #7eb8ac;
+  --color-agree-wash: var(--said-teal-wash);
+  --color-await: #8a6a12;
+  --color-await-line: var(--said-gold);
+  --color-await-wash: var(--said-await-wash);
+  --color-wax: var(--said-wax);
+  --color-wax-deep: var(--said-wax-deep);
+  --color-wax-light: var(--said-wax-light);
+  --color-wax-wash: var(--said-wax-wash);
   --color-fail: #b1241c;
-  --color-fail-wash: #f7ddd6;
+  --color-fail-wash: var(--said-wax-wash);
 
-  /* The one dark surface: the log panel */
-  --color-night: #121a2c;
-  --color-night-2: #19223b;
-  --color-night-rule: #2a3452;
-  --color-night-text: #e8e1d0;
-  --color-night-dim: #8a90a5;
+  --color-night: var(--said-night);
+  --color-night-2: var(--said-night-2);
+  --color-night-rule: #1c334c;
+  --color-night-text: #e8eef3;
+  --color-night-dim: #8a9aab;
   --color-night-check: #9fcbb5;
-  --color-night-system: #e3ba6a;
+  --color-night-system: var(--said-gold);
 
-  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-  --font-sans: "Avenir Next", Avenir, "Segoe UI Variable Text", "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-display: var(--said-display);
+  --font-sans: var(--said-sans);
+  --font-mono: var(--said-mono);
 }
 
 @layer base {
@@ -57,8 +56,7 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     background-color: var(--color-paper);
-    /* Paper grain, inline so the console needs no network or asset files. */
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .36 0 0 0 0 .30 0 0 0 0 .20 0 0 0 .07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .18 0 0 0 0 .22 0 0 0 0 .28 0 0 0 .05 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
 
   ::selection {
@@ -104,7 +102,7 @@
   background-image: repeating-linear-gradient(
     -45deg,
     var(--color-await-wash) 0 10px,
-    #f0d9a6 10px 20px
+    #ead7a4 10px 20px
   );
 }
 
