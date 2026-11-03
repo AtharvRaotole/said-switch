@@ -70,7 +70,7 @@ describe('handoff and execution receipts', () => {
     expect(done.ledger!.revision).toBe(running.ledger!.revision + 1);
     expect(done.ledger!.updatedAt).toBe(T0 + 121_000);
     expect((done.effects[0] as { body: string }).body).toBe(
-      '**AGR-001** · `JOB-AGR-001-1` completed — commit `2222222` · 2 files: src/App.tsx, src/index.css · checks: typecheck passed, build passed.',
+      '**AGR-001** · `JOB-AGR-001-1` completed, commit `2222222` · 2 files: src/App.tsx, src/index.css · checks: typecheck passed, build passed.',
     );
   });
 

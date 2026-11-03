@@ -49,9 +49,9 @@ function setTermsHint(ledger: Ledger, d: Draft): string {
 
 export function bypassReply(ledger: Ledger, draft: Draft | null, target: string): string {
   if (!draft) {
-    return `Logged. @${target} only starts on scope both of you accept through Said — nothing has started.`;
+    return `Logged. @${target} only starts on scope both of you accept through Said. Nothing has started.`;
   }
-  return `Logged as ${title(draft)} (needs terms). @${target} only starts on scope both of you accept — nothing has started. ${setTermsHint(ledger, draft)}`;
+  return `Logged as ${title(draft)} (needs terms). @${target} only starts on scope both of you accept. Nothing has started. ${setTermsHint(ledger, draft)}`;
 }
 
 export function needsTermsReply(ledger: Ledger, draft: Draft): string {
@@ -60,7 +60,7 @@ export function needsTermsReply(ledger: Ledger, draft: Draft): string {
 
 export function termsReply(ledger: Ledger, draft: Draft, replacedVersion: number | null): string {
   const replaced = replacedVersion !== null ? ` Replaces v${replacedVersion}; earlier acceptances were cleared.` : '';
-  return `${title(draft)} — ${termsLine(draft)}.${replaced} Accept with ${acceptCmd(draft)}. ${approvalBoxes(ledger, draft.approvals)}`;
+  return `${title(draft)}. ${termsLine(draft)}.${replaced} Accept with ${acceptCmd(draft)}. ${approvalBoxes(ledger, draft.approvals)}`;
 }
 
 export function scopeUpdatedReply(ledger: Ledger, draft: Draft): string {
@@ -73,7 +73,7 @@ export function unchangedReply(ledger: Ledger, draft: Draft): string {
 }
 
 export function alreadyLockedReply(draft: Draft): string {
-  return `**${draft.id} v${draft.version}** is already locked as **${draft.agreementId}** — both acceptances are on record.`;
+  return `**${draft.id} v${draft.version}** is already locked as **${draft.agreementId}**. Both acceptances are on record.`;
 }
 
 export function acceptedReply(ledger: Ledger, draft: Draft, approval: ApprovalReceipt, waiting: Party[]): string {
@@ -96,7 +96,7 @@ export function lockedReply(ledger: Ledger, agreement: Agreement, handoffTarget:
     .filter((s): s is string => s !== null)
     .join(' · ');
   const tail = handoffTarget ? `Handing off to @${handoffTarget}.` : 'These terms are final; changes need a new draft.';
-  return `🔒 **${agreement.id} locked** — both accepted **${agreement.draftId} v${agreement.version}** (hash \`${shortHash(agreement.termsHash)}\`). ${times} UTC. ${tail}`;
+  return `🔒 **${agreement.id} locked.** Both accepted **${agreement.draftId} v${agreement.version}** (hash \`${shortHash(agreement.termsHash)}\`). ${times} UTC. ${tail}`;
 }
 
 export function staleVersionReply(draft: Draft, given: number): string {
@@ -181,11 +181,11 @@ export function nonPartyReply(ledger: Ledger, kind: Intent['kind']): string {
 }
 
 const NOT_APPROVAL_REASON = {
-  conditional: 'it was conditional — conditions belong in the terms, not in an acceptance',
+  conditional: 'it was conditional. Conditions belong in the terms, not in an acceptance',
   negated: 'it was phrased as a negation',
   quoted: 'it was quoted text, not your own statement',
-  reported: 'it reports an acceptance instead of making one — each party accepts for themselves',
-  embedded: 'it was part of a longer message — send the acceptance on its own',
+  reported: 'it reports an acceptance instead of making one. Each party accepts for themselves',
+  embedded: 'it was part of a longer message. Send the acceptance on its own',
 } as const;
 
 export function notApprovalReply(reason: keyof typeof NOT_APPROVAL_REASON, draft: Draft | null): string {
@@ -196,19 +196,19 @@ export function notApprovalReply(reason: keyof typeof NOT_APPROVAL_REASON, draft
 export function draftStatusLine(ledger: Ledger, d: Draft): string {
   switch (d.status) {
     case 'NEEDS_TERMS':
-      return `${title(d)} — needs terms. Next: ${termsCmd(ledger, d)}.`;
+      return `${title(d)}: needs terms. Next: ${termsCmd(ledger, d)}.`;
     case 'PENDING':
-      return `${title(d)} — pending. ${termsLine(d)}. ${approvalBoxes(ledger, d.approvals)}. Next: ${acceptCmd(d)}.`;
+      return `${title(d)}: pending. ${termsLine(d)}. ${approvalBoxes(ledger, d.approvals)}. Next: ${acceptCmd(d)}.`;
     case 'LOCKED': {
       const agreement = ledger.agreements.find((a) => a.id === d.agreementId);
       const exec = agreement?.execution;
       const execText = exec
         ? `Execution: ${exec.status}${exec.resultCommit ? ` · commit \`${exec.resultCommit.slice(0, 7)}\`` : ''}.`
         : 'Execution: not started.';
-      return `🔒 ${title(d)} — locked as **${d.agreementId}**. ${termsLine(d)}. ${execText}`;
+      return `🔒 ${title(d)}: locked as **${d.agreementId}**. ${termsLine(d)}. ${execText}`;
     }
     case 'REJECTED':
-      return `${title(d)} — rejected${d.rejectedBy ? ` at ${formatTime(d.rejectedBy.timestamp)}` : ''}.`;
+      return `${title(d)}: rejected${d.rejectedBy ? ` at ${formatTime(d.rejectedBy.timestamp)}` : ''}.`;
   }
 }
 
@@ -216,7 +216,7 @@ export function statusReply(ledger: Ledger, draft: Draft | null): string {
   if (draft) return draftStatusLine(ledger, draft);
   if (ledger.drafts.length === 0) return `No drafts yet. Start one with ${NEW_DRAFT_CMD}.`;
   const recent = ledger.drafts.slice(-10).reverse();
-  const header = `**Said status** — ${ledger.drafts.length} draft${ledger.drafts.length === 1 ? '' : 's'}, ${ledger.agreements.length} locked agreement${ledger.agreements.length === 1 ? '' : 's'}.`;
+  const header = `**Said status.** ${ledger.drafts.length} draft${ledger.drafts.length === 1 ? '' : 's'}, ${ledger.agreements.length} locked agreement${ledger.agreements.length === 1 ? '' : 's'}.`;
   return [header, ...recent.map((d) => `- ${draftStatusLine(ledger, d)}`)].join('\n');
 }
 
@@ -237,7 +237,7 @@ export function executionReply(agreement: Agreement): string {
       const files = exec.changedPaths.length
         ? ` · ${exec.changedPaths.length} file${exec.changedPaths.length === 1 ? '' : 's'}: ${exec.changedPaths.slice(0, 8).map((p) => inline(p, 80)).join(', ')}`
         : '';
-      const commit = exec.resultCommit ? ` — commit \`${exec.resultCommit.slice(0, 7)}\`` : '';
+      const commit = exec.resultCommit ? `, commit \`${exec.resultCommit.slice(0, 7)}\`` : '';
       return `${head} completed${commit}${files}${checks}.`;
     }
     case 'FAILED':

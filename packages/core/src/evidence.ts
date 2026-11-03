@@ -59,7 +59,7 @@ function historyLines(ledger: Ledger, draft: Draft): string[] {
 function describeAgreement(ledger: Ledger, a: Agreement): string {
   const draft = ledger.drafts.find((d) => d.id === a.draftId);
   return [
-    `🔒 **${a.id}** — both parties accepted **${a.draftId} v${a.version} · ${inline(a.scope)}**.`,
+    `🔒 **${a.id}.** Both parties accepted **${a.draftId} v${a.version} · ${inline(a.scope)}**.`,
     `Terms on record: ${quote(a.terms)} · hash \`${shortHash(a.termsHash)}\` · locked ${formatTime(a.lockedAt)}.`,
     ...approvalLines(ledger, a.approvals),
     ...(draft ? historyLines(ledger, draft) : []),
@@ -67,7 +67,7 @@ function describeAgreement(ledger: Ledger, a: Agreement): string {
 }
 
 function describeDraft(ledger: Ledger, d: Draft): string {
-  const lines = [`**${d.id} v${d.version} · ${inline(d.scope)}** is **not agreed** — status: ${d.status}.`];
+  const lines = [`**${d.id} v${d.version} · ${inline(d.scope)}** is **not agreed.** Status: ${d.status}.`];
   if (d.terms === null) {
     lines.push('No terms were ever set, so there is nothing anyone could have accepted.');
   } else {
@@ -92,7 +92,7 @@ function summary(r: Draft | Agreement): string {
 export function formatEvidenceReply(ledger: Ledger, matches: Array<Draft | Agreement>, topic: string | null): string {
   const about = topic ? ` about **${inline(topic, 80)}**` : '';
   if (matches.length === 0) {
-    return `I have no record of an agreement${about} in this room — nothing on it was proposed or accepted here. To start one: \`Propose: <scope> | Terms: <terms>\`.`;
+    return `I have no record of an agreement${about} in this room. Nothing on it was proposed or accepted here. To start one: \`Propose: <scope> | Terms: <terms>\`.`;
   }
   if (matches.length > 1) {
     const first = matches[0]!;

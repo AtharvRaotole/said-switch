@@ -127,7 +127,7 @@ export function renderLedgerDocument(signed: SignedLedger): string {
   for (const a of l.agreements) {
     const exec = a.execution ? ` · ${a.execution.jobId} ${a.execution.status}` : '';
     lines.push(
-      `- 🔒 **${a.id}** · ${a.draftId} v${a.version} · ${inline(a.scope)} — ${inline(a.terms)} · hash \`${shortHash(a.termsHash)}\` · locked ${formatTime(a.lockedAt)}${exec}`,
+      `- 🔒 **${a.id}** · ${a.draftId} v${a.version} · ${inline(a.scope)}. ${inline(a.terms)} · hash \`${shortHash(a.termsHash)}\` · locked ${formatTime(a.lockedAt)}${exec}`,
     );
   }
   lines.push('', '## Drafts', '');
@@ -136,7 +136,7 @@ export function renderLedgerDocument(signed: SignedLedger): string {
     const terms = d.terms === null ? 'needs terms' : `${inline(d.terms)} · hash \`${shortHash(d.termsHash)}\``;
     const approvals = Object.values(d.approvals).map((a) => `${a.role} v${a.version}`);
     lines.push(
-      `- **${d.id} v${d.version}** · ${inline(d.scope)} — ${d.status} · ${terms}${approvals.length ? ` · accepted by ${approvals.join(', ')}` : ''}`,
+      `- **${d.id} v${d.version}** · ${inline(d.scope)}. ${d.status} · ${terms}${approvals.length ? ` · accepted by ${approvals.join(', ')}` : ''}`,
     );
   }
   lines.push('', '## Refusals', '');

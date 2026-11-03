@@ -16,7 +16,7 @@ describe('engine scenarios', () => {
     ]);
     expect(room.draft('DRF-001')).toMatchObject({ status: 'NEEDS_TERMS', version: 0, scope: 'Add dark mode', terms: null, approvals: {} });
     expect(r.replies).toEqual([
-      'Logged as **DRF-001 v0 · Add dark mode** (needs terms). @builder only starts on scope both of you accept — nothing has started. Riya, set terms with `Terms DRF-001: <time and price>`.',
+      'Logged as **DRF-001 v0 · Add dark mode** (needs terms). @builder only starts on scope both of you accept. Nothing has started. Riya, set terms with `Terms DRF-001: <time and price>`.',
     ]);
     expect(auditKinds(room)).toEqual(['draft_created', 'refused_bypass']);
     expect(room.ledger.revision).toBe(1);
@@ -30,7 +30,7 @@ describe('engine scenarios', () => {
     expect(room.ledger.refusals[0]!.draftId).toBeNull();
     expect(room.ledger.drafts).toHaveLength(0);
     expect(handoffs(r)).toHaveLength(0);
-    expect(r.replies[0]).toMatch(/nothing has started/);
+    expect(r.replies[0]).toMatch(/Nothing has started/);
   });
 
   it('(2) one-sided acceptance stays PENDING with no handoff; a proposal is not an approval', () => {
@@ -41,7 +41,7 @@ describe('engine scenarios', () => {
     expect(draft).toMatchObject({ status: 'PENDING', version: 1, terms: '+2 days, +$400', approvals: {} });
     expect(draft.termsHash).toBe(computeTermsHash({ roomId: ROOM, draftId: 'DRF-001', version: 1, scope: 'Add dark mode', terms: '+2 days, +$400' }));
     expect(terms.replies).toEqual([
-      `**DRF-001 v1 · Add dark mode** — Terms: +2 days, +$400 · hash \`${draft.termsHash.slice(0, 10)}\`. Accept with \`Accept DRF-001 v1\`. Riya ☐ · Dana ☐`,
+      `**DRF-001 v1 · Add dark mode**. Terms: +2 days, +$400 · hash \`${draft.termsHash.slice(0, 10)}\`. Accept with \`Accept DRF-001 v1\`. Riya ☐ · Dana ☐`,
     ]);
 
     const accept = room.say(RIYA, 'Accept DRF-001 v1');
@@ -61,7 +61,7 @@ describe('engine scenarios', () => {
     const before = structuredClone(room.draft('DRF-001'));
     const r = room.say(DANA, 'I thought we agreed dark mode was free');
     const body = r.replies.join('\n');
-    expect(body).toContain('**DRF-001 v1 · Add dark mode** is **not agreed**');
+    expect(body).toContain('**DRF-001 v1 · Add dark mode** is **not agreed.**');
     expect(body).toContain('“+2 days, +$400”');
     expect(body).toContain(`accepted v1 at ${formatTime(accept.message.timestamp)}: “Accept DRF-001 v1”`);
     expect(body).toContain('**Dana** (client): no acceptance on record.');
@@ -123,7 +123,7 @@ describe('engine scenarios', () => {
     expect(agreement.approvals.client!.senderId).toBe(DANA.senderId);
     expect(second.effects.filter((e) => e.kind === 'handoff')).toEqual([{ kind: 'handoff', agreementId: 'AGR-001', threadId: 'thread-9' }]);
     expect(second.replies).toEqual([
-      `🔒 **AGR-001 locked** — both accepted **DRF-001 v1** (hash \`${draft.termsHash.slice(0, 10)}\`). Riya 15:30:03 · Dana 15:30:04 UTC. Handing off to @builder.`,
+      `🔒 **AGR-001 locked.** Both accepted **DRF-001 v1** (hash \`${draft.termsHash.slice(0, 10)}\`). Riya 15:30:03 · Dana 15:30:04 UTC. Handing off to @builder.`,
     ]);
     expect(auditKinds(room).slice(-2)).toEqual(['accepted', 'locked']);
 
@@ -234,7 +234,7 @@ describe('engine scenarios', () => {
     expect(room.draft('DRF-001').status).toBe('LOCKED');
     expect(room.ledger.agreements).toHaveLength(1);
     expect(handoffs(lock)).toHaveLength(0);
-    expect(lock.replies[0]).toMatch(/^🔒 \*\*AGR-001 locked\*\*/);
+    expect(lock.replies[0]).toMatch(/^🔒 \*\*AGR-001 locked\.\*\*/);
     expect(lock.replies[0]).not.toContain('@builder');
     const bypass = room.say(SAM, '@builder add a chore chart');
     expect(bypass.ledger).toBeNull();
@@ -316,9 +316,9 @@ describe('engine rules', () => {
     const room = roomWithPendingDraft();
     const one = room.say(DANA, 'Status DRF-001');
     expect(one.ledger).toBeNull();
-    expect(one.replies[0]).toContain('**DRF-001 v1 · Add dark mode** — pending.');
+    expect(one.replies[0]).toContain('**DRF-001 v1 · Add dark mode**: pending.');
     const all = room.say(RIYA, 'status');
-    expect(all.replies[0]).toMatch(/^\*\*Said status\*\* — 1 draft, 0 locked agreements\./);
+    expect(all.replies[0]).toMatch(/^\*\*Said status\.\*\* 1 draft, 0 locked agreements\./);
     expect(room.say(DANA, 'Status DRF-009').replies[0]).toContain('There is no **DRF-009**');
   });
 
