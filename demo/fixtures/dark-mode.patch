@@ -1,0 +1,214 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 519df19..8af9db1 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -1,4 +1,29 @@
+-import { useState, type FormEvent } from 'react';
++import { useEffect, useState, type FormEvent } from 'react';
++
++type ThemeMode = 'light' | 'dark';
++
++const THEME_STORAGE_KEY = 'larkspur-theme';
++
++function getInitialTheme(): ThemeMode {
++  if (typeof window === 'undefined') {
++    return 'light';
++  }
++  try {
++    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
++    if (stored === 'dark' || stored === 'light') {
++      return stored;
++    }
++  } catch {
++    // Ignore storage access errors
++  }
++  if (
++    typeof window.matchMedia === 'function' &&
++    window.matchMedia('(prefers-color-scheme: dark)').matches
++  ) {
++    return 'dark';
++  }
++  return 'light';
++}
+ 
+ interface OriginLot {
+   lotNumber: string;
+@@ -557,7 +582,14 @@ function CoffeeHeroIllustration() {
+   );
+ }
+ 
+-function StickyNav() {
++interface StickyNavProps {
++  theme: ThemeMode;
++  onToggleTheme: () => void;
++}
++
++function StickyNav({ theme, onToggleTheme }: StickyNavProps) {
++  const isDark = theme === 'dark';
++
+   return (
+     <header className="site-header">
+       <div className="container nav-inner">
+@@ -608,7 +640,50 @@ function StickyNav() {
+         </nav>
+ 
+         <div className="nav-actions">
+-          {/* Theme toggle slot */}
++          <button
++            type="button"
++            className="theme-toggle"
++            onClick={onToggleTheme}
++            aria-pressed={isDark}
++            aria-label={
++              isDark
++                ? 'Switch to light theme (currently dark)'
++                : 'Switch to dark theme (currently light)'
++            }
++          >
++            <span className="theme-toggle-icon" aria-hidden="true">
++              {isDark ? (
++                <svg viewBox="0 0 20 20" fill="none">
++                  <circle
++                    cx="10"
++                    cy="10"
++                    r="4"
++                    stroke="currentColor"
++                    strokeWidth="1.6"
++                  />
++                  <path
++                    d="M10 2.2V4.2M10 15.8V17.8M2.2 10H4.2M15.8 10H17.8M4.5 4.5L5.9 5.9M14.1 14.1L15.5 15.5M15.5 4.5L14.1 5.9M5.9 14.1L4.5 15.5"
++                    stroke="currentColor"
++                    strokeWidth="1.6"
++                    strokeLinecap="round"
++                  />
++                </svg>
++              ) : (
++                <svg viewBox="0 0 20 20" fill="none">
++                  <path
++                    d="M15.4 12.8A6.5 6.5 0 0 1 7.2 4.6a6.5 6.5 0 1 0 8.2 8.2Z"
++                    stroke="currentColor"
++                    strokeWidth="1.6"
++                    strokeLinecap="round"
++                    strokeLinejoin="round"
++                  />
++                </svg>
++              )}
++            </span>
++            <span className="theme-toggle-text">
++              {isDark ? 'Dark' : 'Light'}
++            </span>
++          </button>
+           <a href="#pricing" className="btn btn-primary btn-nav">
+             Start subscription
+           </a>
+@@ -1124,9 +1199,24 @@ function SiteFooter() {
+ }
+ 
+ export default function App() {
++  const [theme, setTheme] = useState<ThemeMode>(getInitialTheme);
++
++  useEffect(() => {
++    document.documentElement.setAttribute('data-theme', theme);
++    try {
++      window.localStorage.setItem(THEME_STORAGE_KEY, theme);
++    } catch {
++      // Ignore storage write errors
++    }
++  }, [theme]);
++
++  const handleToggleTheme = () => {
++    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
++  };
++
+   return (
+     <div className="page-shell">
+-      <StickyNav />
++      <StickyNav theme={theme} onToggleTheme={handleToggleTheme} />
+       <main>
+         <HeroSection />
+         <TrustStrip />
+diff --git a/src/styles.css b/src/styles.css
+index 6b9b905..aea8bca 100644
+--- a/src/styles.css
++++ b/src/styles.css
+@@ -60,6 +60,45 @@
+   --font-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+ }
+ 
++:root[data-theme="dark"] {
++  color-scheme: dark;
++
++  /* Core semantic color tokens (Dark theme: deep roasted espresso / cacao / warm terracotta) */
++  --color-bg: #140f0d;
++  --color-surface: #1f1714;
++  --color-surface-alt: #2a201b;
++  --color-surface-elevated: #191210;
++  --color-header-bg: rgba(20, 15, 13, 0.9);
++
++  --color-text: #f5ede2;
++  --color-text-muted: #c4b1a0;
++
++  --color-border: #382b24;
++  --color-border-strong: #544036;
++
++  --color-accent: #e06d44;
++  --color-accent-hover: #eb825c;
++  --color-accent-contrast: #160f0c;
++  --color-accent-soft: #3b2219;
++
++  --color-status-live: #58b873;
++  --color-focus-ring: #e06d44;
++
++  /* Illustration tokens for dark mode */
++  --color-illustration-bag: #352720;
++  --color-illustration-bag-side: #271d18;
++  --color-illustration-crimp: #48352c;
++  --color-illustration-label: #231a16;
++  --color-illustration-roast: #4d3328;
++  --color-illustration-crema: #d98954;
++  --color-illustration-shadow: rgba(0, 0, 0, 0.45);
++
++  /* Elevation & shadows */
++  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
++  --shadow-md: 0 12px 30px -8px rgba(0, 0, 0, 0.5);
++  --shadow-lg: 0 20px 42px -12px rgba(0, 0, 0, 0.65);
++}
++
+ *,
+ *::before,
+ *::after {
+@@ -202,6 +241,34 @@ input {
+   gap: var(--space-3);
+ }
+ 
++.theme-toggle {
++  display: inline-flex;
++  align-items: center;
++  gap: var(--space-2);
++  padding: 0.5rem 0.85rem;
++  border-radius: var(--radius-pill);
++  border: 1.5px solid var(--color-border-strong);
++  background-color: var(--color-surface);
++  color: var(--color-text);
++  font-family: var(--font-mono);
++  font-size: 0.78rem;
++  font-weight: 600;
++  cursor: pointer;
++  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
++}
++
++.theme-toggle:hover {
++  background-color: var(--color-surface-alt);
++  border-color: var(--color-accent);
++}
++
++.theme-toggle-icon {
++  width: 1rem;
++  height: 1rem;
++  display: inline-flex;
++  color: var(--color-accent);
++}
++
+ /* Buttons */
+ .btn {
+   display: inline-flex;
