@@ -14,12 +14,14 @@
   "dependencies": {
     "@hono/node-server": "^2.1.6",
     "@said/core": "0.1.0",
+    "@said/runtime": "0.1.0",
     "@said/switch-client": "0.1.0",
     "hono": "^4.13.16",
     "picomatch": "^4.0.3",
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@said/mock-switch": "0.1.0",
     "@types/picomatch": "^4.0.2"
   }
 }

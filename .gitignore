@@ -6,7 +6,9 @@ dist/
 # Secrets and runtime state
 .env
 .said/
+.said-offline/
 work/
+work-offline/
 
 # Tooling scratch
 .superpowers/
