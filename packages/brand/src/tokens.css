@@ -1,0 +1,30 @@
+/**
+ * Said brand tokens. Cool stone and navy ink, with sealing-wax crimson
+ * as the one warm note. Not cream, not terracotta, not purple-gradient.
+ */
+:root {
+  --said-vellum: #f3f5f8;
+  --said-paper: #ffffff;
+  --said-ink: #0b1c2c;
+  --said-ink-2: #3d4f61;
+  --said-ink-3: #6a7b8c;
+  --said-mist: #d7dee6;
+  --said-line: #c5ced8;
+  --said-night: #08131f;
+  --said-night-2: #102033;
+  --said-wax: #9b1d2e;
+  --said-wax-deep: #6d101c;
+  --said-wax-light: #c44a55;
+  --said-gold: #b0892e;
+  --said-teal: #0b6b5b;
+  --said-teal-wash: #d7efe8;
+  --said-await-wash: #f4ead0;
+  --said-wax-wash: #f6e4e4;
+
+  --said-display: 'Instrument Serif', 'Iowan Old Style', Palatino, Georgia, serif;
+  --said-sans: 'Schibsted Grotesk Variable', 'Schibsted Grotesk', 'Avenir Next', system-ui, sans-serif;
+  --said-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  --said-shadow: 0 24px 60px -28px rgba(8, 19, 31, 0.45);
+  --said-shadow-seal: 0 18px 28px -12px rgba(109, 16, 28, 0.55);
+}

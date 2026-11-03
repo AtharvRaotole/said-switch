@@ -1,0 +1,522 @@
+@import 'tailwindcss';
+@import '@said/brand/fonts.css';
+@import '@said/brand/tokens.css';
+@import '@said/brand/seal.css';
+
+@theme {
+  --font-display: var(--said-display);
+  --font-sans: var(--said-sans);
+  --font-mono: var(--said-mono);
+  --color-vellum: var(--said-vellum);
+  --color-paper: var(--said-paper);
+  --color-ink: var(--said-ink);
+  --color-ink-2: var(--said-ink-2);
+  --color-ink-3: var(--said-ink-3);
+  --color-mist: var(--said-mist);
+  --color-line: var(--said-line);
+  --color-night: var(--said-night);
+  --color-night-2: var(--said-night-2);
+  --color-wax: var(--said-wax);
+  --color-gold: var(--said-gold);
+  --color-teal: var(--said-teal);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background: var(--said-vellum);
+    color: var(--said-ink);
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--said-sans);
+    font-optical-sizing: auto;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background: var(--said-vellum);
+  }
+
+  ::selection {
+    background: #cfe0d8;
+    color: var(--said-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--said-ink);
+    outline-offset: 3px;
+  }
+}
+
+.site-shell {
+  overflow-x: hidden;
+}
+
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.4rem;
+  background: color-mix(in srgb, var(--said-night) 88%, transparent);
+  color: #eef3f7;
+  backdrop-filter: blur(14px);
+}
+
+.site-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.4rem;
+  font-size: 0.92rem;
+  color: #c5d0db;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 2.5rem;
+  align-items: center;
+  padding: 4.5rem 6vw 4rem;
+  background:
+    radial-gradient(1200px 500px at 80% -10%, #16324f 0%, transparent 60%),
+    var(--said-night);
+  color: #eef3f7;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #c4a15a;
+}
+
+.hero h1 {
+  margin: 0.8rem 0 1rem;
+  font-family: var(--said-display);
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: #f3d2d2;
+}
+
+.lede {
+  max-width: 38rem;
+  margin: 0;
+  font-size: 1.12rem;
+  color: #c5d0db;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.8rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 1.15rem;
+  border-radius: 999px;
+  font-weight: 650;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.btn-wax {
+  background: var(--said-wax);
+  color: #fff8f6;
+}
+
+.btn-wax:hover {
+  background: var(--said-wax-deep);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: #eef3f7;
+  border-color: #4a5d72;
+}
+
+.btn-ghost:hover {
+  border-color: #eef3f7;
+}
+
+.hero-stage {
+  display: grid;
+  place-items: center;
+  min-height: 340px;
+}
+
+.paper-card {
+  position: relative;
+  width: min(100%, 320px);
+  padding: 1.5rem 6.5rem 1.25rem 1.3rem;
+  background: var(--said-paper);
+  color: var(--said-ink);
+  border-radius: 4px;
+  box-shadow: var(--said-shadow);
+  transform: rotate(2.5deg);
+}
+
+.paper-card .tiny {
+  font-family: var(--said-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--said-ink-3);
+}
+
+.paper-card h2 {
+  margin: 0.4rem 0 0.3rem;
+  font-family: var(--said-display);
+  font-size: 1.55rem;
+  font-weight: 400;
+}
+
+.paper-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--said-ink-2);
+}
+
+.seal-on-paper {
+  position: absolute;
+  right: -28px;
+  top: -42px;
+}
+
+.section {
+  padding: 4.5rem 6vw;
+}
+
+.section h2 {
+  margin: 0 0 0.6rem;
+  font-family: var(--said-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.02em;
+}
+
+.section .sub {
+  max-width: 40rem;
+  color: var(--said-ink-2);
+  margin: 0 0 2rem;
+}
+
+.beats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.beat {
+  background: var(--said-paper);
+  border: 1px solid var(--said-line);
+  padding: 1.3rem 1.25rem 1.2rem;
+  border-radius: 10px;
+}
+
+.beat b {
+  display: block;
+  font-family: var(--said-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--said-wax);
+  margin-bottom: 0.55rem;
+}
+
+.beat h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.2rem;
+}
+
+.beat p {
+  margin: 0;
+  color: var(--said-ink-2);
+  font-size: 0.98rem;
+}
+
+.playground {
+  background: var(--said-paper);
+  border: 1px solid var(--said-line);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px -48px rgba(8, 19, 31, 0.5);
+}
+
+.play-status {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.1rem 1.3rem;
+  background: var(--said-night);
+  color: #eef3f7;
+}
+
+.play-status h3 {
+  margin: 0;
+  font-family: var(--said-display);
+  font-size: clamp(1.5rem, 3vw, 2.15rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.15;
+}
+
+.play-status p {
+  margin: 0.25rem 0 0;
+  color: #c5d0db;
+  font-size: 0.92rem;
+}
+
+.play-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  min-height: 520px;
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--said-line);
+}
+
+.who {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--said-line);
+}
+
+.who button {
+  flex: 1;
+  padding: 0.85rem 1rem;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  font-weight: 650;
+  color: var(--said-ink-3);
+}
+
+.who button[aria-pressed='true'] {
+  color: var(--said-ink);
+  border-bottom-color: var(--said-wax);
+}
+
+.thread {
+  flex: 1;
+  overflow: auto;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  background: #f7f8fb;
+  min-height: 320px;
+  max-height: 420px;
+}
+
+.bubble {
+  max-width: 92%;
+  padding: 0.65rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+
+.bubble .meta {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+  color: var(--said-ink-3);
+}
+
+.bubble.human {
+  background: var(--said-paper);
+  border: 1px solid var(--said-line);
+  align-self: flex-start;
+}
+
+.bubble.said {
+  background: var(--said-night);
+  color: #eef3f7;
+  align-self: flex-end;
+}
+
+.bubble.said .meta {
+  color: #c4a15a;
+}
+
+.composer {
+  padding: 0.85rem 1rem 1rem;
+  border-top: 1px solid var(--said-line);
+  background: var(--said-paper);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.65rem;
+}
+
+.chip {
+  border: 1px solid var(--said-line);
+  background: var(--said-vellum);
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+  font-size: 0.78rem;
+  color: var(--said-ink-2);
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--said-ink);
+  color: var(--said-ink);
+}
+
+.composer form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.composer input {
+  flex: 1;
+  border: 1px solid var(--said-line);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.ledger-side {
+  padding: 1.1rem 1.15rem;
+  background: var(--said-vellum);
+}
+
+.ledger-side h4 {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.field {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--said-mist);
+  font-size: 0.92rem;
+}
+
+.field span {
+  color: var(--said-ink-3);
+}
+
+.field strong {
+  font-weight: 650;
+  text-align: right;
+}
+
+.hash {
+  font-family: var(--said-mono);
+  font-size: 0.78rem;
+}
+
+.footnote {
+  margin-top: 1rem;
+  font-size: 0.82rem;
+  color: var(--said-ink-3);
+}
+
+.switch-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.switch-card {
+  padding: 1.2rem 1.25rem;
+  background: var(--said-paper);
+  border-left: 3px solid var(--said-wax);
+}
+
+.switch-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+}
+
+.switch-card p {
+  margin: 0;
+  color: var(--said-ink-2);
+  font-size: 0.95rem;
+}
+
+.site-foot {
+  padding: 2rem 6vw 2.6rem;
+  background: var(--said-night);
+  color: #c5d0db;
+  font-size: 0.9rem;
+}
+
+.site-foot strong {
+  color: #eef3f7;
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .play-grid,
+  .beats,
+  .switch-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chat {
+    border-right: 0;
+    border-bottom: 1px solid var(--said-line);
+  }
+
+  .hero {
+    padding-top: 3rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .seal-on-paper {
+    right: -12px;
+    top: -28px;
+  }
+}

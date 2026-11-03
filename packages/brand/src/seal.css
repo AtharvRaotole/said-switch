@@ -1,0 +1,33 @@
+.said-seal {
+  position: relative;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.said-seal-ribbon {
+  position: absolute;
+  top: 58%;
+  z-index: 0;
+  filter: drop-shadow(0 8px 10px rgba(8, 19, 31, 0.25));
+}
+
+.said-seal-disc {
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(var(--said-shadow-seal, 0 18px 28px -12px rgba(109, 16, 28, 0.55)));
+}
+
+.said-seal-shock {
+  position: absolute;
+  inset: 8%;
+  border-radius: 999px;
+  border: 2px solid rgba(155, 29, 46, 0.45);
+  z-index: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .said-seal-shock {
+    display: none;
+  }
+}
