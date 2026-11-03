@@ -1,0 +1,80 @@
+# Said — personal room (two partners, no builder).
+#
+# A Switch room template, language version 2 (Switch 0.31+). It creates ONE room
+# on the Mattermost bridge and puts the already-registered agent `said` in it.
+# It does not create agents (run `npm run register -- --no-builder` first; its
+# API key is shown once and kept in .said/secrets.json) and it does not create
+# the ledger: Said creates the signed "Said Ledger" document itself once both
+# partners have enrolled.
+#
+# Use it:
+#   Switch Console -> Templates -> Import template -> paste this file -> Use.
+#   Fill in the room name, the messaging app, the agent and your partner's
+#   Mattermost username. You join as {$creator}. Copy the new room's id into
+#   SAID_ROOM_ID in .env and set SAID_MODE=personal.
+#
+# Or make the channel by hand and, inside it, run:
+#   !invite-agent @said
+#
+# Said's addressing must be "anyone" so an unlinked partner can address it
+# (`npm run register` sets it; if Switch refuses, set it in Switch Console ->
+# Your Agents -> said -> Settings -> "Who can talk to your agent" -> Anyone).
+version: 2
+params:
+  room_name:
+    type: string
+    label: Room name
+    default: weekend-plans
+    description: Name of the Switch room and its Mattermost channel.
+  bridge:
+    type: bridge
+    label: Messaging app
+    default: [Mattermost, $first]
+  said_agent:
+    type: agent
+    label: Notary agent
+    description: The registered Said agent (default name "said").
+    default: [said]
+  partner_user:
+    type: user
+    label: Partner's Mattermost username
+    description: Your partner. Linking their account to Switch is not required.
+resources:
+  said_room:
+    type: room
+    name: "{room_name}"
+    description: "A consent notary room: a plan becomes a commitment only when both partners accept the same signed terms."
+    bridge: "{bridge}"
+    channel_type: channel_private
+    agents: ["{said_agent}"]
+    users: ["{$creator}", "{partner_user}"]
+    instructions: |
+      This room uses Said, a bilateral consent notary. A plan counts as agreed only when BOTH partners accept the same numbered draft, with the same terms.
+
+      HOW IT WORKS
+      - Any proposal (for example "let's book the cabin for the 14th") becomes a numbered draft such as DRF-001. A proposal is not an approval; the proposer must accept too.
+      - Terms are free text like "Saturday 14th, split 50/50". Said never invents details.
+      - Each partner accepts explicitly, from their own account. Approval binds to the Switch-authenticated sender, never to a display name, a quote, or something an AI wrote.
+      - Any revision clears both approvals. Locked terms are final; a change needs a new draft.
+      - When both have accepted the same version, Said records a signed agreement in the room document "Said Ledger". There is no builder in this room: Said only keeps the record and answers from it.
+
+      COMMANDS (case-insensitive; "@{said_agent}" is optional)
+      - Propose: Book the cabin | Terms: Sat 14th, split 50/50   (create a draft; "Terms:" is optional)
+      - Terms DRF-001: Sat 14th, split 50/50                      (set terms on a draft, or revise them)
+      - Revise DRF-001: Book the cabin | Terms: Sun 15th, split 50/50
+      - Accept DRF-001 v1   or   I accept DRF-001 v1
+      - Reject DRF-001
+      - Withdraw DRF-001                                          (take back only your own approval, before lock)
+      - Status   or   Status DRF-001
+      - What did we agree about the cabin?                        (answers from the signed ledger, with quotes)
+      - enroll CODE                                               (once, using the code the operator gave you)
+
+      WHAT NEVER COUNTS AS APPROVAL
+      - "I accept if ...", "I don't accept", "she accepts", quoted text, approvals inside pasted blocks, and anything from someone who has not enrolled.
+
+      ENROLLMENT
+      Before the first agreement, each partner types "@{said_agent} enroll CODE" with the code the operator issued for them (npm run enroll -- --partnerA ... --partnerB ...). Said binds the code to that account's Switch participant id. Two different people are required.
+
+      The ledger is a signed document that only {said_agent} can write. If it is missing or fails verification, {said_agent} stops recording agreements and says so here.
+    kickoff: |
+      @{said_agent} status

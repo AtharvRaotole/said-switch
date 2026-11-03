@@ -1,0 +1,95 @@
+# Said — business room (developer + client, with the gated builder).
+#
+# A Switch room template, language version 2 (Switch 0.31+). It creates ONE room
+# on the Mattermost bridge and puts the already-registered agents `said` and
+# `builder` in it. It does not create agents: `npm run register` registers them
+# (their API keys are shown once and kept in .said/secrets.json), and a room
+# template can only *name* agents that already exist on the server. If a name
+# is missing, Switch stops before creating the room and says which agent.
+#
+# It also does not create the signed ledger. Said creates the "Said Ledger"
+# room document itself once both people have enrolled, because only the agent
+# that creates a room document can update it.
+#
+# Use it:
+#   Switch Console -> Templates -> Import template -> paste this file -> Use.
+#   (Gateway: Resources -> Templates -> Upload template.)
+#   Fill in the room name, the messaging app, the two agents and the client's
+#   Mattermost username. You (the person running it) join as {$creator}.
+#   Then copy the new room's id into SAID_ROOM_ID in .env.
+#
+# If you would rather not use a template, make the channel by hand and invite
+# the agents from inside it (this is exactly what `npm run register` prints
+# when an agent is not yet in the room):
+#   !invite-agent @said
+#   !invite-agent @builder
+#
+# Who can talk to whom is NOT set by a template for pre-existing agents:
+#   said    -> addressing "anyone"               (so the client can address it)
+#   builder -> "owner_and_owner_agents"          (the client cannot command it)
+# `npm run register` sets both; `npm run doctor` verifies them.
+version: 2
+params:
+  room_name:
+    type: string
+    label: Room name
+    default: larkspur-site
+    description: Name of the Switch room and its Mattermost channel.
+  bridge:
+    type: bridge
+    label: Messaging app
+    default: [Mattermost, $first]
+  said_agent:
+    type: agent
+    label: Notary agent
+    description: The registered Said agent (default name "said").
+    default: [said]
+  builder_agent:
+    type: agent
+    label: Builder agent
+    description: The registered builder agent (default name "builder").
+    default: [builder]
+  client_user:
+    type: user
+    label: Client's Mattermost username
+    description: The client. Do NOT link this account to Switch; they are an outside stakeholder.
+resources:
+  said_room:
+    type: room
+    name: "{room_name}"
+    description: "A consent notary room: work starts only when both people accept the same signed terms."
+    bridge: "{bridge}"
+    channel_type: channel_private
+    agents: ["{said_agent}", "{builder_agent}"]
+    users: ["{$creator}", "{client_user}"]
+    instructions: |
+      This room uses Said, a bilateral consent notary. Nothing is built until BOTH the developer and the client accept the same numbered draft, with the same terms.
+
+      HOW IT WORKS
+      - Any request (for example "also add dark mode") becomes a numbered draft such as DRF-001. A request is not an approval.
+      - Terms are free text like "+2 days, +$400". Said never invents prices or deadlines.
+      - Each person accepts explicitly, from their own account. Approval binds to the Switch-authenticated sender, never to a display name, a quote, or something an AI wrote.
+      - Any revision clears both approvals. Locked terms are final; a change needs a new draft.
+      - When both have accepted the same version, Said records a signed agreement in the room document "Said Ledger" and hands a signed start authorization to {builder_agent}.
+      - {builder_agent} only acts on that Said authorization. It re-verifies the ledger and both approvals on its own, works in an isolated git worktree, checks the diff and the build, and only then applies the change. Asking {builder_agent} directly does nothing except create a draft for approval.
+
+      COMMANDS (case-insensitive; "@{said_agent}" is optional)
+      - Propose: Add dark mode | Terms: +2 days, +$400   (create a draft; "Terms:" is optional)
+      - Terms DRF-001: +2 days, +$400                  (set terms on a draft, or revise them)
+      - Revise DRF-001: Add dark mode | Terms: +1 day, +$300
+      - Accept DRF-001 v1   or   I accept DRF-001 v1
+      - Reject DRF-001
+      - Withdraw DRF-001                               (take back only your own approval, before lock)
+      - Status   or   Status DRF-001
+      - What did we agree about dark mode?             (answers from the signed ledger, with quotes)
+      - enroll CODE                                    (once, using the code the operator gave you)
+
+      WHAT NEVER COUNTS AS APPROVAL
+      - "I accept if ...", "I don't accept", "she accepts", quoted text, approvals inside pasted blocks, and anything from someone who has not enrolled.
+
+      ENROLLMENT
+      Before the first agreement, each person types "@{said_agent} enroll CODE" with the code the operator issued for them (npm run enroll). Said binds the code to that account's Switch participant id. Two different people are required.
+
+      The ledger is a signed document that only {said_agent} can write. If it is missing or fails verification, {said_agent} stops authorizing work and says so here.
+    kickoff: |
+      @{said_agent} status
