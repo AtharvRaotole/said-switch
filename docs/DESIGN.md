@@ -1,4 +1,4 @@
-# Said — Design Spec (binding)
+# Said: Design Spec (binding)
 
 This is the authoritative design for the hackathon build. `PLAN.md` is the original research plan; where they disagree, this document wins.
 
@@ -12,6 +12,12 @@ Said is a consent notary that sits in a Switch room between two parties (a devel
 - Judging: Use of Switch 30%, Technical execution 25%, Creativity/impact 25%, Presentation 20%.
 - Headline: Switch's own docs say approval-before-action rules are "only the instructions" and tell operators to "put the control … in a sign-off step". Said is that sign-off step, built on Switch primitives.
 - Deadline: submissions close **Nov 7 2026, 11:59 PM IST (1:29 PM US Eastern)**.
+
+## 2a. Copy and visual rules (apply to every UI, chat reply, README and doc)
+
+- **No em dashes or en dashes** (`—`, `–`) anywhere a person reads them. Use periods, commas, colons or parentheses. Hyphens in compound words are fine.
+- **Plain language first.** A non-technical person (or a 12-year-old) must understand any screen in five seconds. Lead with what is happening in everyday words ("Waiting for Dana to agree", "Both agreed. Work can start."); technical detail (hashes, signatures, participant ids) sits underneath, labeled in plain words ("Fingerprint of the exact terms", "Tamper seal").
+- **No AI-default look.** No orange/terracotta or purple-gradient themes, no generic sparkle/robot logos, no emoji-as-UI, no lorem ipsum. Real fonts (self-hosted via `@fontsource`), a deliberate palette, crafted SVG marks, purposeful motion.
 
 ## 3. Non-negotiable guarantees
 
@@ -65,7 +71,7 @@ Said Console (browser): read-only mirror; verifies ledger signature in the brows
 The exact TypeScript contracts live in `packages/core/src/types.ts`. Summary:
 
 - **Party**: `{ role: 'developer' | 'client' | 'partnerA' | 'partnerB', label, senderId }`. `senderId` is the opaque Switch participant id (`@switch-user-…:server`). Exactly two parties, distinct ids.
-- **Receipt**: `{ senderId, senderName, role, messageId, timestamp (server ms), text, threadId }` — a quote of an authenticated message.
+- **Receipt**: `{ senderId, senderName, role, messageId, timestamp (server ms), text, threadId }`, a quote of an authenticated message.
 - **Draft**: `id` `DRF-001`, `version` (1..n), `scope`, `terms` (free text, e.g. `+2 days, +$400`; `null` means NEEDS_TERMS), `termsHash`, `status`, `request` (receipt of the original ask), `proposal` (receipt of who set the current version's terms), `approvals` (per role, `ApprovalReceipt | null`), `history` (previous versions), timestamps.
 - **termsHash** = `sha256hex(canonicalJson({ roomId, draftId, version, scope, terms }))`.
 - **Agreement**: `AGR-001`, locked copy of draft id/version/scope/terms/termsHash, both approval receipts, `lockedAt`, `execution` (nullable).
@@ -150,7 +156,7 @@ Signature covers `canonicalJson` of the token without `signature`. Builder → S
 4. Worker adapters:
    - `claude`: `claude -p <prompt> --output-format stream-json --verbose --allowedTools Read,Edit,Write,Glob,Grep --disallowedTools Bash,WebFetch,WebSearch --permission-mode acceptEdits --max-turns 40`, cwd = worktree.
    - `codex`: `codex exec --sandbox workspace-write --json --skip-git-repo-check -C <worktree> <prompt>`.
-   - `scripted` (tests and offline CI only, labeled "scripted worker — no AI"): applies a fixture patch.
+   - `scripted` (tests and offline CI only, labeled "scripted worker (no AI)"): applies a fixture patch.
 5. Validate: `git status --porcelain` paths ⊆ allowlist (`src/**/*.tsx`, `src/**/*.ts`, `src/**/*.css`, `index.html`), no symlinks, no binary files, no package/config changes.
 6. Checks in worktree: `npm run typecheck`, `npm run build`. Record each with duration and output tail.
 7. Before apply, re-load the ledger and confirm the agreement is still LOCKED and the base repo HEAD still equals `baseCommit`. Then commit in the worktree (`said: <scope> (<agreementId>, <jobId>)`) and `git merge --ff-only` into the base checkout. Vite HMR updates the running site.
