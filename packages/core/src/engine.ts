@@ -140,14 +140,23 @@ function handleIntent(turn: Turn, intent: Intent): void {
   }
   switch (intent.kind) {
     case 'request': {
-      turn.say(R.needsTermsReply(turn.next, createDraft(turn, intent.scope, null)));
+      const active = activeAgreement(turn.next);
+      const draft = createDraft(turn, intent.scope, null, active?.id ?? null);
+      turn.say(active ? R.amendNeedsTermsReply(turn.next, draft, active.id) : R.needsTermsReply(turn.next, draft));
       return;
     }
     case 'propose': {
-      const draft = createDraft(turn, intent.scope, intent.terms);
-      turn.say(draft.terms === null ? R.needsTermsReply(turn.next, draft) : R.termsReply(turn.next, draft, null));
+      const active = activeAgreement(turn.next);
+      const draft = createDraft(turn, intent.scope, intent.terms, active?.id ?? null);
+      if (draft.terms === null) {
+        turn.say(active ? R.amendNeedsTermsReply(turn.next, draft, active.id) : R.needsTermsReply(turn.next, draft));
+      } else {
+        turn.say(active ? R.amendTermsReply(turn.next, draft, active.id) : R.termsReply(turn.next, draft, null));
+      }
       return;
     }
+    case 'amend':
+      return handleAmend(turn, intent.agreementRef, intent.scope, intent.terms);
     case 'terms': {
       const draft = resolveDraft(turn, intent.draftRef, (d) => d.status === 'NEEDS_TERMS' || d.status === 'PENDING', 'Terms');
       if (draft) revise(turn, draft, draft.scope, intent.terms);
@@ -167,7 +176,17 @@ function handleIntent(turn: Turn, intent: Intent): void {
   }
 }
 
-function createDraft(turn: Turn, scope: string, terms: string | null): Draft {
+
+/** Newest locked agreement that is not COMPLETED, if any. */
+function activeAgreement(ledger: Ledger): Agreement | null {
+  for (let i = ledger.agreements.length - 1; i >= 0; i -= 1) {
+    const a = ledger.agreements[i]!;
+    if (a.execution?.status !== 'COMPLETED') return a;
+  }
+  return null;
+}
+
+function createDraft(turn: Turn, scope: string, terms: string | null, amendsAgreementId: string | null = null): Draft {
   const { next, ctx } = turn;
   const id = formatDraftId(next.nextDraftSeq++);
   const version = terms === null ? 0 : 1;
@@ -185,11 +204,16 @@ function createDraft(turn: Turn, scope: string, terms: string | null): Draft {
     history: [],
     rejectedBy: null,
     agreementId: null,
+    amendsAgreementId,
     createdAt: ctx.now,
     updatedAt: ctx.now,
   };
   next.drafts.push(draft);
-  turn.audit('draft_created', id, `${turn.actor} opened ${id}: ${scope}`);
+  if (amendsAgreementId) {
+    turn.audit('amendment_opened', id, `${turn.actor} opened amendment ${id} for ${amendsAgreementId}: ${scope}`);
+  } else {
+    turn.audit('draft_created', id, `${turn.actor} opened ${id}: ${scope}`);
+  }
   if (terms !== null) turn.audit('terms_set', id, `${turn.actor} set terms for ${id} v1: ${terms}`);
   return draft;
 }
@@ -257,6 +281,28 @@ function missingParties(ledger: Ledger, draft: Draft): Party[] {
       const a = draft.approvals[p.role];
       return !(a && p.senderId && a.senderId === p.senderId && a.version === draft.version && a.termsHash === draft.termsHash);
     });
+}
+
+
+function handleAmend(turn: Turn, agreementRef: string, scope: string, terms: string | null): void {
+  const agreement = turn.next.agreements.find((a) => a.id === agreementRef);
+  if (!agreement) {
+    turn.say(R.agreementNotFoundReply(agreementRef));
+    return;
+  }
+  if (agreement.execution?.status === 'COMPLETED') {
+    turn.say(R.amendCompletedReply(agreement));
+    return;
+  }
+  const open = turn.next.drafts.find(
+    (d) => d.amendsAgreementId === agreement.id && (d.status === 'PENDING' || d.status === 'NEEDS_TERMS'),
+  );
+  if (open) {
+    revise(turn, open, scope, terms);
+    return;
+  }
+  const draft = createDraft(turn, scope, terms, agreement.id);
+  turn.say(terms === null ? R.amendNeedsTermsReply(turn.next, draft, agreement.id) : R.amendTermsReply(turn.next, draft, agreement.id));
 }
 
 function handleAccept(turn: Turn, party: Party, ref: string | null, version: number | null): void {

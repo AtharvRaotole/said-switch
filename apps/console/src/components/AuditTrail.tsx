@@ -13,6 +13,8 @@ import {
   Send,
   Undo2,
   UserCheck,
+  FileDiff,
+  BadgeCheck,
   type LucideIcon,
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
@@ -33,6 +35,8 @@ const KINDS: Record<AuditKind, { icon: LucideIcon; tone: string; label: string }
   handoff_sent: { icon: Send, tone: 'text-ink-2', label: 'Handoff' },
   execution_update: { icon: Hammer, tone: 'text-ink-2', label: 'Execution' },
   evidence_served: { icon: ScrollText, tone: 'text-ink-2', label: 'Evidence' },
+  amendment_opened: { icon: FileDiff, tone: 'text-await', label: 'Change request' },
+  receipt_exported: { icon: BadgeCheck, tone: 'text-ink-2', label: 'Receipt exported' },
 };
 
 export function AuditTrail({ ledger }: { ledger: Ledger }) {

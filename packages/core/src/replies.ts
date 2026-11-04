@@ -173,6 +173,7 @@ const NON_PARTY_ACTION: Partial<Record<Intent['kind'], string>> = {
   withdraw: 'withdraw acceptances',
   reject: 'reject drafts',
   request: 'open drafts',
+  amend: 'open amendments',
 };
 
 export function nonPartyReply(ledger: Ledger, kind: Intent['kind']): string {
@@ -243,4 +244,20 @@ export function executionReply(agreement: Agreement): string {
     case 'FAILED':
       return `${head} failed: ${inline(exec.error ?? 'no reason given')}${checks}. Nothing was applied.`;
   }
+}
+
+export function amendNeedsTermsReply(ledger: Ledger, draft: Draft, agreementId: string): string {
+  return `Change request against **${agreementId}** logged as ${title(draft)} (needs terms). Both of you must accept before work follows the new scope. ${setTermsHint(ledger, draft)}`;
+}
+
+export function amendTermsReply(ledger: Ledger, draft: Draft, agreementId: string): string {
+  return `Change request against **${agreementId}**: ${title(draft)}. ${termsLine(draft)}. Both of you must accept with ${acceptCmd(draft)}. ${approvalBoxes(ledger, draft.approvals)}`;
+}
+
+export function agreementNotFoundReply(agreementId: string): string {
+  return `No locked agreement **${agreementId}** is on the ledger. Check the id and try again.`;
+}
+
+export function amendCompletedReply(agreement: Agreement): string {
+  return `**${agreement.id}** already completed as ${agreement.execution?.jobId ?? 'done'}. Open a new proposal instead of amending it.`;
 }

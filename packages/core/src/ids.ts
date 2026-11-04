@@ -25,3 +25,11 @@ export function normalizeDraftRef(ref: string): string | null {
 export function jobIdFor(agreementId: string, attempt: number): string {
   return `JOB-${agreementId}-${attempt}`;
 }
+
+/** Accepts `AGR-001`, `agr-1`, `AGR 1`. Returns null when the number is missing or zero. */
+export function normalizeAgreementRef(raw: string): string | null {
+  const m = /^agr[\s-]*(\d{1,6})$/i.exec(raw.trim());
+  if (!m) return null;
+  const n = Number.parseInt(m[1]!, 10);
+  return n > 0 ? formatAgreementId(n) : null;
+}

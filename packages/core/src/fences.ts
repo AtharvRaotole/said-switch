@@ -1,6 +1,6 @@
 import { canonicalJson } from './canonical';
 
-export type FenceLang = 'said-start' | 'said-receipt' | 'said-ledger';
+export type FenceLang = 'said-start' | 'said-receipt' | 'said-ledger' | 'said-agreement-receipt';
 
 export function fenceJson(lang: FenceLang, value: unknown): string {
   return `\`\`\`${lang}\n${canonicalJson(value)}\n\`\`\``;

@@ -84,7 +84,9 @@ const V1: DraftVersion = {
 const REFUSAL: Refusal = { id: 'REF-001', receipt: MESSAGES.bypass, target: 'builder', draftId: 'DRF-001', at: t(15, 31, 8) };
 
 function audit(seq: number, kind: AuditEvent['kind'], at: number, actor: Party | null, ref: string | null, summary: string): AuditEvent {
-  return { seq, kind, at, actor: actor?.label ?? null, ref, summary };
+  const prevHash = seq === 1 ? '0'.repeat(64) : (seq - 1).toString(16).padStart(64, '0');
+  const hash = seq.toString(16).padStart(64, '0');
+  return { seq, kind, at, actor: actor?.label ?? null, ref, summary, prevHash, hash };
 }
 
 const AUDIT: AuditEvent[] = [
@@ -268,6 +270,7 @@ function draftAt(index: number): Draft {
       approvals: {},
       history: [],
       agreementId: null,
+      amendsAgreementId: null,
       updatedAt: t(15, 31, 8),
     };
   }
@@ -283,6 +286,7 @@ function draftAt(index: number): Draft {
     approvals,
     history: [V1],
     agreementId: locked ? 'AGR-001' : null,
+    amendsAgreementId: null,
     updatedAt: locked ? DANA_V2.timestamp : index === 2 ? RIYA_V2.timestamp : MESSAGES.termsV2.timestamp,
   };
 }

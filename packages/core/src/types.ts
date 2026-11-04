@@ -57,6 +57,8 @@ export interface Draft {
   history: DraftVersion[];
   rejectedBy: Receipt | null;
   agreementId: string | null;
+  /** When set, this draft amends a previously locked agreement and needs both signatures again. */
+  amendsAgreementId: string | null;
   createdAt: number;
   updatedAt: number;
 }
@@ -120,7 +122,9 @@ export type AuditKind =
   | 'ignored_approval'
   | 'handoff_sent'
   | 'execution_update'
-  | 'evidence_served';
+  | 'evidence_served'
+  | 'amendment_opened'
+  | 'receipt_exported';
 
 export interface AuditEvent {
   seq: number;
@@ -129,6 +133,10 @@ export interface AuditEvent {
   actor: string | null;
   ref: string | null;
   summary: string;
+  /** sha256 hex of the previous audit event's hash, or GENESIS_PREV_HASH for the first. */
+  prevHash: string;
+  /** sha256 hex of canonicalJson({ prevHash, seq, kind, at, actor, ref, summary }). */
+  hash: string;
 }
 
 export interface Ledger {
@@ -214,6 +222,7 @@ export type Intent =
   | { kind: 'propose'; scope: string; terms: string | null }
   | { kind: 'terms'; draftRef: string | null; terms: string }
   | { kind: 'revise'; draftRef: string; scope: string | null; terms: string | null }
+  | { kind: 'amend'; agreementRef: string; scope: string; terms: string | null }
   | { kind: 'accept'; draftRef: string | null; version: number | null }
   | { kind: 'reject'; draftRef: string | null }
   | { kind: 'withdraw'; draftRef: string | null }

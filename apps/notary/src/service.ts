@@ -21,6 +21,10 @@ import {
   signStartToken,
   verifyReceipt,
   verifySignedLedger,
+  exportSignedAgreementReceipt,
+  renderAgreementReceiptMarkdown,
+  appendAudit,
+  commitChange,
   type Agreement,
   type Effect,
   type ExecutionReceipt,
@@ -39,6 +43,8 @@ import {
   loadPublicKeys,
   loadSecrets,
   ports,
+  requestHasSharedSecret,
+  sharedSecretFromEnv,
   type Enrollment,
   type Logger,
   type PublicKeys,
@@ -322,7 +328,7 @@ class NotaryApp {
     this.log.info(`Notary API listening on ${this.url} (${where})`);
   }
 
-  /** Local console only. There is no shared secret. listen() binds 127.0.0.1. */
+  /** Local console API. Binds 127.0.0.1. Optional SAID_HTTP_SHARED_SECRET gates non-health routes. */
   private http(): Hono {
     const allowed = new Set([
       'http://localhost:7400',
@@ -333,17 +339,53 @@ class NotaryApp {
       `http://127.0.0.1:${ports.console}`,
     ]);
     const app = new Hono();
+    const sharedSecret = sharedSecretFromEnv();
     app.use(
       '*',
       cors({
         origin: (origin) => (allowed.has(origin) ? origin : null),
       }),
     );
+    app.use('*', async (c, next) => {
+      if (!sharedSecret) return next();
+      if (c.req.method === 'OPTIONS') return next();
+      if (c.req.path === '/health') return next();
+      if (requestHasSharedSecret(c.req.raw.headers, sharedSecret)) return next();
+      return c.json({ error: 'unauthorized', reason: 'Missing or invalid shared secret' }, 401);
+    });
     app.get('/health', (c) => {
       if (this.config.mode === 'offline') return c.json({ status: 'ok', mock: true, simulation: true });
       return c.json({ status: 'ok' });
     });
     app.get('/api/state', async (c) => c.json(await this.apiState()));
+    app.get('/api/receipt', async (c) => {
+      if (!this.signed || this.halted) return c.json({ error: 'no_ledger' }, 404);
+      const agreementId = c.req.query('agreementId') ?? null;
+      const receipt = await exportSignedAgreementReceipt({
+        signed: this.signed,
+        privateKey: this.key.privateKey,
+        keyId: this.key.keyId,
+        issuedAt: Date.now(),
+        agreementId,
+      });
+      if (!receipt) return c.json({ error: 'no_agreement' }, 404);
+      // Persist an audit trail entry on the in-memory ledger and re-sign.
+      const next = structuredClone(this.signed.payload);
+      appendAudit(next, {
+        kind: 'receipt_exported',
+        at: Date.now(),
+        actor: 'said',
+        ref: receipt.agreementId,
+        summary: `Exported signed agreement receipt for ${receipt.agreementId}`,
+      });
+      commitChange(next, Date.now(), null);
+      this.signed = await signLedger(next, this.key.keyId, this.key.privateKey);
+      const format = (c.req.query('format') ?? 'json').toLowerCase();
+      if (format === 'markdown' || format === 'md') {
+        return c.text(renderAgreementReceiptMarkdown(receipt), 200, { 'content-type': 'text/markdown; charset=utf-8' });
+      }
+      return c.json(receipt);
+    });
     app.get('/api/events', (c) => {
       return streamSSE(c, async (stream) => {
         let queue = Promise.resolve();

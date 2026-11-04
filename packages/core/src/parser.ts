@@ -1,10 +1,11 @@
-import { normalizeDraftRef } from './ids';
+import { normalizeAgreementRef, normalizeDraftRef } from './ids';
 import type { Intent } from './types';
 
 type NotApprovalReason = Extract<Intent, { kind: 'not_approval' }>['reason'];
 
 const NONE: Intent = { kind: 'none' };
 const REF = String.raw`drf[\s-]*\d{1,6}(?!\d)`;
+const AGR = String.raw`agr[\s-]*\d{1,6}(?!\d)`;
 const VERSION = String.raw`(?:v\s*(\d{1,6})|version\s+(\d{1,6}))`;
 const VERSION_NC = String.raw`(?:v\s*\d{1,6}|version\s+\d{1,6})`;
 const OPT_REF = String.raw`(?:\s+(?:draft\s+)?(${REF}))?(?:\s*,?\s*${VERSION_NC})?`;
@@ -23,6 +24,7 @@ const ENROLL = /^enroll\s+([a-z0-9]{4,8})[\s.!]*$/i;
 const PROPOSE = /^propose\s*:\s*([\s\S]*)$/i;
 const TERMS = new RegExp(String.raw`^(?:set\s+)?terms(?:\s+(?:for\s+)?(?:draft\s+)?(${REF}))?\s*:\s*([\s\S]*)$`, 'i');
 const REVISE = new RegExp(String.raw`^revise\s+(?:draft\s+)?(${REF})\s*:\s*([\s\S]*)$`, 'i');
+const AMEND = new RegExp(String.raw`^(?:amend(?:ment)?|change\s*request)(?:\s+(?:for|to|on))?\s+(${AGR})\s*:\s*([\s\S]*)$`, 'i');
 const WITHDRAW = new RegExp(
   String.raw`^(?:(?:ok|okay|sorry|actually|wait|i|we)[\s,]+)*(?:withdraw|retract|revoke)(?:\s+(?:my|our))?(?:\s+(?:approval|acceptance))?(?:\s+(?:of|for|on|from))?${OPT_REF}[\s.!]*$`,
   'i',
@@ -63,6 +65,11 @@ function parseCommand(t: string): Intent | null {
     const { scope, terms } = splitScopeTerms(m[2]!);
     const draftRef = refOf(m[1]);
     return draftRef && (scope || terms) ? { kind: 'revise', draftRef, scope, terms } : NONE;
+  }
+  if ((m = AMEND.exec(t))) {
+    const agreementRef = normalizeAgreementRef(m[1]!);
+    const { scope, terms } = splitScopeTerms(m[2]!);
+    return agreementRef && scope ? { kind: 'amend', agreementRef, scope, terms } : NONE;
   }
   if ((m = WITHDRAW.exec(t))) return { kind: 'withdraw', draftRef: refOf(m[1]) };
   if ((m = REJECT.exec(t))) return { kind: 'reject', draftRef: refOf(m[1]) };

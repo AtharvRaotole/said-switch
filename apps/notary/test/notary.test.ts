@@ -374,6 +374,9 @@ describe('notary on mock Switch', () => {
       await conn.stop();
     }
 
+    await waitFor('completed announcement', async () =>
+      saidBodies(mock).some((body) => body.toLowerCase().includes('completed')),
+    );
     const done = (await getState(notary.url)).signedLedger!;
     expect(done.payload.agreements[0]!.execution).toMatchObject({
       jobId: 'JOB-AGR-001-1',

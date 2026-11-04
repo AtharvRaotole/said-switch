@@ -1,4 +1,4 @@
-import { appendAudit, commitChange } from './audit';
+import { appendAudit, commitChange, verifyAuditChain } from './audit';
 import { canonicalJson } from './canonical';
 import { sha256Hex, signDigest, verifyDigest } from './crypto';
 import { fenceJson, findFencedBlocks } from './fences';
@@ -97,6 +97,8 @@ export async function verifySignedLedger(
     if (!(await verifyDigest(signed.digest, signed.signature, publicKey))) {
       return { ok: false, reason: 'Ledger signature does not verify with the pinned public key' };
     }
+    const chain = verifyAuditChain(signed.payload);
+    if (!chain.ok) return { ok: false, reason: chain.reason };
     return { ok: true };
   } catch (err) {
     return { ok: false, reason: err instanceof Error ? err.message : String(err) };
@@ -119,6 +121,7 @@ export function renderLedgerDocument(signed: SignedLedger): string {
     `- Parties: ${l.parties.map((p) => `${inline(p.label)} (${p.role})`).join(', ') || 'none enrolled'}`,
     `- Revision ${l.revision} · updated ${formatTime(l.updatedAt)}`,
     `- Digest \`${shortHash(signed.digest)}\` · key \`${inline(signed.keyId)}\``,
+    `- Audit chain: ${l.audit.length} event${l.audit.length === 1 ? '' : 's'}${l.audit.length ? ` · head \`${shortHash(l.audit[l.audit.length - 1]!.hash)}\`` : ''}`,
     '',
     '## Agreements',
     '',
