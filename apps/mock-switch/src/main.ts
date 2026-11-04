@@ -6,7 +6,7 @@ if (!Number.isInteger(port) || port < 1 || port > 65_535) {
 }
 
 console.log('==============================================================');
-console.log(' OFFLINE SIMULATION — mock Switch server, not the real product ');
+console.log(' OFFLINE SIMULATION - mock Switch server, not the real product ');
 console.log('==============================================================');
 
 const server = await createMockSwitch({

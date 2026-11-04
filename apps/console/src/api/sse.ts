@@ -9,6 +9,23 @@ export interface StreamOptions {
 const MIN_DELAY_MS = 1_000;
 const MAX_DELAY_MS = 10_000;
 
+/** Shared secret from Vite env (never logged). Empty when unset. */
+export function consoleSharedSecret(): string | null {
+  const raw = import.meta.env.VITE_SAID_HTTP_SHARED_SECRET;
+  if (typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+/** EventSource cannot set headers; append ?said_shared_secret= when a secret is configured. */
+export function withSharedSecretQuery(url: string): string {
+  const secret = consoleSharedSecret();
+  if (!secret) return url;
+  const u = new URL(url, typeof window !== 'undefined' ? window.location.origin : 'http://127.0.0.1');
+  u.searchParams.set('said_shared_secret', secret);
+  return u.toString();
+}
+
 /**
  * EventSource gives up for good on HTTP errors and CORS failures, so every
  * error closes the stream and schedules a fresh one with capped backoff.
@@ -21,7 +38,7 @@ export function openStream(options: StreamOptions): () => void {
 
   const connect = () => {
     if (stopped) return;
-    const es = new EventSource(options.url);
+    const es = new EventSource(withSharedSecretQuery(options.url));
     source = es;
     es.onopen = () => {
       delay = MIN_DELAY_MS;
@@ -63,8 +80,11 @@ function parseData(raw: unknown): unknown {
 }
 
 export async function getJson(url: string, timeoutMs = 5_000): Promise<unknown> {
+  const secret = consoleSharedSecret();
+  const headers: Record<string, string> = { accept: 'application/json' };
+  if (secret) headers.authorization = `Bearer ${secret}`;
   const response = await fetch(url, {
-    headers: { accept: 'application/json' },
+    headers,
     signal: AbortSignal.timeout(timeoutMs),
   });
   if (!response.ok) throw new Error(`${url} answered ${response.status}`);

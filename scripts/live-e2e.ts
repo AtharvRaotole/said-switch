@@ -5,6 +5,8 @@
  *   - Switch + Mattermost + Postgres up under SWITCH_LIVE_DIR (default /workspace/switch-live)
  *   - Said agents registered; room bridged from a Mattermost channel
  *   - Said notary + builder running with SAID_HOME pointing at that deployment
+ *   - SAID_HTTP_SHARED_SECRET set (live default); live:e2e sends Authorization: Bearer
+ *   - SAID_ALLOW_SAID_NAME_FALLBACK=1 when Mattermost bridge uses actor ids as sender
  *   - live-e2e-secrets.json with channel_id, riya/dana passwords (never committed)
  *
  * Usage:
@@ -15,13 +17,34 @@
  * Leaves the stack running. Writes evidence under SAID_LIVE_SHOTS (default /workspace/said-live-shots).
  */
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const SWITCH_LIVE = process.env.SWITCH_LIVE_DIR?.trim() || '/workspace/switch-live';
 const SHOTS = process.env.SAID_LIVE_SHOTS?.trim() || '/workspace/said-live-shots';
 const MM = process.env.MATTERMOST_URL?.trim() || 'http://127.0.0.1:8065';
 const NOTARY = process.env.SAID_NOTARY_URL?.trim() || 'http://127.0.0.1:7410';
 const BUILDER = process.env.SAID_BUILDER_URL?.trim() || 'http://127.0.0.1:7420';
+const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+
+/** Said HTTP shared secret from env or repo .env (never logged). */
+function saidSharedSecret(): string | null {
+  const fromEnv = process.env.SAID_HTTP_SHARED_SECRET?.trim();
+  if (fromEnv) return fromEnv;
+  const file = loadDotEnv(join(REPO_ROOT, '.env'));
+  const v = file.SAID_HTTP_SHARED_SECRET?.trim();
+  return v || null;
+}
+
+function saidHeaders(): Record<string, string> {
+  const secret = saidSharedSecret();
+  return secret ? { authorization: `Bearer ${secret}` } : {};
+}
+
+async function saidFetch(url: string, init: RequestInit = {}): Promise<Response> {
+  const headers = { ...(init.headers as Record<string, string> | undefined), ...saidHeaders() };
+  return fetch(url, { ...init, headers });
+}
 
 type Secrets = {
   channel_id: string;
@@ -77,7 +100,7 @@ async function sleep(ms: number): Promise<void> {
 async function waitNotary(pred: (s: any) => boolean, label: string, timeoutMs = 30_000): Promise<any> {
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
-    const s = await fetch(`${NOTARY}/api/state`).then((r) => r.json());
+    const s = await saidFetch(`${NOTARY}/api/state`).then((r) => r.json());
     if (pred(s)) return s;
     await sleep(500);
   }
@@ -169,7 +192,7 @@ async function main(): Promise<void> {
     }>;
     writeFileSync(join(SHOTS, 'mm-transcript.json'), JSON.stringify(rows, null, 2));
     writeHtmlTranscript(rows, join(SHOTS, 'mm-transcript.html'));
-    const state = await fetch(`${NOTARY}/api/state`).then((r) => r.json());
+    const state = await saidFetch(`${NOTARY}/api/state`).then((r) => r.json());
     writeFileSync(join(SHOTS, 'notary-state.json'), JSON.stringify(state, null, 2));
     console.log(`captured ${rows.length} posts -> ${SHOTS}`);
     return;
@@ -224,7 +247,7 @@ async function main(): Promise<void> {
       const drafts = s?.signedLedger?.payload?.drafts || [];
       return drafts.some((d: any) => d.status === 'PENDING' && d.version >= 1 && d.id !== 'DRF-001');
     }, 'change-request draft pending');
-    const afterPropose = await fetch(`${NOTARY}/api/state`).then((r) => r.json());
+    const afterPropose = await saidFetch(`${NOTARY}/api/state`).then((r) => r.json());
     const cr = (afterPropose?.signedLedger?.payload?.drafts || []).find(
       (d: any) => d.status === 'PENDING' && d.id !== 'DRF-001',
     );
@@ -242,7 +265,7 @@ async function main(): Promise<void> {
   }>;
   writeFileSync(join(SHOTS, 'mm-transcript.json'), JSON.stringify(rows, null, 2));
   writeHtmlTranscript(rows, join(SHOTS, 'mm-transcript.html'));
-  const state = await fetch(`${NOTARY}/api/state`).then((r) => r.json());
+  const state = await saidFetch(`${NOTARY}/api/state`).then((r) => r.json());
   writeFileSync(join(SHOTS, 'notary-state.json'), JSON.stringify(state, null, 2));
   console.log(`done. posts=${rows.length} evidence in ${SHOTS}`);
   console.log('Leave stack running. Optional: google-chrome --headless=new --screenshot=... file://.../mm-transcript.html');

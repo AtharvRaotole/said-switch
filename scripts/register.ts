@@ -1,5 +1,5 @@
 /**
- * `npm run register` — live mode: registers `said` and `builder` on a real Switch server, sets who may
+ * `npm run register` - live mode: registers `said` and `builder` on a real Switch server, sets who may
  * address them, saves config.json + secrets.json, and checks they are in the room.
  *
  *   npm run register                 # first time

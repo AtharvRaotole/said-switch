@@ -1,10 +1,14 @@
 /**
- * `npm run demo:offline` — the whole Said story with NO Switch install, for judges and CI.
+ * `npm run demo:offline` - the whole Said story with NO Switch install, for judges and CI.
  *
  *   npm run demo:offline                      # start everything; you play the two people in the chat simulator
  *   npm run demo:offline -- --script          # additionally play the full dark-mode story automatically
  *   npm run demo:offline -- --headless        # no console / client-site dev servers (CI)
  *   npm run demo:offline -- --fresh           # delete work-offline first (re-copies the client site, reinstalls)
+ *
+ * Ports default to CONSOLE_PORT/NOTARY_PORT/BUILDER_PORT/MOCK_SWITCH_PORT/CLIENT_SITE_PORT
+ * (7400/7410/7420/7500/5173). If a default is busy (for example the live stack holds 7410/7420),
+ * the demo auto-picks a free port and prints the override. Set those env vars yourself to pin ports.
  *
  * State lives in .said-offline/ and work-offline/ (both git-ignored). Everything here is a SIMULATION:
  * the chat is apps/mock-switch, not the real Switch.
@@ -42,7 +46,7 @@ async function main(): Promise<void> {
 
   banner(
     [
-      'OFFLINE SIMULATION — this is NOT Switch.',
+      'OFFLINE SIMULATION - this is NOT Switch.',
       'A mock Switch server (apps/mock-switch) stands in for Switch, so you can see Said work',
       'without installing anything. Run the live setup (docs/SETUP_LIVE.md) for the real product.',
     ],
@@ -67,7 +71,7 @@ async function main(): Promise<void> {
   if (s.worker.scripted) {
     banner(
       [
-        'SCRIPTED WORKER — NO AI IN THIS RUN',
+        'SCRIPTED WORKER - NO AI IN THIS RUN',
         `(${s.worker.reason})`,
         'The code change will be applied from a FIXTURE PATCH (demo/fixtures/dark-mode.patch),',
         'not written by Claude Code or Codex. Install and sign in to `claude` or `codex` for a real run.',

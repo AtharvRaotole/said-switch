@@ -1,5 +1,6 @@
 /**
- * `npm run doctor` — a readable ✓ / ✖ / ! checklist, each failure with a one-line fix.
+ * `npm run doctor` - one-command preflight: Node, .env, room id, shared secret (presence only),
+ * ports, Switch health, Mattermost, keys present (never print values), registration, ledger, workers.
  * Exits non-zero when any check is ✖ (warnings do not fail). Never prints secret values.
  *
  *   npm run doctor
@@ -10,6 +11,7 @@ import { stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { verifySignedLedger, type SignedLedger } from '@said/core';
 import {
+  isPortBusy,
   loadConfig,
   loadEnv,
   loadKeyPair,
@@ -18,6 +20,7 @@ import {
   paths,
   ports,
   repoRoot,
+  sharedSecretFromEnv,
   type PublicKeys,
   type SaidConfig,
   type Secrets,
@@ -47,7 +50,7 @@ const tally = { ok: 0, warn: 0, fail: 0 };
 function print(title: string, o: Outcome): void {
   tally[o.status]++;
   const mark = o.status === 'ok' ? sym.ok : o.status === 'warn' ? sym.warn : sym.fail;
-  out(`${mark} ${title}${o.detail ? c.dim(` — ${o.detail}`) : ''}`);
+  out(`${mark} ${title}${o.detail ? c.dim(` - ${o.detail}`) : ''}`);
   if (o.status !== 'ok' && o.fix) for (const f of Array.isArray(o.fix) ? o.fix : [o.fix]) out(`    ${c.dim('fix:')} ${f}`);
 }
 
@@ -110,6 +113,30 @@ async function main(): Promise<void> {
     return offline ? ok('not needed for the offline simulation') : fail('missing', 'Run `npm run setup`.');
   });
 
+  await check('Room id (SAID_ROOM_ID / config)', async () => {
+    const fromEnv = process.env.SAID_ROOM_ID?.trim();
+    const fromCfg = (config as SaidConfig | null)?.roomId;
+    if (offline) return ok(fromCfg ? `offline room ${fromCfg}` : 'offline simulation');
+    if (fromCfg) return ok('set in config.json (value not printed)');
+    if (fromEnv) return ok('set in .env (value not printed); run `npm run register` to write config');
+    return fail('missing', 'Set SAID_ROOM_ID in .env, then `npm run register`.');
+  });
+
+  await check('HTTP shared secret', async () => {
+    const secret = sharedSecretFromEnv();
+    const allowInsecure =
+      process.env.SAID_HTTP_ALLOW_INSECURE === '1' || process.env.SAID_HTTP_ALLOW_INSECURE === 'true';
+    if (secret) return ok('SAID_HTTP_SHARED_SECRET is set (value not printed)');
+    if (offline) return ok('not required for offline simulation');
+    if (allowInsecure) {
+      return warn('SAID_HTTP_ALLOW_INSECURE=1: live HTTP APIs have no shared secret', 'Run `npm run setup` to generate SAID_HTTP_SHARED_SECRET, then unset SAID_HTTP_ALLOW_INSECURE.');
+    }
+    return fail(
+      'live mode requires SAID_HTTP_SHARED_SECRET',
+      'Run `npm run setup` (generates one into .env) or set SAID_HTTP_ALLOW_INSECURE=1 for loopback-only console work.',
+    );
+  });
+
   await check('Secrets (secrets.json)', async () => {
     secrets = await loadSecrets();
     const mode = (await stat(paths.secrets)).mode & 0o777;
@@ -139,6 +166,32 @@ async function main(): Promise<void> {
   const cfg = config as SaidConfig | null;
   const sec = secrets as Secrets | null;
   const pub = publicKeys as PublicKeys | null;
+
+  // Local ports (busy is fine when services are already up; warn when unexpected listeners block a fresh start).
+  await check('Local service ports', async () => {
+    const wanted = [
+      ['console', ports.console],
+      ['notary', ports.notary],
+      ['builder', ports.builder],
+    ] as const;
+    const lines: string[] = [];
+    for (const [name, port] of wanted) {
+      const busy = await isPortBusy(port);
+      lines.push(`${name}:${port} ${busy ? 'in use' : 'free'}`);
+    }
+    return ok(lines.join(', '));
+  });
+
+  // Mattermost (optional bridge for live demos).
+  const mmUrl = (process.env.MATTERMOST_URL?.trim() || 'http://127.0.0.1:8065').replace(/\/+$/, '');
+  if (!offline) {
+    await check('Mattermost reachable', async () => {
+      const up = await isUp(`${mmUrl}/api/v4/system/ping`);
+      return up
+        ? ok(mmUrl)
+        : warn(`GET ${mmUrl}/api/v4/system/ping failed`, 'Needed only for the Mattermost bridge live demo; start the stack under SWITCH_LIVE_DIR or set MATTERMOST_URL.');
+    });
+  }
 
   // Switch.
   let switchUp = false;

@@ -1,7 +1,7 @@
 import { lstat, mkdir, symlink, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import { checkStartAuthorization, parseLedgerDocument, verifySignedLedger, verifyStartToken } from '@said/core';
-import type { CheckResult, StartToken, WorkerKind } from '@said/core';
+import type { CheckResult, Party, StartToken, WorkerKind } from '@said/core';
 import { inspectChanges } from './allowlist.js';
 import type { ExecCommand } from './exec.js';
 import { parsePorcelainZ } from './porcelain.js';
@@ -25,6 +25,8 @@ export interface RunJobInput {
   fixturePatch: string;
   notaryPublicKey: string;
   expectedRoomId: string;
+  /** Parties pinned at authorize time from the signed ledger. */
+  expectedParties: Party[];
   now: () => number;
   execCommand: ExecCommand;
   loadLedgerDocument: (documentId: string) => Promise<string>;
@@ -205,7 +207,7 @@ async function assertStillLocked(input: RunJobInput): Promise<void> {
     token: input.token,
     tokenVerified,
     expectedRoomId: input.expectedRoomId,
-    expectedParties: null,
+    expectedParties: input.expectedParties,
     now: input.now(),
   });
   if (!decision.ok) throw new JobFailed(decision.reason, 'applied');

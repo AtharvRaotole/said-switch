@@ -13,6 +13,7 @@ import {
   loadOrCreateKeyPair,
   paths,
   ports,
+  resolveServicePorts,
   repoRoot,
   saveConfig,
   saveEnrollment,
@@ -185,8 +186,19 @@ export async function startOfflineStack(opts: OfflineOptions = {}): Promise<Offl
     const prepared = await prepareClientRepo({ target: repo, template: paths.clientTemplate, dependencies: opts.dependencies, log });
     for (const note of prepared.notes) log(`note: ${note}`);
 
-    // 3. The simulator, in-process.
-    const mockPort = ports.mockSwitch;
+    // 3. Ports: prefer defaults; if the live stack (or anything else) holds them, pick free ones.
+    const resolved = await resolveServicePorts(process.env);
+    const portEnvName: Record<string, string> = {
+      console: 'CONSOLE_PORT',
+      notary: 'NOTARY_PORT',
+      builder: 'BUILDER_PORT',
+      mockSwitch: 'MOCK_SWITCH_PORT',
+      clientSite: 'CLIENT_SITE_PORT',
+    };
+    for (const [name, change] of Object.entries(resolved.replaced)) {
+      log(`port ${name}: ${change.from} busy → using ${change.to} (override with ${portEnvName[name] ?? name})`);
+    }
+    const mockPort = resolved.ports.mockSwitch;
     mock = await createMockSwitch({ port: mockPort, log: !opts.quiet });
     const mockUrl = mock.url;
 
@@ -244,12 +256,14 @@ export async function startOfflineStack(opts: OfflineOptions = {}): Promise<Offl
     const env: Record<string, string> = {
       SAID_HOME: home,
       SAID_WORK: work,
-      NOTARY_PORT: String(ports.notary),
-      BUILDER_PORT: String(ports.builder),
-      CONSOLE_PORT: String(ports.console),
-      CLIENT_SITE_PORT: String(ports.clientSite),
+      NOTARY_PORT: String(resolved.ports.notary),
+      BUILDER_PORT: String(resolved.ports.builder),
+      CONSOLE_PORT: String(resolved.ports.console),
+      CLIENT_SITE_PORT: String(resolved.ports.clientSite),
       MOCK_SWITCH_PORT: String(mockPort),
       SAID_WORKER: worker.worker,
+      // Offline simulation: no shared-secret gate (loopback mock).
+      SAID_HTTP_ALLOW_INSECURE: '1',
     };
     const tsx = (name: string, entry: string) =>
       startService({ name, command: process.execPath, args: ['--import', 'tsx', entry], cwd: repoRoot, env, logs: !opts.quiet });
@@ -259,8 +273,8 @@ export async function startOfflineStack(opts: OfflineOptions = {}): Promise<Offl
     const builder = tsx('builder', 'apps/builder/src/main.ts');
     services.push(builder);
 
-    const notaryUrl = `http://localhost:${ports.notary}`;
-    const builderUrl = `http://localhost:${ports.builder}`;
+    const notaryUrl = `http://localhost:${resolved.ports.notary}`;
+    const builderUrl = `http://localhost:${resolved.ports.builder}`;
     await waitForUp(`${notaryUrl}/health`, { aborted: diedReason(notary), timeoutMs: 60_000 });
     await waitForUp(`${builderUrl}/health`, { aborted: diedReason(builder), timeoutMs: 60_000 });
     await waitAgentLive(saidOps, saidReg.id, OFFLINE_ROOM_ID, diedReason(notary));
@@ -280,8 +294,8 @@ export async function startOfflineStack(opts: OfflineOptions = {}): Promise<Offl
       services.push(consoleSvc);
       const siteSvc = startService({ name: 'site', command: 'npm', args: ['run', 'dev'], cwd: repo, env, logs: !opts.quiet });
       services.push(siteSvc);
-      const consoleCandidate = `http://localhost:${ports.console}`;
-      const siteCandidate = `http://localhost:${ports.clientSite}`;
+      const consoleCandidate = `http://localhost:${resolved.ports.console}`;
+      const siteCandidate = `http://localhost:${resolved.ports.clientSite}`;
       await waitForUp(consoleCandidate, { aborted: diedReason(consoleSvc), timeoutMs: 90_000 }).then(
         () => (consoleUrl = consoleCandidate),
         (err: Error) => log(`${c.yellow('!')} Said Console did not start: ${err.message.split('\n')[0]}`),

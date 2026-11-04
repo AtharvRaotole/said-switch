@@ -216,11 +216,15 @@ export function createBuilder(opts: BuilderOptions): BuilderController {
       return;
     }
 
+    const allowSaidNameFallback =
+      process.env.SAID_ALLOW_SAID_NAME_FALLBACK === '1' ||
+      process.env.SAID_ALLOW_SAID_NAME_FALLBACK === 'true';
     const auth = await authorizeStart({
       senderId: message.senderId,
       senderName: message.senderName,
       saidAgentId: opts.config.said.agentId,
       saidAgentName: opts.config.said.name,
+      allowSaidNameFallback,
       body: message.body,
       notaryPublicKey: opts.notaryPublicKey,
       expectedRoomId: opts.config.roomId,
@@ -304,6 +308,7 @@ export function createBuilder(opts: BuilderOptions): BuilderController {
         fixturePatch: opts.fixturePatch,
         notaryPublicKey: opts.notaryPublicKey,
         expectedRoomId: opts.config.roomId,
+        expectedParties: auth.expectedParties,
         now,
         execCommand: exec,
         loadLedgerDocument: opts.loadLedgerDocument,

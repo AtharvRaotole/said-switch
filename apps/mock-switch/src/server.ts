@@ -1528,7 +1528,7 @@ function chatPage() {
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mock Switch — Offline Simulation</title>
+<title>Mock Switch - Offline Simulation</title>
 <style>
 :root{color-scheme:light;--ink:#18211d;--muted:#69736e;--line:#dce3df;--paper:#f7f9f8;--green:#126149;--pale:#e7f1ec}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 ui-sans-serif,system-ui,-apple-system,sans-serif}
@@ -1546,7 +1546,7 @@ main{max-width:960px;margin:auto;padding:24px 20px 180px}.empty{text-align:cente
 @media(max-width:650px){.composers{grid-template-columns:1fr}.composer textarea{height:38px}main{padding-bottom:270px}}
 </style></head>
 <body>
-<div class="banner">OFFLINE SIMULATION — mock Switch server, not the real product</div>
+<div class="banner">OFFLINE SIMULATION - mock Switch server, not the real product</div>
 <header><h1>Team chat</h1><span class="mock">SIMULATION</span><select id="room"></select></header>
 <main id="timeline"><div class="empty">No simulated messages yet.</div></main>
 <section class="composers" id="composers"></section>
@@ -1554,7 +1554,7 @@ main{max-width:960px;margin:auto;padding:24px 20px 180px}.empty{text-align:cente
 const rooms=${roomData};const roomSelect=document.querySelector('#room');const timeline=document.querySelector('#timeline');const composers=document.querySelector('#composers');
 for(const room of rooms){const option=document.createElement('option');option.value=room.id;option.textContent='# '+room.name;roomSelect.append(option)}
 function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function markdown(s){const fences=[];s=s.replace(/\`\`\`([^\\n]*)\\n?([\\s\\S]*?)\`\`\`/g,(_,lang,code)=>{fences.push('<details><summary>Code'+(lang?' — '+esc(lang):'')+'</summary><pre><code>'+esc(code)+'</code></pre></details>');return '@@FENCE'+(fences.length-1)+'@@'});s=esc(s).replace(/\\*\\*([^*]+)\\*\\*/g,'<strong>$1</strong>').replace(/\`([^\`]+)\`/g,'<code>$1</code>').replace(/\\n/g,'<br>');return s.replace(/@@FENCE(\\d+)@@/g,(_,n)=>fences[Number(n)])}
+function markdown(s){const fences=[];s=s.replace(/\`\`\`([^\\n]*)\\n?([\\s\\S]*?)\`\`\`/g,(_,lang,code)=>{fences.push('<details><summary>Code'+(lang?' - '+esc(lang):'')+'</summary><pre><code>'+esc(code)+'</code></pre></details>');return '@@FENCE'+(fences.length-1)+'@@'});s=esc(s).replace(/\\*\\*([^*]+)\\*\\*/g,'<strong>$1</strong>').replace(/\`([^\`]+)\`/g,'<code>$1</code>').replace(/\\n/g,'<br>');return s.replace(/@@FENCE(\\d+)@@/g,(_,n)=>fences[Number(n)])}
 function renderComposer(room){composers.innerHTML='';room.humans.forEach(name=>{const box=document.createElement('form');box.className='composer';box.innerHTML='<label>Post as '+esc(name)+'</label><textarea aria-label="Message as '+esc(name)+'" placeholder="Write a simulated message…"></textarea><button>Send</button>';box.onsubmit=async e=>{e.preventDefault();const input=box.querySelector('textarea');if(!input.value.trim())return;await fetch('/mock/say',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({as:name,body:input.value,room:room.id})});input.value=''};composers.append(box)})}
 async function render(){const room=roomSelect.value;const data=await fetch('/mock/messages?room='+encodeURIComponent(room)).then(r=>r.json());const messages=data.messages;if(!messages.length){timeline.innerHTML='<div class="empty">No simulated messages yet.</div>';return}const byId=new Map(messages.map(m=>[m.message_id,m]));timeline.innerHTML='';for(const m of messages){const el=document.createElement('article');el.className='message'+(m.thread_id?' reply':'');const initials=m.sender_name.split(/\\s+/).map(x=>x[0]).join('').slice(0,2);el.innerHTML='<div class="avatar">'+esc(initials)+'</div><div><div class="meta"><span class="name">'+esc(m.sender_name)+'</span>'+(m.sender_type==='agent'?'<span class="agent">AGENT</span>':'')+(m.switch_generated?'<span class="switch">SWITCH AUTO-REPLY</span>':'')+'<time class="time">'+new Date(m.timestamp).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})+'</time></div><div class="body">'+markdown(m.body)+'</div></div>';timeline.append(el)}}
 function roomChanged(){const room=rooms.find(r=>r.id===roomSelect.value);renderComposer(room);render()}

@@ -1,0 +1,12 @@
+{
+  "url": "http://127.0.0.1:7301/",
+  "fetchTime": "2026-11-04T04:06:26.862Z",
+  "lighthouseVersion": "12.8.2",
+  "scores": {
+    "performance": 94,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100
+  },
+  "formFactor": "mobile"
+}

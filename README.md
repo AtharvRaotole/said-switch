@@ -112,9 +112,9 @@ Full write-up: [docs/SECURITY.md](docs/SECURITY.md). Live operations notes: [doc
 Verify a signed ledger or agreement receipt offline:
 
 ```bash
-npx said verify path/to/ledger.md --public-key <base64>
+npm run verify -- path/to/ledger.md --public-key <base64>
 # or
-npm run verify -- path/to/ledger.md --public-key-file .said/said.pub
+npm run verify -- path/to/ledger.md --public-key-file .said/public-keys.json
 ```
 
 ## Live on real Switch
@@ -144,11 +144,11 @@ Measured on this tree (`release/submit`) after `npm ci`:
 | --- | --- |
 | `npm run lint` | 0 errors, 0 warnings |
 | `npm run typecheck` | clean across workspaces |
-| `npm test` (with coverage) | 25 files, 245 passed |
-| Statements / Branches / Functions / Lines | 92.84% / 80.78% / 95.21% / 96.17% |
+| `npm test` (with coverage) | 28 files, 258 passed |
+| Statements / Branches / Functions / Lines | 92.89% / 81.08% / 95.27% / 96.12% |
 | `@said/web` + `@said/console` production build | ok |
 | `npm run demo:offline -- --script` | story complete (AGR locked, JOB completed) |
-| Landing Lighthouse (web stream, production build) | Performance 94, Accessibility 100, Best Practices 100, SEO 100 |
+| Landing Lighthouse (web stream, production build) | Performance 94, Accessibility 100, Best Practices 100, SEO 100 (`docs/media/lighthouse/`) |
 
 ```bash
 npm test

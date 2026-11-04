@@ -1,5 +1,5 @@
 import { serve } from '@hono/node-server';
-import { createLogger, loadConfig, loadEnv, loadKeyPair, loadPublicKeys, loadSecrets, paths, ports } from '@said/runtime';
+import { createLogger, loadConfig, loadEnv, loadKeyPair, loadPublicKeys, loadSecrets, paths, ports, sharedSecretRequired } from '@said/runtime';
 import { SwitchConnection, SwitchOps } from '@said/switch-client';
 import { realpathSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
@@ -26,6 +26,11 @@ export async function main(): Promise<void> {
   const config = await loadConfig();
   if (config.mode === 'offline') {
     log.info('Offline simulation. The builder is talking to mock Switch, not a live Switch server.');
+  }
+  const secretGate = sharedSecretRequired({ mode: config.mode });
+  if (!secretGate.ok) throw new Error(secretGate.reason);
+  if (config.mode === 'live' && !secretGate.secret) {
+    log.warn('SAID_HTTP_ALLOW_INSECURE=1: live HTTP APIs are open on loopback (no shared secret).');
   }
   if (!config.builder) throw new Error('Builder agent is not configured. Run npm run register.');
   const secrets = await loadSecrets();
@@ -69,7 +74,7 @@ export async function main(): Promise<void> {
     log,
   });
 
-  const app = createBuilderServer(builder);
+  const app = createBuilderServer(builder, { sharedSecret: secretGate.secret });
   const server = serve({ fetch: app.fetch, port: ports.builder, hostname: '127.0.0.1' }, (info) => {
     log.info(`Listening on http://127.0.0.1:${info.port}`);
   });

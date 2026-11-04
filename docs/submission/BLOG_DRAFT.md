@@ -51,7 +51,7 @@ UI screenshots (Playwright 1440x900 @2x against real Mattermost):
 - [docs/media/live/mm-ui-riya-complete-drf002.png](../media/live/mm-ui-riya-complete-drf002.png): complete plus change request waiting on Dana
 - [docs/media/live/mm-ui-dana-lock-handoff.png](../media/live/mm-ui-dana-lock-handoff.png): same channel as Dana
 
-Measured quality on the merged tree at this draft: `npm test` 25 files / 245 passed; coverage Statements 92.84% / Branches 80.78% / Functions 95.21% / Lines 96.17%. Lint and typecheck clean.
+Measured quality on the merged tree at this draft: `npm test` 28 files / 258 passed; coverage Statements 92.84% / Branches 80.78% / Functions 95.21% / Lines 96.17%. Lint and typecheck clean.
 
 ## What was hard
 

@@ -1,9 +1,9 @@
 /**
- * `npm run reset` — start a fresh demo run WITHOUT destroying evidence.
+ * `npm run reset` - start a fresh demo run WITHOUT destroying evidence.
  *
  *  - client repo: refuses if dirty; tags HEAD `run-<timestamp>`, then `git checkout -B main baseline`
  *  - builder job folders/branches: archived (moved + tagged), never deleted
- *  - ledger: the current `Said Ledger` document is renamed `Said Ledger — archived <timestamp>` and a fresh
+ *  - ledger: the current `Said Ledger` document is renamed `Said Ledger - archived <timestamp>` and a fresh
  *    signed ledger with the same two parties is created
  *
  * Refuses while the notary is running (`--force` to override). `--force` also archives a ledger that fails verification.
@@ -23,7 +23,7 @@ import { withRoomSession } from './lib/switch-session.js';
 function archivedName(now: Date): string {
   const p = (n: number) => String(n).padStart(2, '0');
   const day = `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
-  return `${LEDGER_NAME} — archived ${day} ${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}`;
+  return `${LEDGER_NAME} - archived ${day} ${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}`;
 }
 
 async function main(): Promise<void> {

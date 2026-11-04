@@ -19,6 +19,8 @@ const fileSchema = z.object({
   revision: z.number().nullable(),
   digest: z.string().nullable(),
   bindings: z.array(bindingSchema).default([]),
+  /** Bad enrollment code attempts by senderId. Survives notary restarts. */
+  enrollFails: z.record(z.string(), z.number().int().nonnegative()).default({}),
 });
 
 export type Binding = z.infer<typeof bindingSchema>;
@@ -34,6 +36,14 @@ function fresh(prev: Record<string, unknown> | null): NotaryFileState {
     revision: typeof prev?.revision === 'number' ? prev.revision : null,
     digest: typeof prev?.digest === 'string' ? prev.digest : null,
     bindings: bindings.success ? bindings.data : [],
+    enrollFails:
+      prev?.enrollFails && typeof prev.enrollFails === 'object' && !Array.isArray(prev.enrollFails)
+        ? Object.fromEntries(
+            Object.entries(prev.enrollFails as Record<string, unknown>).filter(
+              (e): e is [string, number] => typeof e[1] === 'number' && e[1] >= 0,
+            ),
+          )
+        : {},
   };
 }
 
@@ -62,6 +72,7 @@ export class NotaryStateStore implements CursorStore {
     return {
       ...this.current,
       bindings: this.current.bindings.map((b) => ({ ...b })),
+      enrollFails: { ...this.current.enrollFails },
     };
   }
 

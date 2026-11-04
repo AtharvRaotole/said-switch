@@ -1,8 +1,9 @@
 /**
- * `npm run setup` — idempotent first-time preparation:
+ * `npm run setup` - idempotent first-time preparation:
  *   Node check, .env, signing keys + pinned public keys, and the client repo (baseline tag).
  */
-import { copyFile } from 'node:fs/promises';
+import { randomBytes } from 'node:crypto';
+import { copyFile, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import {
@@ -17,6 +18,29 @@ import { prepareClientRepo } from './lib/client-repo.js';
 import { MIN_NODE_LABEL, nodeVersionOk } from './lib/node-version.js';
 import { box, c, die, errorMessage, info, ok, out, step, warn } from './lib/output.js';
 
+
+/** Ensure SAID_HTTP_SHARED_SECRET is set in .env (generate if blank/missing). Never prints the value. */
+async function ensureSharedSecret(envFile: string): Promise<void> {
+  const raw = await readFile(envFile, 'utf8');
+  const match = /^SAID_HTTP_SHARED_SECRET=(.*)$/m.exec(raw);
+  const current = match ? match[1].trim().replace(/^["']|["']$/g, '') : '';
+  if (current) {
+    ok('SAID_HTTP_SHARED_SECRET is set in .env (value not printed)');
+    return;
+  }
+  const secret = randomBytes(24).toString('base64url');
+  let next: string;
+  if (match) {
+    next = raw.replace(/^SAID_HTTP_SHARED_SECRET=.*$/m, `SAID_HTTP_SHARED_SECRET=${secret}`);
+  } else if (raw.length === 0 || raw.endsWith('\n')) {
+    next = `${raw}SAID_HTTP_SHARED_SECRET=${secret}\n`;
+  } else {
+    next = `${raw}\nSAID_HTTP_SHARED_SECRET=${secret}\n`;
+  }
+  await writeFile(envFile, next, 'utf8');
+  ok('Generated SAID_HTTP_SHARED_SECRET into .env (live mode requires it; set SAID_HTTP_ALLOW_INSECURE=1 to opt out on loopback)');
+}
+
 async function main(): Promise<void> {
   step('Said setup');
 
@@ -27,11 +51,12 @@ async function main(): Promise<void> {
 
   const envFile = join(repoRoot, '.env');
   if (existsSync(envFile)) {
-    ok('.env already exists (left untouched)');
+    ok('.env already exists');
   } else {
     await copyFile(join(repoRoot, '.env.example'), envFile);
-    ok('.env created from .env.example — fill in SWITCH_URL, SWITCH_REGISTRATION_KEY and SAID_ROOM_ID before `npm run register`');
+    ok('.env created from .env.example - fill in SWITCH_URL, SWITCH_REGISTRATION_KEY and SAID_ROOM_ID before `npm run register`');
   }
+  await ensureSharedSecret(envFile);
   loadEnv();
 
   const personal = process.env.SAID_MODE === 'personal';

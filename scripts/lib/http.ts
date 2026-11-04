@@ -1,7 +1,15 @@
 /** Tiny HTTP helpers for talking to Said's own local services (`/health`, `/api/*`). */
 
+function saidAuthHeaders(): Record<string, string> {
+  const secret = process.env.SAID_HTTP_SHARED_SECRET?.trim();
+  return secret ? { authorization: `Bearer ${secret}` } : {};
+}
+
 export async function fetchJson<T = unknown>(url: string, timeoutMs = 3000): Promise<T> {
-  const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+  const res = await fetch(url, {
+    headers: saidAuthHeaders(),
+    signal: AbortSignal.timeout(timeoutMs),
+  });
   if (!res.ok) throw new Error(`GET ${url} answered ${res.status}`);
   return (await res.json()) as T;
 }

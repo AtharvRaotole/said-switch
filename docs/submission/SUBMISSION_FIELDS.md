@@ -12,7 +12,7 @@ Bilateral consent notary for Switch rooms: work starts only when both people acc
 
 ## Description
 
-Said is a notary agent for Switch. It keeps a signed consent ledger in the room, turns casual scope into versioned drafts with terms, and locks an agreement only after both the developer and the client accept the same version. The builder agent refuses ordinary chat as permission and starts only from a Said-signed start token, then returns a signed receipt. Humans can stay in Mattermost via the Switch bridge. Room timestamps render in a configured timezone (default America/New_York); the signed ledger and receipts keep exact UTC. Live demo on Switch 0.31.0 completed JOB-AGR-001-1 (commit 5dfc874) with typecheck and build passing. Quality on the submit branch: 245 tests across 25 files; coverage 92.84% statements, 80.78% branches, 95.21% functions, 96.17% lines.
+Said is a notary agent for Switch. It keeps a signed consent ledger in the room, turns casual scope into versioned drafts with terms, and locks an agreement only after both the developer and the client accept the same version. The builder agent refuses ordinary chat as permission and starts only from a Said-signed start token, then returns a signed receipt. Humans can stay in Mattermost via the Switch bridge. Room timestamps render in a configured timezone (default America/New_York); the signed ledger and receipts keep exact UTC. Live demo on Switch 0.31.0 completed JOB-AGR-001-1 (commit 5dfc874) with typecheck and build passing. Quality on the submit branch: 258 passed tests across 28 files; coverage 92.89% statements, 81.08% branches, 95.27% functions, 96.12% lines.
 
 ## How Switch is used
 

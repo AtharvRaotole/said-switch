@@ -106,7 +106,7 @@ export function renderAgreementReceiptMarkdown(receipt: AgreementReceipt): strin
   const lines = [
     '# Said Agreement Receipt',
     '',
-    'Signed bilateral acceptance record. Anyone can verify the fenced JSON with `npx said verify`.',
+    'Signed bilateral acceptance record. Anyone can verify the fenced JSON with `npm run verify -- <file> --public-key-file .said/public-keys.json`.',
     '',
     `- Agreement: **${receipt.agreementId}** (${receipt.draftId} v${receipt.version})`,
     `- Scope: ${inline(receipt.scope)}`,

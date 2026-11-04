@@ -45,7 +45,7 @@ import {
   loadSecrets,
   ports,
   requestHasSharedSecret,
-  sharedSecretFromEnv,
+  sharedSecretRequired,
   type Enrollment,
   type Logger,
   type PublicKeys,
@@ -186,6 +186,11 @@ export async function startNotary(opts: StartNotaryOptions = {}): Promise<Notary
   const log = opts.log ?? createLogger('notary');
   setDisplayTimeZone(process.env.SAID_TIMEZONE);
   const config = await loadConfig();
+  const secretGate = sharedSecretRequired({ mode: config.mode });
+  if (!secretGate.ok) throw new Error(secretGate.reason);
+  if (config.mode === 'live' && !secretGate.secret) {
+    log.warn('SAID_HTTP_ALLOW_INSECURE=1: live HTTP APIs are open on loopback (no shared secret).');
+  }
   const secrets = await loadSecrets();
   const publicKeys = await loadPublicKeys();
   const key = await loadOrCreateKeyPair('notary');
@@ -245,7 +250,7 @@ class NotaryApp {
   private docId: string | null;
   private halted: { reason: string } | null = null;
   private enrollmentLogged = false;
-  private readonly enrollFails = new Map<string, number>();
+  private enrollFails = new Map<string, number>();
 
   constructor(input: {
     config: SaidConfig;
@@ -264,6 +269,8 @@ class NotaryApp {
     this.store = input.store;
     this.log = input.log;
     this.port = input.port;
+    const savedFails = input.store.snapshot().enrollFails ?? {};
+    this.enrollFails = new Map(Object.entries(savedFails).filter(([, n]) => typeof n === 'number' && n > 0));
     this.roomName = input.config.roomName ?? 'Unnamed room';
     this.docId = input.store.snapshot().ledgerDocumentId;
     this.agentIds = new Set([input.config.said.agentId]);
@@ -334,7 +341,7 @@ class NotaryApp {
     this.log.info(`Notary API listening on ${this.url} (${where})`);
   }
 
-  /** Local console API. Binds 127.0.0.1. Optional SAID_HTTP_SHARED_SECRET gates non-health routes. */
+  /** Local console API. Binds 127.0.0.1. Live mode requires SAID_HTTP_SHARED_SECRET unless SAID_HTTP_ALLOW_INSECURE=1. */
   private http(): Hono {
     const allowed = new Set([
       'http://localhost:7400',
@@ -345,7 +352,9 @@ class NotaryApp {
       `http://127.0.0.1:${ports.console}`,
     ]);
     const app = new Hono();
-    const sharedSecret = sharedSecretFromEnv();
+    const required = sharedSecretRequired({ mode: this.config.mode });
+    if (!required.ok) throw new Error(required.reason);
+    const sharedSecret = required.secret;
     app.use(
       '*',
       cors({
@@ -356,7 +365,7 @@ class NotaryApp {
       if (!sharedSecret) return next();
       if (c.req.method === 'OPTIONS') return next();
       if (c.req.path === '/health') return next();
-      if (requestHasSharedSecret(c.req.raw.headers, sharedSecret)) return next();
+      if (requestHasSharedSecret(c.req.raw.headers, sharedSecret, c.req.url)) return next();
       return c.json({ error: 'unauthorized', reason: 'Missing or invalid shared secret' }, 401);
     });
     app.get('/health', (c) => {
@@ -699,11 +708,11 @@ class NotaryApp {
     let bindings = this.store.snapshot().bindings.filter((b) => enrollment.codes.some((c) => c.role === b.role && c.code === b.code));
     const entry = enrollment.codes.find((c) => c.code === intent.code);
     if (!entry || !allowed.has(entry.role)) {
-      this.enrollFails.set(inbound.senderId, fails + 1);
+      await this.recordEnrollFail(inbound.senderId, fails + 1);
       await this.reply(badCode(), inbound.threadId);
       return;
     }
-    this.enrollFails.delete(inbound.senderId);
+    await this.recordEnrollFail(inbound.senderId, 0);
     const sameRole = bindings.find((b) => b.role === entry.role);
     if (sameRole && sameRole.senderId === inbound.senderId) {
       const other = enrollment.codes.find((c) => c.role !== entry.role);
@@ -735,7 +744,15 @@ class NotaryApp {
    * A failed lookup does not count as a person: an agent that joined after
    * connect must not be able to spend a code while the roster is stale.
    */
-  private async rosterKind(senderId: string, senderName: string): Promise<'agent' | 'person' | 'unknown'> {
+  private async recordEnrollFail(senderId: string, count: number): Promise<void> {
+    if (count <= 0) this.enrollFails.delete(senderId);
+    else this.enrollFails.set(senderId, count);
+    const enrollFails: Record<string, number> = {};
+    for (const [id, n] of this.enrollFails) enrollFails[id] = n;
+    await this.store.update({ enrollFails });
+  }
+
+    private async rosterKind(senderId: string, senderName: string): Promise<'agent' | 'person' | 'unknown'> {
     if (this.agentIds.has(senderId) || this.agentNames.has(senderName.trim().toLowerCase())) return 'agent';
     try {
       const room = await this.ops.connectToRoom(this.config.roomId);

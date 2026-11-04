@@ -33,9 +33,9 @@ npm test -- scripts/test/offline-e2e.test.ts
 Anyone can check a exported ledger or agreement receipt offline:
 
 ```bash
-npx said verify path/to/ledger.md --public-key <base64>
+npm run verify -- path/to/ledger.md --public-key <base64>
 # or
-npm run verify -- verify path/to/receipt.md --public-key-file ./notary.pub
+npm run verify -- path/to/receipt.md --public-key-file .said/public-keys.json
 ```
 
 ## Live Switch
@@ -44,13 +44,19 @@ See `docs/LIVE_RUN.md` and `docs/SETUP_LIVE.md`. Switch binds agent protocol at 
 
 ## Optional HTTP shared secret
 
-Set `SAID_HTTP_SHARED_SECRET` so notary/builder reject non-health HTTP without `Authorization: Bearer …` or `X-Said-Shared-Secret`. They still bind `127.0.0.1` only.
+Live mode requires `SAID_HTTP_SHARED_SECRET` (`npm run setup` generates one into `.env` when blank). Notary/builder reject non-health HTTP without `Authorization: Bearer …`, `X-Said-Shared-Secret`, or `?said_shared_secret=` (for EventSource). Opt out on loopback with `SAID_HTTP_ALLOW_INSECURE=1`. They still bind `127.0.0.1` only.
+
+Mattermost bridge: set `SAID_ALLOW_SAID_NAME_FALLBACK=1` so the builder accepts Said messages whose `sender` is a Matrix actor id but whose display name matches the Said agent. Prefer the agent UUID whenever Switch provides it.
+
+`npm run demo:offline` auto-picks free ports when the live stack holds 7410/7420 (override with `NOTARY_PORT`, `BUILDER_PORT`, `CONSOLE_PORT`, `MOCK_SWITCH_PORT`, `CLIENT_SITE_PORT`).
+
+`npm run doctor` is the one-command preflight (ports, Switch, Mattermost, keys present without printing values, registration, room id, shared secret presence).
 
 ## Standout core features
 
 - Hash-chained audit log (`prevHash` / `hash`) verified on every ledger signature check
 - Change-request / amend flow (`Amend AGR-001: …`) requiring both signatures again
-- Signed agreement receipt export (`GET /api/receipt` on notary; `npx said verify`)
+- Signed agreement receipt export (`GET /api/receipt` on notary; `npm run verify`)
 - Dispute quote via existing evidence intents against the ledger
 
 
@@ -65,3 +71,11 @@ Commands: `npm run lint`, `npm run typecheck`, `npm run test:coverage`, `npm run
 - Build: notary/builder/console/web and packages succeed
 
 CI template: `docs/ci.workflow.yml`. Copy to `.github/workflows/ci.yml` on GitHub (Settings need the `workflow` scope; the overnight OAuth push cannot create workflow files). It runs install, lint, typecheck, test:coverage, build.
+
+## npm audit (tooling)
+
+`npm audit --omit=dev` reports 0 vulnerabilities in production dependencies.
+
+`npm audit` reports moderate findings in eslint / minimatch / typescript-eslint (dev tooling only).
+`npm audit fix --force` would downgrade eslint to v4 and break the toolchain, so it is not applied.
+Track upstream eslint 9 + typescript-eslint releases; re-run `npm audit` before each submit cut.

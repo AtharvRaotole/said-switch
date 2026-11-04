@@ -8,7 +8,7 @@ Built Said on Switch: a bilateral consent notary so `@builder` cannot start from
 
 Drafts, dual accept, locked agreement, signed `said-start` token, receipt on the ledger.
 
-Live Mattermost bridge on Switch 0.31.0. Room clocks in ET; signed ledger stays UTC. 245 tests, about 93% statement coverage.
+Live Mattermost bridge on Switch 0.31.0. Room clocks in ET; signed ledger stays UTC. 258 passed tests, about 93% statement coverage.
 
 Repo: https://github.com/AtharvRaotole/said-switch
 
@@ -30,7 +30,7 @@ Shipping agents into client chats without a consent gate is how scope creep beco
 
 Said is my Flip the Switch entry: a bilateral notary inside a Switch room (Mattermost-bridged). Work starts only when developer and client accept the same draft. The builder verifies a signed start token from Said, runs, and posts a signed receipt back to the ledger document only Said can write.
 
-Live evidence on Switch 0.31.0: dual lock, ET room timestamps, fenced start token, completed JOB-AGR-001-1 (commit `5dfc874`, typecheck + build). Tests: 25 files, 245 passed. Coverage: 92.84% / 80.78% / 95.21% / 96.17% (stmts / branches / funcs / lines).
+Live evidence on Switch 0.31.0: dual lock, ET room timestamps, fenced start token, completed JOB-AGR-001-1 (commit `5dfc874`, typecheck + build). Tests: 28 files, 258 passed. Coverage: 92.89% / 81.08% / 95.27% / 96.12% (stmts / branches / funcs / lines).
 
 #HowISwitch
 

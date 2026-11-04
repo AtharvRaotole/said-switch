@@ -537,26 +537,24 @@ describe('allowlist path escapes', () => {
 
 
 describe('builder HTTP shared secret', () => {
-  it('rejects API routes without the secret when SAID_HTTP_SHARED_SECRET is set', async () => {
-    const prev = process.env.SAID_HTTP_SHARED_SECRET;
-    process.env.SAID_HTTP_SHARED_SECRET = 'test-secret';
-    try {
-      const app = createBuilderServer({
+  it('rejects API routes without the secret when one is configured', async () => {
+    const app = createBuilderServer(
+      {
         listJobs: () => [],
         recentLogs: () => [],
         subscribe: () => () => undefined,
-      });
-      const denied = await app.request('http://127.0.0.1/api/jobs');
-      expect(denied.status).toBe(401);
-      const health = await app.request('http://127.0.0.1/health');
-      expect(health.status).toBe(200);
-      const ok = await app.request('http://127.0.0.1/api/jobs', {
-        headers: { authorization: 'Bearer test-secret' },
-      });
-      expect(ok.status).toBe(200);
-    } finally {
-      if (prev === undefined) delete process.env.SAID_HTTP_SHARED_SECRET;
-      else process.env.SAID_HTTP_SHARED_SECRET = prev;
-    }
+      },
+      { sharedSecret: 'test-secret' },
+    );
+    const denied = await app.request('http://127.0.0.1/api/jobs');
+    expect(denied.status).toBe(401);
+    const health = await app.request('http://127.0.0.1/health');
+    expect(health.status).toBe(200);
+    const ok = await app.request('http://127.0.0.1/api/jobs', {
+      headers: { authorization: 'Bearer test-secret' },
+    });
+    expect(ok.status).toBe(200);
+    const viaQuery = await app.request('http://127.0.0.1/api/jobs?said_shared_secret=test-secret');
+    expect(viaQuery.status).toBe(200);
   });
 });

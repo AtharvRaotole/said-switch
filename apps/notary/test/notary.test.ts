@@ -464,5 +464,10 @@ describe('notary on mock Switch', () => {
     const state = await getState(notary.url);
     expect(state.signedLedger).toBeNull();
     expect(state.enrollment?.roles.every((role) => role.bound === false)).toBe(true);
+
+    const onDisk = JSON.parse(await readFile(join(env.home, 'notary-state.json'), 'utf8')) as {
+      enrollFails?: Record<string, number>;
+    };
+    expect(onDisk.enrollFails?.[RIYA]).toBeGreaterThanOrEqual(8);
   });
 });
