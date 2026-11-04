@@ -19,10 +19,13 @@ export function claudeArgs(prompt: string): string[] {
 
 /** Argv for `codex`. `-C` is the worktree. */
 export function codexArgs(worktree: string, prompt: string): string[] {
+  // Unattended: workspace-write + never ask (Codex non-interactive docs).
   return [
     'exec',
     '--sandbox',
     'workspace-write',
+    '--ask-for-approval',
+    'never',
     '--json',
     '--ephemeral',
     '--skip-git-repo-check',

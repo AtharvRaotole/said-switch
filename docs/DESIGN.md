@@ -154,8 +154,8 @@ Signature covers `canonicalJson` of the token without `signature`. Builder → S
 2. `git worktree add work/jobs/<jobId> -b said/<jobId> <baseCommit>` in `work/client-site` (its own repo). Symlink `node_modules` from the base checkout.
 3. Worker prompt contains only: agreement id, scope, terms, allowed paths, acceptance checklist (for dark mode: accessible toggle, keyboard operable, persists choice in localStorage, covers hero/pricing/footer/background, readable contrast, focus rings visible).
 4. Worker adapters:
-   - `claude`: `claude -p <prompt> --output-format stream-json --verbose --allowedTools Read,Edit,Write,Glob,Grep --disallowedTools Bash,WebFetch,WebSearch --permission-mode acceptEdits --max-turns 40`, cwd = worktree.
-   - `codex`: `codex exec --sandbox workspace-write --json --skip-git-repo-check -C <worktree> <prompt>`.
+   - `claude`: `claude -p <prompt> --restricted --tools Read,Edit,Write,Glob,Grep --permission-mode acceptEdits --permission-prompts none --output-format stream-json --verbose --no-session-persistence`, cwd = worktree.
+   - `codex`: `codex exec --sandbox workspace-write --ask-for-approval never --json --ephemeral --skip-git-repo-check --color never -C <worktree> <prompt>`.
    - `scripted` (tests and offline CI only, labeled "scripted worker (no AI)"): applies a fixture patch.
 5. Validate: `git status --porcelain` paths ⊆ allowlist (`src/**/*.tsx`, `src/**/*.ts`, `src/**/*.css`, `index.html`), no symlinks, no binary files, no package/config changes.
 6. Checks in worktree: `npm run typecheck`, `npm run build`. Record each with duration and output tail.

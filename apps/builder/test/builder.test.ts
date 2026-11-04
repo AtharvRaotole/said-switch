@@ -243,6 +243,8 @@ describe('worker commands', () => {
       'exec',
       '--sandbox',
       'workspace-write',
+      '--ask-for-approval',
+      'never',
       '--json',
       '--ephemeral',
       '--skip-git-repo-check',
@@ -253,6 +255,53 @@ describe('worker commands', () => {
       'PROMPT',
     ]);
     expect(scriptedApplyArgs('/tmp/dark-mode.patch')).toEqual(['apply', '/tmp/dark-mode.patch']);
+  });
+
+  it('runs Claude Code / Codex through the injected exec (mocked binary)', async () => {
+    const calls: Array<{ cmd: string; args: string[]; cwd: string }> = [];
+    const log: string[] = [];
+    const exec = async (cmd: string, args: string[], cwd: string) => {
+      calls.push({ cmd, args, cwd });
+      return { code: 0, output: 'ok' };
+    };
+
+    await runConfiguredWorker({
+      worker: 'claude',
+      worktree: '/wt',
+      prompt: 'PROMPT',
+      fixturePatch: '/patch',
+      execCommand: exec,
+      log: (_s, line) => log.push(line),
+    });
+    expect(calls).toEqual([{ cmd: 'claude', args: claudeArgs('PROMPT'), cwd: '/wt' }]);
+    expect(log.some((l) => l.startsWith('claude -p'))).toBe(true);
+
+    calls.length = 0;
+    await runConfiguredWorker({
+      worker: 'codex',
+      worktree: '/wt',
+      prompt: 'PROMPT',
+      fixturePatch: '/patch',
+      execCommand: exec,
+      log: () => {},
+    });
+    expect(calls).toEqual([{ cmd: 'codex', args: codexArgs('/wt', 'PROMPT'), cwd: '/wt' }]);
+  });
+
+  it('surfaces a missing Claude / Codex binary as JobFailed', async () => {
+    const missing = async () => {
+      throw Object.assign(new Error('spawn claude ENOENT'), { code: 'ENOENT' });
+    };
+    await expect(
+      runConfiguredWorker({
+        worker: 'claude',
+        worktree: '/wt',
+        prompt: 'p',
+        fixturePatch: '/p',
+        execCommand: missing,
+        log: () => {},
+      }),
+    ).rejects.toMatchObject({ name: 'JobFailed', step: 'worker' });
   });
 });
 
