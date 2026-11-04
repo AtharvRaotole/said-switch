@@ -36,8 +36,15 @@ export type HeroBeat =
   | { kind: 'loop'; ms: number };
 
 export const HERO_ROOM = 'larkspur-site';
+export const HERO_DRAFT = 'DRF-001';
+export const HERO_AGREEMENT = 'AGR-001';
+export const HERO_TERMS = '+2 days, +$400';
+export const HERO_SCOPE = 'Add dark mode to the marketing site';
 export const HERO_REVISION_LOCKED = 7;
 export const HERO_HASH_LOCKED = 'a8f3c1e2';
+/** Sealed-at for the signed citation: final accept / lock moment, America/New_York. */
+export const HERO_SEALED_AT = '4 Nov 2026 15:39:31 ET';
+export const HERO_ZONE = 'ET';
 
 export const HERO_IDLE_TERMINAL: { text: string; tone: 'idle' | 'dim' }[] = [
   { text: 'builder idle · waiting for a signed start', tone: 'idle' },
@@ -57,20 +64,20 @@ export const HERO_SCRIPT: HeroBeat[] = [
   {
     kind: 'msg',
     speaker: 'Said',
-    body: 'Logged as DRF-001. Scope: Add dark mode to the marketing site. Riya, set the time and price. Nothing has started.',
+    body: `Logged as ${HERO_DRAFT}. Scope: ${HERO_SCOPE}. Riya, set the time and price. Nothing has started.`,
     ms: 1400,
     time: '15:38:09',
   },
   {
     kind: 'ledger',
     patch: {
-      draft: 'DRF-001',
+      draft: HERO_DRAFT,
       version: 1,
       accepts: 0,
       need: 2,
       revision: 3,
       hash: '4b91d0aa',
-      scope: 'Add dark mode',
+      scope: 'Add dark mode',  // short ledger label; full scope is HERO_SCOPE
       terms: 'pending',
     },
     ms: 200,
@@ -79,7 +86,7 @@ export const HERO_SCRIPT: HeroBeat[] = [
   {
     kind: 'msg',
     speaker: 'Riya',
-    body: 'Terms DRF-001: +2 days, +$400',
+    body: `Terms ${HERO_DRAFT}: ${HERO_TERMS}`,
     ms: 850,
     time: '15:38:21',
   },
@@ -87,13 +94,13 @@ export const HERO_SCRIPT: HeroBeat[] = [
   {
     kind: 'msg',
     speaker: 'Said',
-    body: 'Terms set on DRF-001 v1. Waiting for both of you to accept the same version.',
+    body: `Terms set on ${HERO_DRAFT} v1. Waiting for both of you to accept the same version.`,
     ms: 1200,
     time: '15:38:27',
   },
   {
     kind: 'ledger',
-    patch: { terms: '+2 days, +$400', revision: 4, hash: '6e2c91f0' },
+    patch: { terms: HERO_TERMS, revision: 4, hash: '6e2c91f0' },
     ms: 180,
   },
   { kind: 'typing', speaker: 'Dana', ms: 480 },
@@ -134,7 +141,7 @@ export const HERO_SCRIPT: HeroBeat[] = [
   {
     kind: 'msg',
     speaker: 'Said',
-    body: 'Caught that. Logged as a refusal. The builder did not start. Still waiting on both accepts for DRF-001.',
+    body: `Caught that. Logged as a refusal. The builder did not start. Still waiting on both accepts for ${HERO_DRAFT}.`,
     ms: 1300,
     time: '15:38:50',
   },
@@ -142,7 +149,7 @@ export const HERO_SCRIPT: HeroBeat[] = [
   {
     kind: 'msg',
     speaker: 'Riya',
-    body: 'Accept DRF-001 v1',
+    body: `Accept ${HERO_DRAFT} v1`,
     ms: 750,
     time: '15:39:08',
   },
@@ -163,7 +170,7 @@ export const HERO_SCRIPT: HeroBeat[] = [
   {
     kind: 'msg',
     speaker: 'Dana',
-    body: 'Accept DRF-001 v1',
+    body: `Accept ${HERO_DRAFT} v1`,
     ms: 750,
     time: '15:39:26',
   },
@@ -171,7 +178,7 @@ export const HERO_SCRIPT: HeroBeat[] = [
     kind: 'ledger',
     patch: {
       accepts: 2,
-      agreement: 'AGR-001',
+      agreement: HERO_AGREEMENT,
       revision: HERO_REVISION_LOCKED,
       hash: HERO_HASH_LOCKED,
       sealed: true,
@@ -183,13 +190,13 @@ export const HERO_SCRIPT: HeroBeat[] = [
   {
     kind: 'msg',
     speaker: 'Said',
-    body: 'Both accepted. Locked as AGR-001. Handing a signed start to @builder.',
+    body: `Both accepted. Locked as ${HERO_AGREEMENT}. Handing a signed start to @builder.`,
     ms: 1200,
     tone: 'lock',
     time: '15:39:31',
   },
   { kind: 'term-status', status: 'running', ms: 180 },
-  { kind: 'terminal-line', text: '$ said-builder verify AGR-001', ms: 320, tone: 'cmd' },
+  { kind: 'terminal-line', text: `$ said-builder verify ${HERO_AGREEMENT}`, ms: 320, tone: 'cmd' },
   {
     kind: 'terminal-line',
     text: 'ledger ok  signature ok  both ids distinct  terms match',
@@ -198,7 +205,7 @@ export const HERO_SCRIPT: HeroBeat[] = [
   },
   {
     kind: 'terminal-line',
-    text: '$ claude -p "Add dark mode per AGR-001 (+2 days, +$400)"',
+    text: `$ claude -p "Add dark mode per ${HERO_AGREEMENT} (${HERO_TERMS})"`,
     ms: 380,
     tone: 'cmd',
   },
@@ -232,13 +239,13 @@ export const HERO_SCRIPT: HeroBeat[] = [
   {
     kind: 'msg',
     speaker: 'Said',
-    body: 'Scope: Add dark mode to the marketing site. Terms: +2 days, +$400. Accepted by Riya and Dana. That is what both of you signed.',
+    body: `Scope: ${HERO_SCOPE}. Terms: ${HERO_TERMS}. Accepted by Riya and Dana. That is what both of you signed.`,
     ms: 2600,
     tone: 'quote',
     time: '15:41:24',
     cite: {
       revision: HERO_REVISION_LOCKED,
-      at: '4 Nov 2026 10:41:22 ET',
+      at: HERO_SEALED_AT,
       hash: HERO_HASH_LOCKED,
       valid: true,
     },

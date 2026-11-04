@@ -1,11 +1,13 @@
 import { Seal } from '@said/brand';
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
+  HERO_AGREEMENT,
   HERO_HASH_LOCKED,
   HERO_IDLE_TERMINAL,
   HERO_REVISION_LOCKED,
   HERO_ROOM,
   HERO_SCRIPT,
+  HERO_ZONE,
   type HeroBeat,
   type HeroSpeaker,
   type HeroTone,
@@ -129,7 +131,7 @@ function finalSnapshot(): {
       termStatus = 'idle';
       terminal = [
         ...HERO_IDLE_TERMINAL.map((l, idx) => ({ id: `fs-${idx}`, text: l.text, tone: l.tone })),
-        { id: `fs-ready`, text: 'AGR-001 sealed · signed start pending', tone: 'ok' as const },
+        { id: `fs-ready`, text: `${HERO_AGREEMENT} sealed · signed start pending`, tone: 'ok' as const },
       ];
     } else if (beat.kind === 'ledger') {
       ledger = mergeLedger(ledger, beat.patch);
@@ -245,7 +247,7 @@ export function ChatHero() {
               ...base,
               {
                 id: `${runId}-seal-ready`,
-                text: 'AGR-001 sealed · signed start pending',
+                text: `${HERO_AGREEMENT} sealed · signed start pending`,
                 tone: 'ok' as const,
               },
             ];
@@ -253,7 +255,7 @@ export function ChatHero() {
           setLedger((cur) =>
             mergeLedger(cur, {
               sealed: true,
-              agreement: cur.agreement ?? 'AGR-001',
+              agreement: cur.agreement ?? HERO_AGREEMENT,
               accepts: cur.need,
               revision: HERO_REVISION_LOCKED,
               hash: HERO_HASH_LOCKED,
@@ -377,7 +379,7 @@ export function ChatHero() {
           {sealOn ? (
             <>
               <Seal mood="locked" size={72} label="Both people agreed. The seal is locked." />
-              <p>AGR-001 sealed</p>
+              <p>{HERO_AGREEMENT} sealed</p>
             </>
           ) : (
             <div className="chat-hero-seal-slot">
@@ -411,8 +413,8 @@ export function ChatHero() {
                   </span>
                   <span className="chat-hero-who">{roleLabel(m.speaker)}</span>
                   {m.time && (
-                    <time className="chat-hero-time" dateTime={`2026-11-04T${m.time}Z`}>
-                      {m.time}
+                    <time className="chat-hero-time" dateTime={`2026-11-04T${m.time}-05:00`}>
+                      {m.time} {HERO_ZONE}
                     </time>
                   )}
                   {m.tone === 'refuse' && <span className="chat-hero-badge refuse">refused</span>}

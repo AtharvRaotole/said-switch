@@ -105,10 +105,19 @@ export function App() {
                 </div>
               </div>
               <div className="mini-room-foot">
-                <div className="mini-ledger">
-                  <span>Accepts 1/2</span>
-                  <span>Rev 5</span>
-                  <span>unlocked</span>
+                <div className="mini-ledger" aria-label="Room ledger snapshot">
+                  <span className="mini-chip">
+                    <em>Accepts</em>
+                    <strong>0/2</strong>
+                  </span>
+                  <span className="mini-chip">
+                    <em>Rev</em>
+                    <strong>4</strong>
+                  </span>
+                  <span className="mini-chip">
+                    <em>State</em>
+                    <strong>unlocked</strong>
+                  </span>
                 </div>
                 <Seal mood="idle" size={84} label="Said seal" />
               </div>
