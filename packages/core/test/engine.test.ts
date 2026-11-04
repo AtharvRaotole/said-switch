@@ -123,7 +123,7 @@ describe('engine scenarios', () => {
     expect(agreement.approvals.client!.senderId).toBe(DANA.senderId);
     expect(second.effects.filter((e) => e.kind === 'handoff')).toEqual([{ kind: 'handoff', agreementId: 'AGR-001', threadId: 'thread-9' }]);
     expect(second.replies).toEqual([
-      `🔒 **AGR-001 locked.** Both accepted **DRF-001 v1** (hash \`${draft.termsHash.slice(0, 10)}\`). Riya 15:30:03 · Dana 15:30:04 UTC. Handing off to @builder.`,
+      `🔒 **AGR-001 locked.** Both accepted **DRF-001 v1** (hash \`${draft.termsHash.slice(0, 10)}\`). Riya 10:30:03 AM · Dana 10:30:04 AM ET. Handing off to @builder.`,
     ]);
     expect(auditKinds(room).slice(-2)).toEqual(['accepted', 'locked']);
 

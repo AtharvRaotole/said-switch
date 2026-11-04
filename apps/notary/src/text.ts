@@ -1,3 +1,5 @@
+import { formatTime } from '@said/core';
+
 /** Room replies, log lines, and API errors. No em dashes or en dashes. */
 
 export const LEDGER_NAME = 'Said Ledger';
@@ -94,8 +96,20 @@ export function receiptBadSignature(): string {
   return 'Said ignored an execution receipt. The signature does not match the builder key pinned for this room.';
 }
 
-export function startMessage(agreementId: string, fenced: string): string {
-  return `@builder Agreement ${agreementId} is locked. Start authorization follows.\n${fenced}`;
+export type StartMessageSummary = {
+  agreementId: string;
+  jobId: string;
+  expiresAt: number;
+  keyId: string;
+};
+
+/** Human summary for the builder handoff. No leading @mention: send_targeted_message already addresses the agent. */
+export function startMessage(summary: StartMessageSummary, fenced: string): string {
+  const expires = formatTime(summary.expiresAt);
+  return [
+    `Start authorization for **${summary.agreementId}** · job \`${summary.jobId}\` · expires ${expires} · key \`${summary.keyId}\` · signature attached.`,
+    fenced,
+  ].join('\n');
 }
 
 export function startDeliveryFailed(): string {

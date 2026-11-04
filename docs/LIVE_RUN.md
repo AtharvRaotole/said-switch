@@ -1,8 +1,8 @@
 # Live Switch + Mattermost run evidence
 
-Box local time zone: America/New_York (ET). Captured during the 2026-11-03 evening / 2026-11-04 early-morning ET window.
+Box local time zone: America/New_York (ET). Captured during the 2026-11-03 evening ET window (polish retake).
 
-This is a real Switch 0.31.0 stack with a real Mattermost Team Edition bridge. Humans posted through the Mattermost API as throwaway accounts. No Atharv clicks were required for the story itself.
+This is a real Switch 0.31.0 stack with a real Mattermost Team Edition bridge. Humans posted through the Mattermost API as throwaway accounts. No Atharv clicks were required for the story itself. Room timestamps render in `SAID_TIMEZONE` (default America/New_York). Signed ledger JSON and receipt markdown keep exact UTC ISO.
 
 ## Stack
 
@@ -12,7 +12,7 @@ This is a real Switch 0.31.0 stack with a real Mattermost Team Edition bridge. H
 | Switch | `ghcr.io/sandbox-quantum/switch-core:0.31.0` on `http://127.0.0.1:8000` |
 | Mattermost | `mattermost/mattermost-team-edition:11.9.0` on `http://127.0.0.1:8065` |
 | Postgres | `postgres:16-alpine` |
-| Said notary | `http://127.0.0.1:7410` with `SAID_HOME=.said-live` |
+| Said notary | `http://127.0.0.1:7410` with `SAID_HOME=.said-live`, `SAID_TIMEZONE=America/New_York` |
 | Said builder | `http://127.0.0.1:7420`, `SAID_WORKER=scripted` |
 | Client site | `work/client-site` on `http://127.0.0.1:5173` |
 
@@ -22,16 +22,17 @@ Local throwaway credentials live only under `/workspace/switch-live/.env` and `l
 
 | Item | Value |
 | --- | --- |
-| Switch room id | `10f9e293-f685-4c84-87f6-3650dc96a846` |
+| Switch room id | `3d378e1f-cab6-40d9-9b9f-09e3ef146560` |
 | Room name | Said Larkspur |
-| Bridge id | `34c4799a-6d32-4260-83f3-5c88b78a46b5` |
+| Mattermost channel | `said-larkspur-63709` (display name Said Larkspur) |
 | Bridge type | mattermost |
-| External channel | `mattermost://127.0.0.1:8065/switch/channels/said-larkspur` |
-| Ledger document id | `300b11e5-fe8d-4aee-9ac0-c48dc363e6ba` |
+| External channel | `mattermost://127.0.0.1:8065/switch/channels/said-larkspur-63709` |
+| Ledger document id | `b8dcd86b-ee72-4c98-bae0-5beb20110070` |
 | Said agent id | `8727bf4e-ba2e-4697-8c4f-c740b6a8b3f8` |
 | Builder agent id | `70dd1521-0201-42c2-b7f0-53176b52a053` |
+| Ledger revision at capture | 11 |
 
-Enrollment codes (single-use, already redeemed in this run): Riya `26SYA5Q5`, Dana `7TW8S9Y6`.
+Enrollment codes (single-use, already redeemed in this run): Riya `XTK5TF5X`, Dana `9UGARDD9`.
 
 Live message senders are Matrix actor ids such as `@switch-mattermost-{bridge}-{username}:localhost`. Said matches those to roster parties by id or by username (`actorMatches` in `@said/switch-client`).
 
@@ -40,13 +41,13 @@ Live message senders are Matrix actor ids such as `@switch-mattermost-{bridge}-{
 Driven by posting as Mattermost users `riya-dev` (display Riya / developer) and `dana-client` (display Dana / client):
 
 1. Dana directly commands `@builder Also add dark mode while you're in there` → Builder refuses (chat is not a signed start authorization).
-2. Scope lands as **DRF-001** with terms `+2 days, +$400`, terms hash prefix `65c6438c9b`.
+2. Scope lands as **DRF-001** with terms `+2 days, +$400`, terms hash prefix `cfc398cb8f`.
 3. Riya accepts; Dana disputes (`Wait, I thought we agreed dark mode was free?`).
-4. Said replies with a timestamped ledger quote: status PENDING, terms on record, who accepted, who has not, and the earlier `@builder` bypass request time.
-5. Dana accepts → dual lock → **AGR-001** → signed handoff → scripted builder runs in a worktree.
-6. Builder completes **JOB-AGR-001-1**, commit `8f5a51b` on `work/client-site` (dark mode over baseline `5101d11`).
-7. Post-complete `Amend AGR-001` is refused (`Open a new proposal instead of amending it`).
-8. Mid-engagement change request: `Propose: add a contrast-safe theme toggle | Terms: +1 day, +$150` → **DRF-002 v1** PENDING. Riya accepts; Said waits on Dana. Dual signature required before anything starts.
+4. Said replies with a timestamped ledger quote in ET (status PENDING, terms on record, who accepted, who has not, and the earlier `@builder` bypass request time).
+5. Dana accepts → dual lock → **AGR-001** → Said posts a one-line start summary (`Start authorization for **AGR-001** · job · expires · key · signature attached`) plus a fenced `said-start` token (single `@builder` prefix from Switch targeting).
+6. Scripted builder runs **JOB-AGR-001-1** and completes commit `5dfc874` on `work/client-site` (dark mode over baseline `5101d11`), checks typecheck passed and build passed.
+7. While the job was running, Dana's `Amend AGR-001` became change-request **DRF-002 v1** (terms `+1 day, +$150`, hash prefix `b7f1ede98a`).
+8. Dana also `Propose:`d a contrast-safe theme toggle → **DRF-003 v1** PENDING. Riya accepted **DRF-002**; Said waits on Dana. Dual signature required before anything starts.
 
 ## Creator-only ledger document
 
@@ -70,7 +71,7 @@ Headless Playwright/Chromium against `http://127.0.0.1:8065` (1440x900 viewport,
 | --- | --- |
 | Terms + first accept + dispute opens | `docs/media/live/mm-ui-riya-terms-accept.png` |
 | Timestamped ledger quote on dispute | `docs/media/live/mm-ui-riya-dispute-ledger.png` |
-| Dual lock, handoff, builder run, amend refused | `docs/media/live/mm-ui-riya-lock-handoff.png` |
+| Dual lock, handoff, builder run | `docs/media/live/mm-ui-riya-lock-handoff.png` |
 | Builder complete (commit + checks) | `docs/media/live/mm-ui-riya-builder-complete.png` |
 | Complete + DRF-002 pending (Riya accepted, waiting on Dana) | `docs/media/live/mm-ui-riya-complete-drf002.png` |
 | Same channel as Dana | `docs/media/live/mm-ui-dana-lock-handoff.png` |
@@ -83,14 +84,9 @@ Raw captures (including extras) also live under `/workspace/said-live-shots/ui/`
 | --- | --- |
 | Mattermost API transcript | `/workspace/said-live-shots/mm-transcript.json` |
 | HTML transcript (for screenshots) | `/workspace/said-live-shots/mm-transcript.html` |
-| Transcript screenshot | `/workspace/said-live-shots/mm-transcript.png` |
-| Mattermost login screenshot | `/workspace/said-live-shots/mm-login.png` |
 | Notary state snapshot | `/workspace/said-live-shots/notary-state.json` |
 | Story post ids | `/workspace/said-live-shots/story-posts.json` |
-| Change-request note | `/workspace/said-live-shots/story-mid.json` |
-| Ledger markdown restore copy | `/workspace/said-live-shots/ledger-restored.md` |
 | Builder worktree commit stat | `/workspace/said-live-shots/builder-worktree.txt` |
-| Switch container log tail | `/workspace/said-live-shots/switch-logs-tail.txt` |
 | Doc-edit reject probe | `/workspace/said-live-shots/ledger-edit-reject.json` |
 | Real Mattermost UI PNGs | `/workspace/said-live-shots/ui/` |
 
@@ -99,16 +95,15 @@ Committed media copies (sanitized, no secrets): `docs/media/live/`.
 ## Re-run
 
 ```bash
-# Stack must already be up (compose under /workspace/switch-live). Said: SAID_HOME=.said-live npm run dev
+# Stack must already be up (compose under /workspace/switch-live). Said: SAID_HOME=.said-live SAID_TIMEZONE=America/New_York npm run dev
 cd /workspace/said-core
-./scripts/live-e2e.sh --capture-only   # refresh transcript + state
+npm run live:e2e -- --capture-only   # refresh transcript + state
 # or drive story posts again (best after npm run reset + re-enroll on a fresh channel):
-./scripts/live-e2e.sh
-# TypeScript entry:
-npm run live:e2e -- --capture-only
+npm run live:e2e
+npx tsx scripts/mm-ui-shots.ts
 ```
 
-`scripts/live-e2e.sh` leaves Switch, Mattermost, and Said running.
+`npm run live:e2e` leaves Switch, Mattermost, and Said running.
 
 Fresh bootstrap outline (throwaway MM):
 
@@ -118,8 +113,8 @@ Fresh bootstrap outline (throwaway MM):
 4. `npm run setup && npm run register` with local registration key; put room id in `.said-live/config.json`.
 5. Set addressing-policy to anyone / owner_and_owner_agents via gateway if ops refuse.
 6. `npm run enroll -- --developer "Riya" --client "Dana" --wait` and redeem codes from each human account.
-7. `SAID_HOME=.said-live SAID_WORKER=scripted npm run dev`
-8. Write `live-e2e-secrets.json` (gitignored) with `channel_id` and passwords; run `./scripts/live-e2e.sh`.
+7. `SAID_HOME=.said-live SAID_WORKER=scripted SAID_TIMEZONE=America/New_York npm run dev`
+8. Write `live-e2e-secrets.json` (gitignored) with `channel_id` and passwords; run `npm run live:e2e`.
 
 ## Earlier non-bridge agent protocol probe
 

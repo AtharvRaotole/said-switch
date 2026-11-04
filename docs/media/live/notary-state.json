@@ -6,13 +6,13 @@
     "version": "0.31.0"
   },
   "room": {
-    "id": "10f9e293-f685-4c84-87f6-3650dc96a846",
+    "id": "3d378e1f-cab6-40d9-9b9f-09e3ef146560",
     "name": "Mattermost: Said Larkspur"
   },
   "notaryPublicKey": "eryntmm0EMup63rUUMfdUxfeA/CRubs2OtKNF6Zmjnw=",
   "keyId": "said-notary-2026-11-04",
   "signedLedger": {
-    "digest": "0bb55d5f661e363148930e1988d308af3a5a76113b62489e5c6fdf67ca559ac9",
+    "digest": "e94f1ee8756942d8814582fa4dd6a983f1ec862af745a82e5883932e9e641ec6",
     "keyId": "said-notary-2026-11-04",
     "payload": {
       "agreements": [
@@ -20,26 +20,26 @@
           "approvals": {
             "client": {
               "draftId": "DRF-001",
-              "messageId": "sw_7667b9bd30233f0e0fff657f525cdb61",
+              "messageId": "sw_e9be282efd08b461d365a2190fc47cde",
               "role": "client",
               "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-dana-client:localhost",
               "senderName": "dana-client",
-              "termsHash": "65c6438c9b870326cd5285f40b64d236cfc18225d37f372f211c1d49886a3f75",
-              "text": "I accept DRF-001 v1",
+              "termsHash": "cfc398cb8f57c03975720dba4ce0e9b69b02495e94677f17e5bd8fce93b55998",
+              "text": "Accept DRF-001 v1",
               "threadId": null,
-              "timestamp": 1793761281867,
+              "timestamp": 1793763747607,
               "version": 1
             },
             "developer": {
               "draftId": "DRF-001",
-              "messageId": "sw_f77357aeef3a703ccd5c65f2cba4b0ce",
+              "messageId": "sw_48da4575f17443b6a15e4a2806eb4993",
               "role": "developer",
               "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-user:localhost",
               "senderName": "user",
-              "termsHash": "65c6438c9b870326cd5285f40b64d236cfc18225d37f372f211c1d49886a3f75",
+              "termsHash": "cfc398cb8f57c03975720dba4ce0e9b69b02495e94677f17e5bd8fce93b55998",
               "text": "Accept DRF-001 v1",
               "threadId": null,
-              "timestamp": 1793761273846,
+              "timestamp": 1793763742594,
               "version": 1
             }
           },
@@ -53,38 +53,38 @@
             "checks": [
               {
                 "detail": "> larkspur-site@1.0.0 typecheck\n> tsc --noEmit -p tsconfig.json",
-                "durationMs": 1287,
+                "durationMs": 1208,
                 "name": "typecheck",
                 "ok": true
               },
               {
-                "detail": "> larkspur-site@1.0.0 build\n> vite build\n\nvite v8.3.5 building client environment for production...\ntransforming...\n\u2713 19 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                                                     1.41 kB \u2502 gzip:  0.71 kB\ndist/assets/hanken-grotesk-vietnamese-wght-normal-CHiFlh_0.woff2    9.32 kB\ndist/assets/hanken-grotesk-latin-ext-wght-normal-Dg-wlmqe.woff2    19.58 kB\ndist/assets/fraunces-vietnamese-full-normal-7BpKI3vF.woff2         34.30 kB\ndist/assets/hanken-grotesk-latin-wght-normal-CaVRRdDk.woff2        34.70 kB\ndist/assets/fraunces-vietnamese-full-italic-BHALq22K.woff2         40.23 kB\ndist/assets/fraunces-latin-ext-full-normal-YHFkNujK.woff2         105.24 kB\ndist/assets/fraunces-latin-full-normal-CFFu7zhK.woff2             121.01 kB\ndist/assets/fraunces-latin-ext-full-italic-B8-t4Nou.woff2         130.09 kB\ndist/assets/fraunces-latin-full-italic-D2JnYqd-.woff2             149.72 kB\ndist/assets/index-Cg1C1hPe.css                                     30.65 kB \u2502 gzip:  7.92 kB\ndist/assets/index-B_Yv3ec9.js                                     248.38 kB \u2502 gzip: 76.83 kB\n\n\u2713 built in 142ms",
-                "durationMs": 398,
+                "detail": "> larkspur-site@1.0.0 build\n> vite build\n\nvite v8.3.5 building client environment for production...\ntransforming...\n✓ 19 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                                                     1.41 kB │ gzip:  0.71 kB\ndist/assets/hanken-grotesk-vietnamese-wght-normal-CHiFlh_0.woff2    9.32 kB\ndist/assets/hanken-grotesk-latin-ext-wght-normal-Dg-wlmqe.woff2    19.58 kB\ndist/assets/fraunces-vietnamese-full-normal-7BpKI3vF.woff2         34.30 kB\ndist/assets/hanken-grotesk-latin-wght-normal-CaVRRdDk.woff2        34.70 kB\ndist/assets/fraunces-vietnamese-full-italic-BHALq22K.woff2         40.23 kB\ndist/assets/fraunces-latin-ext-full-normal-YHFkNujK.woff2         105.24 kB\ndist/assets/fraunces-latin-full-normal-CFFu7zhK.woff2             121.01 kB\ndist/assets/fraunces-latin-ext-full-italic-B8-t4Nou.woff2         130.09 kB\ndist/assets/fraunces-latin-full-italic-D2JnYqd-.woff2             149.72 kB\ndist/assets/index-Cg1C1hPe.css                                     30.65 kB │ gzip:  7.92 kB\ndist/assets/index-B_Yv3ec9.js                                     248.38 kB │ gzip: 76.83 kB\n\n✓ built in 146ms",
+                "durationMs": 385,
                 "name": "build",
                 "ok": true
               }
             ],
             "error": null,
-            "finishedAt": 1793761284325,
+            "finishedAt": 1793763750005,
             "jobId": "JOB-AGR-001-1",
-            "resultCommit": "2e1e3d9c7a3648d3a77131aad6093b1b7f1a9950",
-            "startedAt": 1793761282185,
+            "resultCommit": "5dfc874609b5799c435e197c208da39219ee146f",
+            "startedAt": 1793763747955,
             "status": "COMPLETED",
             "worker": "scripted"
           },
           "id": "AGR-001",
-          "lockedAt": 1793761281920,
+          "lockedAt": 1793763747656,
           "scope": "Add dark mode",
           "terms": "+2 days, +$400",
-          "termsHash": "65c6438c9b870326cd5285f40b64d236cfc18225d37f372f211c1d49886a3f75",
+          "termsHash": "cfc398cb8f57c03975720dba4ce0e9b69b02495e94677f17e5bd8fce93b55998",
           "version": 1
         }
       ],
       "audit": [
         {
           "actor": "Dana",
-          "at": 1793761269915,
-          "hash": "adc4258f6e959a8e1838dabba5a988139f2b554ee37865334c4483e170c67c28",
+          "at": 1793763737640,
+          "hash": "8956bd23c05e4a039551f23043666e7679c2ba63aff239a3f65e9115dafa9a55",
           "kind": "draft_created",
           "prevHash": "889b996143e972d9f1b6d9ccac068f829be5b258274c87d25100a5bd691c8bf5",
           "ref": "DRF-001",
@@ -93,123 +93,143 @@
         },
         {
           "actor": "Dana",
-          "at": 1793761269915,
-          "hash": "a06886e7e1943d891259b088c6e619e0cea57a656d74bba8e6700db2df16510b",
+          "at": 1793763737640,
+          "hash": "4c1c3160bca17c6ec26748c0a67f926dcf149ac19130c308b3a3943fac6d7d6b",
           "kind": "refused_bypass",
-          "prevHash": "adc4258f6e959a8e1838dabba5a988139f2b554ee37865334c4483e170c67c28",
+          "prevHash": "8956bd23c05e4a039551f23043666e7679c2ba63aff239a3f65e9115dafa9a55",
           "ref": "REF-001",
           "seq": 2,
           "summary": "Dana addressed @builder directly; logged as DRF-001. Nothing started."
         },
         {
           "actor": "Riya",
-          "at": 1793761271883,
-          "hash": "d56bb4890665cd6dd98c55eee3e28d41e3e86576489756eb20a7bab5593d9c1b",
+          "at": 1793763740123,
+          "hash": "864c35770b21ec2fbdd22fe974a05f0caf07d0660e4920c94b702ade547414ef",
           "kind": "terms_set",
-          "prevHash": "a06886e7e1943d891259b088c6e619e0cea57a656d74bba8e6700db2df16510b",
+          "prevHash": "4c1c3160bca17c6ec26748c0a67f926dcf149ac19130c308b3a3943fac6d7d6b",
           "ref": "DRF-001",
           "seq": 3,
           "summary": "Riya set terms for DRF-001 v1: +2 days, +$400"
         },
         {
           "actor": "Riya",
-          "at": 1793761273906,
-          "hash": "fc9d1f9e6036919916a2cfcf3c3cc328c356eee9e6cb21a0f237e1fa14e9b8f4",
+          "at": 1793763742643,
+          "hash": "6c28dfa6810065dab96cbafdeb5c48b901b7c36885beb267df7dcba83cee6b49",
           "kind": "accepted",
-          "prevHash": "d56bb4890665cd6dd98c55eee3e28d41e3e86576489756eb20a7bab5593d9c1b",
+          "prevHash": "864c35770b21ec2fbdd22fe974a05f0caf07d0660e4920c94b702ade547414ef",
           "ref": "DRF-001",
           "seq": 4,
-          "summary": "Riya accepted DRF-001 v1 (65c6438c9b)"
+          "summary": "Riya accepted DRF-001 v1 (cfc398cb8f)"
         },
         {
           "actor": "Dana",
-          "at": 1793761275907,
-          "hash": "852f938038d80ef711f6a331e5ff0ca21618df388128ae53d430c83c9dfbbe41",
+          "at": 1793763744647,
+          "hash": "1de000784c55e7219b94e13623667f91212e7824972213ea78d067235a2ceac3",
           "kind": "evidence_served",
-          "prevHash": "fc9d1f9e6036919916a2cfcf3c3cc328c356eee9e6cb21a0f237e1fa14e9b8f4",
+          "prevHash": "6c28dfa6810065dab96cbafdeb5c48b901b7c36885beb267df7dcba83cee6b49",
           "ref": "DRF-001",
           "seq": 5,
-          "summary": "Answered Dana about \u201cdark mode\u201d from the ledger: DRF-001"
+          "summary": "Answered Dana about “dark mode” from the ledger: DRF-001"
         },
         {
           "actor": "Dana",
-          "at": 1793761281920,
-          "hash": "91ebb1b3c824fb0caf94255bb9a0d95985f36cb43b794b9066a31dc246003c12",
+          "at": 1793763747656,
+          "hash": "4d6d5042e35a467c34cc509207a134732ff1bd298c7d2759bf00bc0b8c9d6d11",
           "kind": "accepted",
-          "prevHash": "852f938038d80ef711f6a331e5ff0ca21618df388128ae53d430c83c9dfbbe41",
+          "prevHash": "1de000784c55e7219b94e13623667f91212e7824972213ea78d067235a2ceac3",
           "ref": "DRF-001",
           "seq": 6,
-          "summary": "Dana accepted DRF-001 v1 (65c6438c9b)"
+          "summary": "Dana accepted DRF-001 v1 (cfc398cb8f)"
         },
         {
           "actor": "Dana",
-          "at": 1793761281920,
-          "hash": "7c193c0d0150ca4e70a60a77077611cf44046c2fd145201554e6cc4d51918b88",
+          "at": 1793763747656,
+          "hash": "743faad57f69a5bb905172f389b7a41ce23e0b014f808323a95dcc87455a84a2",
           "kind": "locked",
-          "prevHash": "91ebb1b3c824fb0caf94255bb9a0d95985f36cb43b794b9066a31dc246003c12",
+          "prevHash": "4d6d5042e35a467c34cc509207a134732ff1bd298c7d2759bf00bc0b8c9d6d11",
           "ref": "AGR-001",
           "seq": 7,
-          "summary": "AGR-001 locked: both parties accepted DRF-001 v1 (65c6438c9b)"
+          "summary": "AGR-001 locked: both parties accepted DRF-001 v1 (cfc398cb8f)"
         },
         {
           "actor": null,
-          "at": 1793761281920,
-          "hash": "3b3b616c4e8fb959af956fa1868fe6bc1eff89c7791be8ad9bcd6ea8366a57d2",
+          "at": 1793763747657,
+          "hash": "d7af0c8ffa77529090689aa2a9d218946ee594e043ed8bc3f663e152ef980860",
           "kind": "handoff_sent",
-          "prevHash": "7c193c0d0150ca4e70a60a77077611cf44046c2fd145201554e6cc4d51918b88",
+          "prevHash": "743faad57f69a5bb905172f389b7a41ce23e0b014f808323a95dcc87455a84a2",
           "ref": "AGR-001",
           "seq": 8,
           "summary": "Start authorization for AGR-001 sent to the builder as JOB-AGR-001-1"
         },
         {
           "actor": null,
-          "at": 1793761282332,
-          "hash": "c2dcb3a4a1d222733b043ca06457a4c4b822647083fe4190942b3628aa4eb541",
+          "at": 1793763748066,
+          "hash": "3aa7b1b1cbbe7a94416f99146669675981640006179bf6f88dafcdbfdbedf3ac",
           "kind": "execution_update",
-          "prevHash": "3b3b616c4e8fb959af956fa1868fe6bc1eff89c7791be8ad9bcd6ea8366a57d2",
+          "prevHash": "d7af0c8ffa77529090689aa2a9d218946ee594e043ed8bc3f663e152ef980860",
           "ref": "AGR-001",
           "seq": 9,
           "summary": "JOB-AGR-001-1 RUNNING"
         },
         {
-          "actor": null,
-          "at": 1793761284427,
-          "hash": "d4f64df8b9b7a272f9a96dd2e92bae7d02a7c05a3fc40cb33068f40c40f4663f",
-          "kind": "execution_update",
-          "prevHash": "c2dcb3a4a1d222733b043ca06457a4c4b822647083fe4190942b3628aa4eb541",
-          "ref": "AGR-001",
+          "actor": "Dana",
+          "at": 1793763748246,
+          "hash": "7b339be24dc82018ae6a8786e9d3aedf9648225bcbd3d35fe45bd056fc04cfb4",
+          "kind": "amendment_opened",
+          "prevHash": "3aa7b1b1cbbe7a94416f99146669675981640006179bf6f88dafcdbfdbedf3ac",
+          "ref": "DRF-002",
           "seq": 10,
-          "summary": "JOB-AGR-001-1 COMPLETED \u00b7 commit 2e1e3d9 \u00b7 2 file(s)"
+          "summary": "Dana opened amendment DRF-002 for AGR-001: also add a contrast-safe toggle"
         },
         {
           "actor": "Dana",
-          "at": 1793761326966,
-          "hash": "b5a00b332577d1abb6ab2b5373e0191c6b1b2627a335903c9ca7fb3cd22d7231",
-          "kind": "draft_created",
-          "prevHash": "d4f64df8b9b7a272f9a96dd2e92bae7d02a7c05a3fc40cb33068f40c40f4663f",
+          "at": 1793763748246,
+          "hash": "f744aa89042f1da8d8709c7122cb1faaeb33e5a968baed1084d1675dc3d82c62",
+          "kind": "terms_set",
+          "prevHash": "7b339be24dc82018ae6a8786e9d3aedf9648225bcbd3d35fe45bd056fc04cfb4",
           "ref": "DRF-002",
           "seq": 11,
-          "summary": "Dana opened DRF-002: add a contrast-safe theme toggle"
-        },
-        {
-          "actor": "Dana",
-          "at": 1793761326966,
-          "hash": "62402db01b89baf960f99c1842c2a4cc89bf6c6f482a49789023975d92fbf840",
-          "kind": "terms_set",
-          "prevHash": "b5a00b332577d1abb6ab2b5373e0191c6b1b2627a335903c9ca7fb3cd22d7231",
-          "ref": "DRF-002",
-          "seq": 12,
           "summary": "Dana set terms for DRF-002 v1: +1 day, +$150"
         },
         {
-          "actor": "Riya",
-          "at": 1793761329975,
-          "hash": "06ccb3503b384facad6052f7f9f5e78cd390220e10f7db89392552f5e780db94",
-          "kind": "accepted",
-          "prevHash": "62402db01b89baf960f99c1842c2a4cc89bf6c6f482a49789023975d92fbf840",
-          "ref": "DRF-002",
+          "actor": null,
+          "at": 1793763750104,
+          "hash": "4ca8b7f21ad1f2feed5338e532feb48ad68c122d559f3c6194edbf6e8972d9eb",
+          "kind": "execution_update",
+          "prevHash": "f744aa89042f1da8d8709c7122cb1faaeb33e5a968baed1084d1675dc3d82c62",
+          "ref": "AGR-001",
+          "seq": 12,
+          "summary": "JOB-AGR-001-1 COMPLETED · commit 5dfc874 · 2 file(s)"
+        },
+        {
+          "actor": "Dana",
+          "at": 1793763751181,
+          "hash": "bad3bc4ba46915e747e1ccad47bf81f3a20090a23d2d48be436180a1a6d0e01c",
+          "kind": "draft_created",
+          "prevHash": "4ca8b7f21ad1f2feed5338e532feb48ad68c122d559f3c6194edbf6e8972d9eb",
+          "ref": "DRF-003",
           "seq": 13,
-          "summary": "Riya accepted DRF-002 v1 (e8f693cf7d)"
+          "summary": "Dana opened DRF-003: add a contrast-safe theme toggle"
+        },
+        {
+          "actor": "Dana",
+          "at": 1793763751181,
+          "hash": "064cf034769d36417d88c0f6459766b1a13f212a8dd11682891227a948ba503a",
+          "kind": "terms_set",
+          "prevHash": "bad3bc4ba46915e747e1ccad47bf81f3a20090a23d2d48be436180a1a6d0e01c",
+          "ref": "DRF-003",
+          "seq": 14,
+          "summary": "Dana set terms for DRF-003 v1: +1 day, +$150"
+        },
+        {
+          "actor": "Riya",
+          "at": 1793763754190,
+          "hash": "becb43455688d1df9cb2d649d6f41e2d538c093a46c8f994e20786ee791cf049",
+          "kind": "accepted",
+          "prevHash": "064cf034769d36417d88c0f6459766b1a13f212a8dd11682891227a948ba503a",
+          "ref": "DRF-002",
+          "seq": 15,
+          "summary": "Riya accepted DRF-002 v1 (b7f1ede98a)"
         }
       ],
       "deploymentId": "63767aa5615d",
@@ -220,108 +240,141 @@
           "approvals": {
             "client": {
               "draftId": "DRF-001",
-              "messageId": "sw_7667b9bd30233f0e0fff657f525cdb61",
+              "messageId": "sw_e9be282efd08b461d365a2190fc47cde",
               "role": "client",
               "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-dana-client:localhost",
               "senderName": "dana-client",
-              "termsHash": "65c6438c9b870326cd5285f40b64d236cfc18225d37f372f211c1d49886a3f75",
-              "text": "I accept DRF-001 v1",
+              "termsHash": "cfc398cb8f57c03975720dba4ce0e9b69b02495e94677f17e5bd8fce93b55998",
+              "text": "Accept DRF-001 v1",
               "threadId": null,
-              "timestamp": 1793761281867,
+              "timestamp": 1793763747607,
               "version": 1
             },
             "developer": {
               "draftId": "DRF-001",
-              "messageId": "sw_f77357aeef3a703ccd5c65f2cba4b0ce",
+              "messageId": "sw_48da4575f17443b6a15e4a2806eb4993",
               "role": "developer",
               "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-user:localhost",
               "senderName": "user",
-              "termsHash": "65c6438c9b870326cd5285f40b64d236cfc18225d37f372f211c1d49886a3f75",
+              "termsHash": "cfc398cb8f57c03975720dba4ce0e9b69b02495e94677f17e5bd8fce93b55998",
               "text": "Accept DRF-001 v1",
               "threadId": null,
-              "timestamp": 1793761273846,
+              "timestamp": 1793763742594,
               "version": 1
             }
           },
-          "createdAt": 1793761269915,
+          "createdAt": 1793763737640,
           "history": [],
           "id": "DRF-001",
           "proposal": {
-            "messageId": "sw_9caeeec3570db34437f90b42c02c9e6c",
+            "messageId": "sw_bd9aac07a93a7fd83f26aea71e05a559",
             "role": "developer",
             "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-user:localhost",
             "senderName": "user",
             "text": "Terms DRF-001: +2 days, +$400",
             "threadId": null,
-            "timestamp": 1793761271836
+            "timestamp": 1793763740079
           },
           "rejectedBy": null,
           "request": {
-            "messageId": "sw_36657360185d1204ee1c3f02492502c0",
+            "messageId": "sw_329b1f2ed2c20f726730c12b091936a5",
             "role": "client",
             "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-dana-client:localhost",
             "senderName": "dana-client",
             "text": "@builder Also add dark mode while you're in there",
             "threadId": null,
-            "timestamp": 1793761269826
+            "timestamp": 1793763737563
           },
           "scope": "Add dark mode",
           "status": "LOCKED",
           "terms": "+2 days, +$400",
-          "termsHash": "65c6438c9b870326cd5285f40b64d236cfc18225d37f372f211c1d49886a3f75",
-          "updatedAt": 1793761281920,
+          "termsHash": "cfc398cb8f57c03975720dba4ce0e9b69b02495e94677f17e5bd8fce93b55998",
+          "updatedAt": 1793763747656,
+          "version": 1
+        },
+        {
+          "agreementId": null,
+          "amendsAgreementId": "AGR-001",
+          "approvals": {
+            "developer": {
+              "draftId": "DRF-002",
+              "messageId": "sw_a18faed678496f5da7be7c2693ddeaca",
+              "role": "developer",
+              "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-user:localhost",
+              "senderName": "user",
+              "termsHash": "b7f1ede98aa853f65551c58312aa9e957e7fac8ba4c0f88079684517be24446a",
+              "text": "Accept DRF-002 v1",
+              "threadId": null,
+              "timestamp": 1793763754143,
+              "version": 1
+            }
+          },
+          "createdAt": 1793763748246,
+          "history": [],
+          "id": "DRF-002",
+          "proposal": {
+            "messageId": "sw_fc0856abcaa41b25b3c3648051f68a84",
+            "role": "client",
+            "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-dana-client:localhost",
+            "senderName": "dana-client",
+            "text": "Amend AGR-001: also add a contrast-safe toggle | Terms: +1 day, +$150",
+            "threadId": null,
+            "timestamp": 1793763748158
+          },
+          "rejectedBy": null,
+          "request": {
+            "messageId": "sw_fc0856abcaa41b25b3c3648051f68a84",
+            "role": "client",
+            "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-dana-client:localhost",
+            "senderName": "dana-client",
+            "text": "Amend AGR-001: also add a contrast-safe toggle | Terms: +1 day, +$150",
+            "threadId": null,
+            "timestamp": 1793763748158
+          },
+          "scope": "also add a contrast-safe toggle",
+          "status": "PENDING",
+          "terms": "+1 day, +$150",
+          "termsHash": "b7f1ede98aa853f65551c58312aa9e957e7fac8ba4c0f88079684517be24446a",
+          "updatedAt": 1793763754190,
           "version": 1
         },
         {
           "agreementId": null,
           "amendsAgreementId": null,
-          "approvals": {
-            "developer": {
-              "draftId": "DRF-002",
-              "messageId": "sw_0e1609c73717ba0ec6fbbebab4ebbf19",
-              "role": "developer",
-              "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-user:localhost",
-              "senderName": "user",
-              "termsHash": "e8f693cf7dfed186440d4b4890bd9cab8d487f4894d1d60aeadda0340b006b73",
-              "text": "Accept DRF-002 v1",
-              "threadId": null,
-              "timestamp": 1793761329929,
-              "version": 1
-            }
-          },
-          "createdAt": 1793761326966,
+          "approvals": {},
+          "createdAt": 1793763751181,
           "history": [],
-          "id": "DRF-002",
+          "id": "DRF-003",
           "proposal": {
-            "messageId": "sw_3148fbefbd04d5974db90bbbcd0f34b6",
+            "messageId": "sw_1868864c685825e2b12418df5672c7e7",
             "role": "client",
             "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-dana-client:localhost",
             "senderName": "dana-client",
             "text": "Propose: add a contrast-safe theme toggle | Terms: +1 day, +$150",
             "threadId": null,
-            "timestamp": 1793761326919
+            "timestamp": 1793763751130
           },
           "rejectedBy": null,
           "request": {
-            "messageId": "sw_3148fbefbd04d5974db90bbbcd0f34b6",
+            "messageId": "sw_1868864c685825e2b12418df5672c7e7",
             "role": "client",
             "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-dana-client:localhost",
             "senderName": "dana-client",
             "text": "Propose: add a contrast-safe theme toggle | Terms: +1 day, +$150",
             "threadId": null,
-            "timestamp": 1793761326919
+            "timestamp": 1793763751130
           },
           "scope": "add a contrast-safe theme toggle",
           "status": "PENDING",
           "terms": "+1 day, +$150",
-          "termsHash": "e8f693cf7dfed186440d4b4890bd9cab8d487f4894d1d60aeadda0340b006b73",
-          "updatedAt": 1793761329975,
+          "termsHash": "fd35f5ed6862c2c0e63455969a1d3b554a652aa8eeccc6a6ca5f7b45183a6283",
+          "updatedAt": 1793763751181,
           "version": 1
         }
       ],
       "mode": "business",
       "nextAgreementSeq": 2,
-      "nextDraftSeq": 3,
+      "nextDraftSeq": 4,
       "nextRefusalSeq": 2,
       "parties": [
         {
@@ -336,39 +389,40 @@
         }
       ],
       "processedMessageIds": [
-        "sw_36657360185d1204ee1c3f02492502c0",
-        "sw_9caeeec3570db34437f90b42c02c9e6c",
-        "sw_f77357aeef3a703ccd5c65f2cba4b0ce",
-        "sw_c0f72c797c7eef5589412bd599be49e3",
-        "sw_7667b9bd30233f0e0fff657f525cdb61",
-        "sw_3148fbefbd04d5974db90bbbcd0f34b6",
-        "sw_0e1609c73717ba0ec6fbbebab4ebbf19"
+        "sw_329b1f2ed2c20f726730c12b091936a5",
+        "sw_bd9aac07a93a7fd83f26aea71e05a559",
+        "sw_48da4575f17443b6a15e4a2806eb4993",
+        "sw_cd9f1dbdc1fc78feb7076bdfb6fee929",
+        "sw_e9be282efd08b461d365a2190fc47cde",
+        "sw_fc0856abcaa41b25b3c3648051f68a84",
+        "sw_1868864c685825e2b12418df5672c7e7",
+        "sw_a18faed678496f5da7be7c2693ddeaca"
       ],
       "refusals": [
         {
-          "at": 1793761269915,
+          "at": 1793763737640,
           "draftId": "DRF-001",
           "id": "REF-001",
           "receipt": {
-            "messageId": "sw_36657360185d1204ee1c3f02492502c0",
+            "messageId": "sw_329b1f2ed2c20f726730c12b091936a5",
             "role": "client",
             "senderId": "@switch-mattermost-34c4799a-6d32-4260-83f3-5c88b78a46b5-dana-client:localhost",
             "senderName": "dana-client",
             "text": "@builder Also add dark mode while you're in there",
             "threadId": null,
-            "timestamp": 1793761269826
+            "timestamp": 1793763737563
           },
           "target": "builder"
         }
       ],
-      "revision": 10,
-      "roomId": "10f9e293-f685-4c84-87f6-3650dc96a846",
+      "revision": 11,
+      "roomId": "3d378e1f-cab6-40d9-9b9f-09e3ef146560",
       "schema": "said.ledger/v1",
-      "updatedAt": 1793761329975
+      "updatedAt": 1793763754190
     },
-    "signature": "bZgac6SCRXr7HcUeAEAydUSFhCsE46b12JqHRsJ11pHlGDK+rGA+nAdByiYasJGOnt20ugLDyvzvE1KNtPsUCQ=="
+    "signature": "gGf7zuXS30adsIt5biD69ZeM2Ve3Ko7BE0QZQPlCuCfDHf4dyC9bv6U2h/JPDO5MRksodGilZ5RkY9d8Z5ChDw=="
   },
-  "ledgerDocumentId": "f492ffcb-4852-4e89-98f9-4fbb5528a90b",
+  "ledgerDocumentId": "b8dcd86b-ee72-4c98-bae0-5beb20110070",
   "enrollment": {
     "roles": [
       {

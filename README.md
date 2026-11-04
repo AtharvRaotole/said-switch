@@ -144,8 +144,8 @@ Measured on this tree (`release/submit`) after `npm ci`:
 | --- | --- |
 | `npm run lint` | 0 errors, 0 warnings |
 | `npm run typecheck` | clean across workspaces |
-| `npm test` (with coverage) | 24 files, 239 passed |
-| Statements / Branches / Functions / Lines | 92.74% / 80.42% / 95.14% / 96.1% |
+| `npm test` (with coverage) | 25 files, 245 passed |
+| Statements / Branches / Functions / Lines | 92.84% / 80.78% / 95.21% / 96.17% |
 | `@said/web` + `@said/console` production build | ok |
 | `npm run demo:offline -- --script` | story complete (AGR locked, JOB completed) |
 | Landing Lighthouse (web stream, production build) | Performance 94, Accessibility 100, Best Practices 100, SEO 100 |

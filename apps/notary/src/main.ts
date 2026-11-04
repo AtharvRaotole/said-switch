@@ -1,7 +1,9 @@
+import { setDisplayTimeZone } from '@said/core';
 import { createLogger, loadEnv } from '@said/runtime';
 import { startNotary } from './service.js';
 
 loadEnv();
+setDisplayTimeZone(process.env.SAID_TIMEZONE);
 const log = createLogger('notary');
 
 startNotary({ log })

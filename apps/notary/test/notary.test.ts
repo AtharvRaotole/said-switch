@@ -315,7 +315,11 @@ describe('notary on mock Switch', () => {
     const targeted = mock.messages().filter((m) => m.body.includes('said-start'));
     expect(targeted).toHaveLength(1);
     expect(targeted[0]!.sender).toBe(env!.said.id);
-    expect(targeted[0]!.body).toContain('Agreement AGR-001 is locked');
+    expect(targeted[0]!.body).toContain('Start authorization for **AGR-001**');
+    expect(targeted[0]!.body).toContain('signature attached');
+    // Mock Switch (and live Switch) prefix the targeted agent once; our body must not add a second @builder.
+    expect(targeted[0]!.body).toMatch(/^@builder Start authorization/);
+    expect(targeted[0]!.body).not.toMatch(/@builder @builder/);
     const token = extractFencedJson<StartToken>(targeted[0]!.body, 'said-start');
     expect(token).not.toBeNull();
     expect(await verifyStartToken(token!, notaryKey.publicKey)).toBe(true);

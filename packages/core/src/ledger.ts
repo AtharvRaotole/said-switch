@@ -2,7 +2,7 @@ import { appendAudit, commitChange, verifyAuditChain } from './audit';
 import { canonicalJson } from './canonical';
 import { sha256Hex, signDigest, verifyDigest } from './crypto';
 import { fenceJson, findFencedBlocks } from './fences';
-import { formatTime, inline, shortHash } from './replies';
+import { formatTimeUtc, inline, shortHash } from './replies';
 import type { Ledger, Party, Role, RoomMode, SignedLedger } from './types';
 
 export class LedgerFormatError extends Error {
@@ -119,7 +119,7 @@ export function renderLedgerDocument(signed: SignedLedger): string {
     '',
     `- Mode: ${l.mode} · Room: \`${inline(l.roomId)}\``,
     `- Parties: ${l.parties.map((p) => `${inline(p.label)} (${p.role})`).join(', ') || 'none enrolled'}`,
-    `- Revision ${l.revision} · updated ${formatTime(l.updatedAt)}`,
+    `- Revision ${l.revision} · updated ${formatTimeUtc(l.updatedAt)}`,
     `- Digest \`${shortHash(signed.digest)}\` · key \`${inline(signed.keyId)}\``,
     `- Audit chain: ${l.audit.length} event${l.audit.length === 1 ? '' : 's'}${l.audit.length ? ` · head \`${shortHash(l.audit[l.audit.length - 1]!.hash)}\`` : ''}`,
     '',
@@ -130,7 +130,7 @@ export function renderLedgerDocument(signed: SignedLedger): string {
   for (const a of l.agreements) {
     const exec = a.execution ? ` · ${a.execution.jobId} ${a.execution.status}` : '';
     lines.push(
-      `- 🔒 **${a.id}** · ${a.draftId} v${a.version} · ${inline(a.scope)}. ${inline(a.terms)} · hash \`${shortHash(a.termsHash)}\` · locked ${formatTime(a.lockedAt)}${exec}`,
+      `- 🔒 **${a.id}** · ${a.draftId} v${a.version} · ${inline(a.scope)}. ${inline(a.terms)} · hash \`${shortHash(a.termsHash)}\` · locked ${formatTimeUtc(a.lockedAt)}${exec}`,
     );
   }
   lines.push('', '## Drafts', '');
@@ -146,7 +146,7 @@ export function renderLedgerDocument(signed: SignedLedger): string {
   if (l.refusals.length === 0) lines.push('- none');
   for (const r of l.refusals) {
     lines.push(
-      `- ${r.id} · ${formatTime(r.at)} · ${inline(r.receipt.senderName)} addressed @${inline(r.target)} directly${r.draftId ? ` · logged as ${r.draftId}` : ''}`,
+      `- ${r.id} · ${formatTimeUtc(r.at)} · ${inline(r.receipt.senderName)} addressed @${inline(r.target)} directly${r.draftId ? ` · logged as ${r.draftId}` : ''}`,
     );
   }
   lines.push('', fenceJson('said-ledger', signed), '');

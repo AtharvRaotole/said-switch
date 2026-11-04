@@ -1,9 +1,4 @@
-commit 2e1e3d9c7a3648d3a77131aad6093b1b7f1a9950
-Author: Atharv Raotole <100996694+AtharvRaotole@users.noreply.github.com>
-Date:   Tue Nov 3 22:01:24 2026 -0500
-
-    said: Add dark mode (AGR-001, JOB-AGR-001-1)
-
+5dfc874 said: Add dark mode (AGR-001, JOB-AGR-001-1)
  src/App.tsx    | 98 +++++++++++++++++++++++++++++++++++++++++++++++++++++++---
  src/styles.css | 67 +++++++++++++++++++++++++++++++++++++++
  2 files changed, 161 insertions(+), 4 deletions(-)

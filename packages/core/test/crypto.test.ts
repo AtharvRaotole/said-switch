@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   base64ToBytes,
   extractFencedJson,
+  formatTime,
   fenceJson,
   generateKeyPair,
   publicKeyFromPrivate,
@@ -88,7 +89,7 @@ describe('start tokens and receipts', () => {
   it('a token survives the said-start fence round trip', async () => {
     const said = await generateKeyPair('said-1');
     const token = await signStartToken(unsignedToken, said.privateKey);
-    const body = `@builder Agreement AGR-001 is locked. Start authorization follows.\n${fenceJson('said-start', token)}`;
+    const body = `Start authorization for **AGR-001** · job \`JOB-AGR-001-1\` · expires ${formatTime(token.expiresAt)} · key \`said-notary\` · signature attached.\n${fenceJson('said-start', token)}`;
     const parsed = extractFencedJson<StartToken>(body, 'said-start');
     expect(parsed).toEqual(token);
     expect(await verifyStartToken(parsed!, said.publicKey)).toBe(true);

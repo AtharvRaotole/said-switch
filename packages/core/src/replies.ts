@@ -1,17 +1,66 @@
 import type { Agreement, ApprovalReceipt, Draft, Intent, Ledger, Party, Role } from './types';
 
-const pad2 = (n: number) => String(n).padStart(2, '0');
+/** Default room display zone for chat copy. Override with `setDisplayTimeZone` or SAID_TIMEZONE. */
+export const DEFAULT_DISPLAY_TIME_ZONE = 'America/New_York';
 
-/** `YYYY-MM-DD HH:MM:SS UTC` */
-export function formatTime(ms: number): string {
-  const d = new Date(ms);
-  return `${d.getUTCFullYear()}-${pad2(d.getUTCMonth() + 1)}-${pad2(d.getUTCDate())} ${formatClock(ms)} UTC`;
+let displayTimeZone = DEFAULT_DISPLAY_TIME_ZONE;
+
+/** IANA zone used by `formatTime` / `formatClock` in room replies. */
+export function getDisplayTimeZone(): string {
+  return displayTimeZone;
 }
 
-/** `HH:MM:SS` (UTC) */
-export function formatClock(ms: number): string {
-  const d = new Date(ms);
-  return `${pad2(d.getUTCHours())}:${pad2(d.getUTCMinutes())}:${pad2(d.getUTCSeconds())}`;
+/** Set the room display zone (call once at process start from SAID_TIMEZONE). Invalid zones fall back to the default. */
+export function setDisplayTimeZone(zone: string | null | undefined): string {
+  const raw = (zone ?? '').trim() || DEFAULT_DISPLAY_TIME_ZONE;
+  try {
+    // Throws RangeError when the zone id is unknown.
+    new Intl.DateTimeFormat('en-US', { timeZone: raw }).format(0);
+    displayTimeZone = raw;
+  } catch {
+    displayTimeZone = DEFAULT_DISPLAY_TIME_ZONE;
+  }
+  return displayTimeZone;
+}
+
+function zoneAbbrev(ms: number, timeZone: string): string {
+  if (timeZone === 'America/New_York' || timeZone === 'US/Eastern') return 'ET';
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'short' }).formatToParts(new Date(ms));
+  const name = parts.find((p) => p.type === 'timeZoneName');
+  return name ? name.value : timeZone;
+}
+
+/**
+ * Human room time in the configured display zone, e.g. `Nov 3, 10:16:06 PM ET`.
+ * Signed ledger JSON and receipts keep millisecond UTC; use `formatTimeUtc` for ISO text.
+ */
+export function formatTime(ms: number, timeZone: string = displayTimeZone): string {
+  const formatted = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  }).format(new Date(ms));
+  return `${formatted} ${zoneAbbrev(ms, timeZone)}`;
+}
+
+/** Exact UTC ISO-8601 for signed ledger / receipt markdown (authoritative JSON still uses ms). */
+export function formatTimeUtc(ms: number): string {
+  return new Date(ms).toISOString();
+}
+
+/** Local clock with seconds and day-period, e.g. `10:16:06 PM`. */
+export function formatClock(ms: number, timeZone: string = displayTimeZone): string {
+  return new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  }).format(new Date(ms));
 }
 
 export function shortHash(hash: string): string {
@@ -88,15 +137,17 @@ export function alreadyAcceptedReply(ledger: Ledger, draft: Draft, approval: App
 }
 
 export function lockedReply(ledger: Ledger, agreement: Agreement, handoffTarget: string | null): string {
-  const times = ledger.parties
+  const zone = getDisplayTimeZone();
+  const stamps = ledger.parties
     .map((p) => {
       const a = agreement.approvals[p.role];
-      return a ? `${inline(p.label)} ${formatClock(a.timestamp)}` : null;
+      return a ? `${inline(p.label)} ${formatClock(a.timestamp, zone)}` : null;
     })
-    .filter((s): s is string => s !== null)
-    .join(' · ');
+    .filter((s): s is string => s !== null);
+  const times = stamps.length ? `${stamps.join(' · ')} ${zoneAbbrev(agreement.lockedAt, zone)}` : '';
   const tail = handoffTarget ? `Handing off to @${handoffTarget}.` : 'These terms are final; changes need a new draft.';
-  return `🔒 **${agreement.id} locked.** Both accepted **${agreement.draftId} v${agreement.version}** (hash \`${shortHash(agreement.termsHash)}\`). ${times} UTC. ${tail}`;
+  const when = times ? ` ${times}.` : '';
+  return `🔒 **${agreement.id} locked.** Both accepted **${agreement.draftId} v${agreement.version}** (hash \`${shortHash(agreement.termsHash)}\`).${when} ${tail}`;
 }
 
 export function staleVersionReply(draft: Draft, given: number): string {

@@ -146,7 +146,7 @@ async function lockedAuthorization() {
     },
     notary.privateKey,
   );
-  const body = `@builder Agreement ${agreement.id} is locked. Start authorization follows.\n${fenceJson('said-start', token)}`;
+  const body = `Start authorization for **${agreement.id}** · job \`${token.jobId}\` · expires ${new Date(token.expiresAt).toISOString()} · key \`${token.keyId}\` · signature attached.\n${fenceJson('said-start', token)}`;
   return { notary, builderKey, agreement, jobId, token, body, document: renderLedgerDocument(signed) };
 }
 
@@ -292,7 +292,7 @@ describe('builder', () => {
     });
 
     const forged: StartToken = { ...auth.token, signature: 'not-a-real-signature' };
-    const forgedBody = `@builder Agreement ${auth.agreement.id} is locked.\n${fenceJson('said-start', forged)}`;
+    const forgedBody = `Start authorization for **${auth.agreement.id}** · signature attached.\n${fenceJson('said-start', forged)}`;
     await box.builder.ingest(message(forgedBody, { messageId: 'bad-sig' }));
     await box.builder.ingest(message('please add dark mode to the site', { messageId: 'chat' }));
     await box.builder.ingest(message(auth.body, { messageId: 'wrong-sender', senderId: DANA.senderId, senderName: DANA.label }));

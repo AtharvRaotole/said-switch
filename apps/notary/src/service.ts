@@ -25,6 +25,7 @@ import {
   renderAgreementReceiptMarkdown,
   appendAudit,
   commitChange,
+  setDisplayTimeZone,
   type Agreement,
   type Effect,
   type ExecutionReceipt,
@@ -183,6 +184,7 @@ function nextJobId(agreement: Agreement): string | null {
 
 export async function startNotary(opts: StartNotaryOptions = {}): Promise<NotaryHandle> {
   const log = opts.log ?? createLogger('notary');
+  setDisplayTimeZone(process.env.SAID_TIMEZONE);
   const config = await loadConfig();
   const secrets = await loadSecrets();
   const publicKeys = await loadPublicKeys();
@@ -874,6 +876,7 @@ class NotaryApp {
     const agreement = this.signed.payload.agreements.find((a) => a.id === job.agreementId);
     if (!agreement) return;
     const now = Date.now();
+    const expiresAt = now + START_TTL_MS;
     const token = await signStartToken(
       {
         type: 'said.start/v1',
@@ -884,13 +887,17 @@ class NotaryApp {
         ledgerRevision: this.signed.payload.revision,
         ledgerDocumentId: this.docId,
         issuedAt: now,
-        expiresAt: now + START_TTL_MS,
+        expiresAt,
         keyId: this.key.keyId,
       },
       this.key.privateKey,
     );
     try {
-      await this.ops.sendTargetedMessage(startMessage(agreement.id, fenceJson('said-start', token)), [this.config.builder.name], job.threadId);
+      const body = startMessage(
+        { agreementId: agreement.id, jobId: job.jobId, expiresAt, keyId: this.key.keyId },
+        fenceJson('said-start', token),
+      );
+      await this.ops.sendTargetedMessage(body, [this.config.builder.name], job.threadId);
     } catch (err) {
       this.log.error('could not send start authorization', plain(msg(err)));
       await this.reply(startDeliveryFailed(), job.threadId);

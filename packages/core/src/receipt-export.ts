@@ -1,7 +1,7 @@
 import { canonicalJson } from './canonical';
 import { sha256Hex, signDigest, verifyDigest } from './crypto';
 import { fenceJson } from './fences';
-import { formatTime, inline, shortHash } from './replies';
+import { formatTimeUtc, inline, shortHash } from './replies';
 import type { Agreement, Ledger, SignedLedger } from './types';
 
 export interface AgreementReceipt {
@@ -112,7 +112,7 @@ export function renderAgreementReceiptMarkdown(receipt: AgreementReceipt): strin
     `- Scope: ${inline(receipt.scope)}`,
     `- Terms: ${inline(receipt.terms)}`,
     `- Terms hash: \`${shortHash(receipt.termsHash)}\``,
-    `- Locked: ${formatTime(receipt.lockedAt)}`,
+    `- Locked: ${formatTimeUtc(receipt.lockedAt)}`,
     `- Ledger revision ${receipt.ledgerRevision} · digest \`${shortHash(receipt.ledgerDigest)}\``,
     `- Room: \`${inline(receipt.roomId)}\``,
     '',
@@ -121,7 +121,7 @@ export function renderAgreementReceiptMarkdown(receipt: AgreementReceipt): strin
   ];
   for (const a of receipt.approvals) {
     lines.push(
-      `- **${inline(a.label)}** (${a.role}) at ${formatTime(a.timestamp)}: "${inline(a.text)}" · msg \`${inline(a.messageId)}\``,
+      `- **${inline(a.label)}** (${a.role}) at ${formatTimeUtc(a.timestamp)}: "${inline(a.text)}" · msg \`${inline(a.messageId)}\``,
     );
   }
   lines.push('', fenceJson('said-agreement-receipt', receipt), '');
