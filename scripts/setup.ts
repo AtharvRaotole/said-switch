@@ -70,6 +70,11 @@ async function main(): Promise<void> {
   ok(`Signing keys ready in ${paths.home} (notary ${notary.keyId}${builder ? `, builder ${builder.keyId}` : ', no builder in personal mode'})`);
   info('Private keys never leave this machine; only the public keys are pinned in public-keys.json.');
 
+  // Ensure the demo template has node_modules so tests and prepareClientRepo(link) work after npm ci.
+  const { spawnSync } = await import('node:child_process');
+  const ensure = spawnSync(process.execPath, [join(repoRoot, 'scripts', 'ensure-demo-client.mjs')], { stdio: 'inherit' });
+  if (ensure.status) die('Could not install demo/client-site dependencies');
+
   if (personal) {
     info('SAID_MODE=personal: no builder and no client repo are needed.');
   } else {
