@@ -348,7 +348,17 @@ async function main(): Promise<void> {
     await check(`${name} answering on ${new URL(url).host}`, async () =>
       (await isUp(url))
         ? ok()
-        : warn('not running', `Start it with ${offline ? '`npm run demo:offline`' : '`npm run dev`'}${hasHealth ? '' : ' (the console is optional for the flow, needed for the demo)'}.`),
+        : warn(
+          'not running',
+          hasHealth
+            ? `Start it with ${offline ? '`npm run demo:offline`' : '`npm run dev`'}.`
+            : [
+                'Said Console is the demo UI (optional for the agent flow).',
+                offline
+                  ? 'Start the offline demo (includes the console): `npm run demo:offline`.'
+                  : 'Start just the console: `npm -w @said/console run dev` (http://localhost:7400), or everything: `npm run dev`.',
+              ].join(' '),
+        ),
     );
   }
 

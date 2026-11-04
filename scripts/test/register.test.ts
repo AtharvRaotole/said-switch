@@ -152,6 +152,55 @@ describe('response readers', () => {
     expect(effectivePolicy(null)).toBeNull();
   });
 
+  it('reads Switch 0.31.0 addressing_policy (null = anyone; preset rules objects)', () => {
+    expect(effectivePolicy({ addressing_policy: null })).toBe('anyone');
+    expect(
+      effectivePolicy({
+        addressing_policy: {
+          rules: [
+            {
+              rooms: '*',
+              room_groups: '*',
+              users: [],
+              agents: [],
+              owner: true,
+              owner_agents: true,
+              platform: false,
+            },
+          ],
+        },
+      }),
+    ).toBe('owner_and_owner_agents');
+    expect(
+      effectivePolicy({
+        addressing_policy: {
+          rules: [
+            {
+              rooms: '*',
+              room_groups: '*',
+              users: [],
+              agents: [],
+              owner: true,
+              owner_agents: false,
+              platform: false,
+            },
+          ],
+        },
+      }),
+    ).toBe('owner_only');
+    expect(
+      effectivePolicy({
+        addressing_policy: {
+          rules: [{ rooms: ['r1'], room_groups: '*', users: [], agents: [], owner: false, owner_agents: false, platform: false }],
+        },
+      }),
+    ).toBe('custom');
+    // Prefer nested addressing when both shapes are present (newer Switch).
+    expect(
+      effectivePolicy({ addressing: { policy: 'anyone' }, addressing_policy: { rules: [] } }),
+    ).toBe('anyone');
+  });
+
   it('reads room membership', () => {
     expect(roomIdsOf({ rooms: [{ room_id: 'r1', room_name: 'x' }, { id: 'r2' }, 'r3'] })).toEqual(['r1', 'r2', 'r3']);
     expect(roomIdsOf({ rooms: [] })).toEqual([]);

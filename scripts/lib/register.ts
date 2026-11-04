@@ -31,18 +31,60 @@ const POLICY_ALIASES: Record<string, Addressing> = {
   anyone: 'anyone',
 };
 
-/** Reads `addressing.policy` from a `get_agent_detail` result. */
+function aliasPolicy(raw: string): string {
+  return POLICY_ALIASES[raw] ?? raw;
+}
+
+/**
+ * Switch 0.31.0 `get_agent_detail` returns the stored `addressing_policy` blob
+ * (null = open/"anyone"; otherwise a rules object). `_who_can_talk` in Switch
+ * maps those presets the same way. Newer Switch builds instead attach
+ * `addressing: { policy }` via `describe_addressing`.
+ */
+function classifyStoredPolicy(raw: unknown): string | null {
+  if (raw === null) return 'anyone';
+  if (typeof raw === 'string') return aliasPolicy(raw);
+  if (!raw || typeof raw !== 'object') return null;
+  const policy = (raw as { policy?: unknown }).policy;
+  if (typeof policy === 'string') return aliasPolicy(policy);
+  const rules = (raw as { rules?: unknown }).rules;
+  if (!Array.isArray(rules) || rules.length !== 1) return 'custom';
+  const rule = rules[0];
+  if (!rule || typeof rule !== 'object') return 'custom';
+  const r = rule as Record<string, unknown>;
+  const openDims =
+    r.rooms === '*' &&
+    r.room_groups === '*' &&
+    Array.isArray(r.users) &&
+    r.users.length === 0 &&
+    Array.isArray(r.agents) &&
+    r.agents.length === 0 &&
+    r.owner === true &&
+    r.platform === false;
+  if (!openDims) return 'custom';
+  if (r.owner_agents === true) return 'owner_and_owner_agents';
+  if (r.owner_agents === false) return 'owner_only';
+  return 'custom';
+}
+
+/** Reads who may address an agent from a `get_agent_detail` result. */
 export function effectivePolicy(detail: unknown): string | null {
   if (!detail || typeof detail !== 'object') return null;
-  const addressing = (detail as { addressing?: unknown }).addressing;
-  const raw =
-    typeof addressing === 'string'
-      ? addressing
-      : addressing && typeof addressing === 'object'
-        ? (addressing as { policy?: unknown }).policy
-        : null;
-  if (typeof raw !== 'string') return null;
-  return POLICY_ALIASES[raw] ?? raw;
+  const record = detail as Record<string, unknown>;
+
+  if ('addressing' in record) {
+    const addressing = record.addressing;
+    if (typeof addressing === 'string') return aliasPolicy(addressing);
+    if (addressing && typeof addressing === 'object') {
+      const policy = (addressing as { policy?: unknown }).policy;
+      if (typeof policy === 'string') return aliasPolicy(policy);
+    }
+  }
+
+  // Switch 0.31.0: raw column on the agent row (null means open/"anyone").
+  if ('addressing_policy' in record) return classifyStoredPolicy(record.addressing_policy);
+
+  return null;
 }
 
 /** Room ids an agent belongs to, from `get_agent_detail.rooms`. `null` when the shape is unrecognised. */
