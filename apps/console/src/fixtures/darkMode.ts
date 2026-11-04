@@ -116,7 +116,7 @@ const CHAT: ChatEvent[] = [
   chat(
     t(15, 31, 7, 400),
     'builder',
-    "You're not permitted to direct messages to me in this room — my operator has restricted who can address me here.",
+    "You're not permitted to direct messages to me in this room. My operator has restricted who can address me here.",
     true,
   ),
   chat(

@@ -75,10 +75,10 @@ export function Playground() {
         <div className="play-grid">
           <div className="chat">
             <div className="who" role="tablist" aria-label="Who is typing">
-              <button type="button" role="tab" aria-pressed={who === 'Dana'} onClick={() => setWho('Dana')}>
+              <button type="button" role="tab" aria-selected={who === 'Dana'} onClick={() => setWho('Dana')}>
                 Dana, the client
               </button>
-              <button type="button" role="tab" aria-pressed={who === 'Riya'} onClick={() => setWho('Riya')}>
+              <button type="button" role="tab" aria-selected={who === 'Riya'} onClick={() => setWho('Riya')}>
                 Riya, the developer
               </button>
             </div>
