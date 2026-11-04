@@ -32,82 +32,82 @@ interface FaqItem {
 }
 
 const PARTNER_ROASTERS = [
-  { name: 'FINCA EL INJERTO', location: 'Huehuetenango · Est. 1900' },
-  { name: 'SUKE QUTO MILL', location: 'Guji Highlands · 2,150m' },
-  { name: 'COOP KIANJOKOMA', location: 'Embu Slopes · Kenya' },
-  { name: 'LA PALMA & EL TUCÁN', location: 'Zipacón · Colombia' },
-  { name: 'MOUNT TOTUMO', location: 'Santa Ana · El Salvador' },
+  { name: 'FINCA EL INJERTO', location: 'Huehuetenango, since 1900' },
+  { name: 'SUKE QUTO MILL', location: 'Guji Highlands, 2,150 m' },
+  { name: 'COOP KIANJOKOMA', location: 'Embu slopes, Kenya' },
+  { name: 'LA PALMA & EL TUCÁN', location: 'Zipacón, Colombia' },
+  { name: 'MOUNT TOTUMO', location: 'Santa Ana, El Salvador' },
 ];
 
 const HOW_IT_WORKS_STEPS = [
   {
     step: '01',
-    phase: 'Selection & Calibration',
-    title: 'Choose your bag cadence & brew method',
+    phase: 'You choose',
+    title: 'Tell us how you brew',
     description:
-      'Tell us how you brew at home—V60, Chemex, AeroPress, or espresso—and how many cups your household pours each week. We ship whole bean by default or grind on our Mahlkönig EK43S minutes before sealing.',
-    metric: 'Whole bean or custom burr setting',
+      'Tell us how you make coffee at home, like a V60, Chemex, AeroPress, or espresso, and how many cups you drink each week. We ship whole beans, or we grind them for your brewer a few minutes before we seal the bag.',
+    metric: 'Whole bean, or ground for your brewer',
   },
   {
     step: '02',
-    phase: 'Tuesday Loring Roasts',
-    title: 'Roasted to order in 12 kg micro-batches',
+    phase: 'We roast',
+    title: 'Tuesday morning in Portland',
     description:
-      'We never warehouse roasted inventory. Every Tuesday at 6:00 AM in Portland, we roast only the lots spoken for that week, logging bean-probe curves to preserve origin sweetness and clean acidity.',
-    metric: 'Zero warehoused stock',
+      'We do not keep roasted coffee on a shelf. Every Tuesday at 6:00 AM we roast only the bags people ordered, in 12 kilogram batches, so it still tastes like the farm.',
+    metric: 'Roasted only after you order',
   },
   {
     step: '03',
-    phase: 'Cooling Tray to Doorstep',
-    title: 'Nitrogen-flushed and dispatched within 18 hours',
+    phase: 'We ship',
+    title: 'Out the door within 18 hours',
     description:
-      'Bags are one-way valve sealed before evening courier pickup so your beans rest in transit and arrive at peak degassing—4 to 6 days off-roast—with a printed brew recipe card for that exact lot.',
-    metric: 'Arrives 4–6 days off-roast',
+      'We seal each bag before the evening pickup. The coffee rests on the way to you and arrives 4 to 6 days after roasting, with a recipe card for that exact lot.',
+    metric: 'Arrives 4 to 6 days after roasting',
   },
 ];
 
 const FEATURED_ORIGINS: OriginLot[] = [
   {
-    lotNumber: 'LOT № 042',
+    lotNumber: 'Lot 042',
     name: 'Finquita La Loma',
     region: 'San Pedro Necta, Huehuetenango',
     country: 'Guatemala',
-    process: 'Fully Washed · Spring Water',
-    cultivar: 'Caturra & Pache',
-    altitude: '1,880 MASL',
+    process: 'Washed in spring water',
+    cultivar: 'Caturra and Pache',
+    altitude: '1,880 m',
     harvest: 'Feb 2026',
-    roastLevel: 'Light-Medium (Agtron 64)',
-    notes: ['Brown Butter', 'Blood Orange', 'Toasted Almond'],
+    roastLevel: 'Light-medium',
+    notes: ['Brown butter', 'Blood orange', 'Toasted almond'],
     story:
-      'Fermented 28 hours in ceramic-tiled tanks and dried slowly on raised cedar beds under high-altitude canyon breezes.',
+      'The fruit sat in water for 28 hours, then dried slowly on raised beds in a cool canyon wind.',
   },
   {
-    lotNumber: 'LOT № 043',
+    lotNumber: 'Lot 043',
     name: 'Worka Sakaro Station',
-    region: 'Gedeb District, Gedeo Zone',
+    region: 'Gedeb, Gedeo Zone',
     country: 'Ethiopia',
-    process: 'Anaerobic Natural · 72hr',
-    cultivar: '74110 & 74112 Landraces',
-    altitude: '2,140 MASL',
+    process: 'Natural, sealed for 72 hours',
+    cultivar: '74110 and 74112',
+    altitude: '2,140 m',
     harvest: 'Jan 2026',
-    roastLevel: 'Filter Light (Agtron 68)',
-    notes: ['Bergamot', 'White Peach', 'Wildflower Honey'],
+    roastLevel: 'Light, for filter',
+    notes: ['Bergamot', 'White peach', 'Wildflower honey'],
     story:
-      'Hand-sorted ripe purple cherries from 38 smallholder families, producing a silky, tea-like cup with lingering floral aromatics.',
+      'Thirty-eight families hand-sorted the ripest cherries. The cup is silky and tea-like, and it stays floral after you swallow.',
   },
   {
-    lotNumber: 'LOT № 044',
+    lotNumber: 'Lot 044',
     name: 'El Mirador Pink Bourbon',
-    region: 'Palestina, Southern Huila',
+    region: 'Palestina, southern Huila',
     country: 'Colombia',
-    process: 'Semi-Washed · Thermal Shock',
+    process: 'Semi-washed, thermal shock',
     cultivar: 'Pink Bourbon',
-    altitude: '1,960 MASL',
+    altitude: '1,960 m',
     harvest: 'Mar 2026',
-    roastLevel: 'Omni Light (Agtron 65)',
-    notes: ['Blackberry Jam', 'Panela Cane', 'Cacao Nib'],
+    roastLevel: 'Light, for filter or espresso',
+    notes: ['Blackberry jam', 'Cane sugar', 'Cacao nib'],
     story:
-      'Crisp tropical fruit clarity balanced by structured cane-sugar sweetness, versatile enough for both conical pour-overs and modern espresso.',
+      'Bright fruit up front, then a steady cane-sugar sweetness. It works in a pour-over and as espresso.',
   },
 ];
 
@@ -116,91 +116,86 @@ const PRICING_TIERS: PricingTier[] = [
     id: 'taster',
     name: 'Taster',
     price: '$18/mo',
-    cadenceLabel: '1 × 250g bag monthly (~16 cups)',
-    weightSummary: '250g single-origin release',
+    cadenceLabel: 'One 250 g bag a month, about 16 cups',
+    weightSummary: '250 g of one origin',
     description:
-      'For solo morning rituals or weekend pour-over explorers looking to taste a new farm harvest every month.',
-    ctaLabel: 'Choose Taster — $18/mo',
+      'For one person, or for weekends when you want to taste a new farm.',
+    ctaLabel: 'Choose Taster, $18/mo',
     features: [
-      'One 250g single-origin bag roasted every first Tuesday',
-      'Printed farm dossier, elevation profile & V60 recipe card',
-      'Whole bean or precision burr grind for your brewer',
-      'Skip, pause, or swap origins with one click anytime',
+      'One 250 g bag, roasted the first Tuesday of the month',
+      'A card about the farm, the elevation, and a pour-over recipe',
+      'Whole bean, or ground for your brewer',
+      'Skip, pause, or swap a coffee whenever you want',
     ],
   },
   {
     id: 'regular',
     name: 'Regular',
     price: '$32/mo',
-    cadenceLabel: '2 × 250g bags monthly (~32 cups)',
-    weightSummary: '500g total · Two distinct origins',
+    cadenceLabel: 'Two 250 g bags a month, about 32 cups',
+    weightSummary: '500 g, two different origins',
     description:
-      'Our signature household pairing: one washed classic alongside an adventurous seasonal natural or honey lot.',
+      'The household bag: one familiar washed coffee, and one more surprising lot.',
     popular: true,
-    ctaLabel: 'Start Regular — $32/mo',
+    ctaLabel: 'Start Regular, $32/mo',
     features: [
-      'Two distinct 250g single-origin lots every month',
-      'Free tracked priority shipping on every Tuesday dispatch',
-      'Early access to micro-lot Pink Bourbon & Pacamara releases',
-      'Detailed water-chemistry & extraction dial-in notes',
-      'Pause, gift a box, or adjust delivery dates anytime',
+      'Two different 250 g bags every month',
+      'Free tracked shipping on every Tuesday order',
+      'First chance at small Pink Bourbon and Pacamara lots',
+      'Notes on water and how to brew that coffee',
+      'Pause, gift a box, or change the date whenever you want',
     ],
   },
   {
     id: 'cafe',
-    name: 'Café',
+    name: 'Cafe',
     price: '$58/mo',
-    cadenceLabel: '4 × 250g bags monthly (~64 cups)',
-    weightSummary: '1,000g total · Full seasonal flight',
+    cadenceLabel: 'Four 250 g bags a month, about 64 cups',
+    weightSummary: '1,000 g, a full month of coffees',
     description:
-      'Built for daily multi-cup households, home espresso bars, and design studios that never want the hopper empty.',
-    ctaLabel: 'Choose Café — $58/mo',
+      'For a house that drinks coffee all day, or a studio that never wants the hopper empty.',
+    ctaLabel: 'Choose Cafe, $58/mo',
     features: [
-      'Four 250g bags (or split into bi-weekly 500g dispatches)',
-      'Includes quarterly Reserve Geisha & competition auction lots',
-      'Complimentary expedited 2-day courier delivery',
-      'Direct SMS roast-day alerts & barista dial-in support',
-      '15% member discount on add-on cold brew & guest roasts',
+      'Four 250g bags, or two deliveries of 500g',
+      'A rare lot each season, sometimes a Geisha',
+      'Faster 2-day shipping',
+      'A text on roast day, and help if a shot tastes off',
+      '15% off extra bags',
     ],
   },
 ];
 
 const FAQ_ITEMS: FaqItem[] = [
   {
-    question: 'When will my first bag actually be roasted and shipped?',
+    question: 'When is my first bag roasted and shipped?',
     answer:
-      'We roast every Tuesday starting at 6:00 AM Pacific. Orders placed before Monday at 8:00 PM join that week’s roast log and ship out Wednesday morning via USPS Priority or UPS Ground, arriving 4 to 6 days off-roast—right as the coffee hits its peak flavor window.',
+      'We roast every Tuesday starting at 6:00 AM Pacific. Order before Monday at 8:00 PM and you are in that week. The bag ships Wednesday morning and arrives 4 to 6 days after roasting, when the flavor is at its best.',
   },
   {
-    question: 'Can I pause a shipment when I travel or have extra beans left over?',
+    question: 'Can I pause if I travel or still have beans?',
     answer:
-      'Yes, instantaneously. You receive a reminder email every Friday before Tuesday roast day with a one-click link to skip a week, push your date back, or gift that shipment to a friend’s address—no support tickets required.',
+      'Yes. Every Friday before roast day we email you a link. One click skips a week, moves the date, or sends that box to a friend. You do not have to call anyone.',
   },
   {
-    question: 'How light do you roast, and will these coffees work for espresso?',
+    question: 'How dark is the roast, and can I use it for espresso?',
     answer:
-      'We roast in a Nordic-inspired light-to-medium style (Agtron 63–68) that develops full caramelization inside the bean without scorching out delicate floral and stone-fruit aromatics. Our Regular and Café plans always include at least one soluble, higher-body lot calibrated to pull syrupy modern espresso.',
+      'We roast light to medium. The coffee stays sweet, and you can still taste the fruit and flowers. Regular and Cafe plans always include one bag that works well for espresso.',
   },
   {
-    question: 'How much are farmers paid compared to commodity C-market prices?',
+    question: 'How much are the farmers paid?',
     answer:
-      'Every bag includes our transparent Farm Gate Ledger. In 2025–2026 we paid an average of $4.85/lb FOB directly to our producing partners and co-ops—more than double the Fair Trade minimum—on multi-year forward contracts.',
+      'Every bag says what we paid. In 2025 and 2026 we paid farmers about $4.85 per pound, more than double the Fair Trade minimum, on contracts that last more than one year.',
   },
   {
     question: 'Should I order whole bean or pre-ground?',
     answer:
-      'If you own a burr grinder, we always recommend whole bean. If you don’t, select your brewer (V60, Kalita Wave, AeroPress, French Press, or Espresso) at checkout and we will grind your bag on our Mahlkönig EK43S less than ten minutes before nitrogen-flushing and heat-sealing.',
+      'If you have a grinder, choose whole bean. If you do not, pick your brewer at checkout: V60, Kalita Wave, AeroPress, French press, or espresso. We grind the bag less than ten minutes before we seal it.',
   },
 ];
 
 function CheckIcon() {
   return (
-    <svg
-      className="check-icon"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
+    <svg className="check-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <circle
         cx="10"
         cy="10"
@@ -220,338 +215,266 @@ function CheckIcon() {
   );
 }
 
+function LarkspurMark() {
+  return (
+    <svg viewBox="0 0 36 36" fill="none" aria-hidden="true">
+      <path className="mark-stem" d="M18 33.5C18.3 26 17.7 16 18 4.5" />
+      <ellipse className="mark-bud" cx="18" cy="3.6" rx="2.2" ry="3.1" />
+      <ellipse
+        className="mark-petal"
+        cx="24.6"
+        cy="9.2"
+        rx="4.3"
+        ry="2.5"
+        transform="rotate(-32 24.6 9.2)"
+      />
+      <ellipse
+        className="mark-petal-deep"
+        cx="11.2"
+        cy="13.8"
+        rx="4.1"
+        ry="2.4"
+        transform="rotate(30 11.2 13.8)"
+      />
+      <ellipse
+        className="mark-petal"
+        cx="25"
+        cy="18.6"
+        rx="4.5"
+        ry="2.6"
+        transform="rotate(-26 25 18.6)"
+      />
+      <ellipse
+        className="mark-petal-deep"
+        cx="11"
+        cy="23.2"
+        rx="4.2"
+        ry="2.5"
+        transform="rotate(26 11 23.2)"
+      />
+      <ellipse
+        className="mark-petal"
+        cx="23.8"
+        cy="27.6"
+        rx="3.7"
+        ry="2.2"
+        transform="rotate(-22 23.8 27.6)"
+      />
+    </svg>
+  );
+}
+
+function Floret({
+  x,
+  y,
+  scale = 1,
+  flip = false,
+  variant = 'a',
+}: {
+  x: number;
+  y: number;
+  scale?: number;
+  flip?: boolean;
+  variant?: 'a' | 'b' | 'c';
+}) {
+  const sx = flip ? -scale : scale;
+  return (
+    <g className={`floret floret-${variant}`} transform={`translate(${x} ${y}) scale(${sx} ${scale})`}>
+      <path className="floret-spur" d="M1 4 C 14 -7, 26 -2, 32 6" />
+      <ellipse className="floret-petal-a" cx="48" cy="-3" rx="16" ry="10" transform="rotate(-28 48 -3)" />
+      <ellipse className="floret-petal-b" cx="46" cy="12" rx="14" ry="9" transform="rotate(22 46 12)" />
+      <ellipse className="floret-petal-c" cx="38" cy="4" rx="11" ry="9" />
+      <circle className="floret-eye" cx="40" cy="3" r="2.5" />
+    </g>
+  );
+}
+
+function Leaf({
+  x,
+  y,
+  flip = false,
+  scale = 1,
+}: {
+  x: number;
+  y: number;
+  flip?: boolean;
+  scale?: number;
+}) {
+  const sx = flip ? -scale : scale;
+  return (
+    <g transform={`translate(${x} ${y}) scale(${sx} ${scale})`}>
+      <path className="leaf-blade" d="M0 6 C -26 0, -58 -14, -80 -36 C -48 -16, -20 -2, 0 8 Z" />
+      <path className="leaf-vein" d="M-2 6 C -28 0, -56 -12, -74 -28" />
+    </g>
+  );
+}
+
 function CoffeeHeroIllustration() {
   return (
     <svg
       className="hero-svg"
-      viewBox="0 0 460 420"
+      viewBox="0 0 560 580"
       fill="none"
       role="img"
-      aria-labelledby="hero-illustration-title hero-illustration-desc"
+      aria-labelledby="larkspur-hero-title larkspur-hero-desc"
     >
-      <title id="hero-illustration-title">
-        Larkspur Coffee Co. freshly roasted valve bag and steaming ceramic pour-over cup
-      </title>
-      <desc id="hero-illustration-desc">
-        An illustrated kraft coffee bag stamped Lot 042 Huehuetenango beside a stoneware cup with rising warm steam wisps and whole roasted coffee beans.
+      <title id="larkspur-hero-title">Larkspur spike beside a stoneware cup</title>
+      <desc id="larkspur-hero-desc">
+        A delphinium flower spike and a celadon cup with a cobalt rim, on a porcelain plate, with a tag for Lot 042 from Huehuetenango.
       </desc>
 
-      {/* Subtle architectural background arch & measuring grid */}
-      <rect
-        x="24"
-        y="20"
-        width="412"
-        height="376"
-        rx="20"
-        fill="var(--color-surface-alt)"
+      <ellipse cx="318" cy="300" rx="208" ry="248" fill="var(--color-surface)" />
+      <ellipse
+        cx="318"
+        cy="300"
+        rx="208"
+        ry="248"
+        stroke="var(--color-border-strong)"
+        strokeWidth="1.25"
+      />
+      <ellipse
+        cx="318"
+        cy="300"
+        rx="190"
+        ry="228"
         stroke="var(--color-border)"
+        strokeWidth="1"
+      />
+
+      <ellipse cx="340" cy="518" rx="168" ry="12" fill="var(--color-illustration-shadow)" />
+
+      <path
+        d="M248 132 C 190 146, 96 162, 48 184"
+        stroke="var(--color-text-muted)"
+        strokeWidth="1.15"
+      />
+      <rect
+        x="28"
+        y="168"
+        width="136"
+        height="112"
+        rx="2"
+        fill="var(--color-illustration-label)"
+        stroke="var(--color-text)"
+        strokeWidth="1.4"
+      />
+      <circle
+        cx="48"
+        cy="184"
+        r="5"
+        fill="none"
+        stroke="var(--color-illustration-crimp)"
+        strokeWidth="1.6"
+      />
+      <circle cx="48" cy="184" r="1.8" fill="var(--color-illustration-crimp)" />
+      <text className="tag-kicker" x="44" y="210">
+        LOT 042
+      </text>
+      <text className="tag-name" x="44" y="236">
+        La Loma
+      </text>
+      <text className="tag-meta" x="44" y="256">
+        Washed Caturra
+      </text>
+      <text className="tag-meta" x="44" y="272">
+        1,880 meters
+      </text>
+
+      <path className="spike-stem" d="M248 508 C 250 390, 246 250, 248 74" />
+      <Leaf x={248} y={214} scale={0.95} />
+      <Leaf x={248} y={332} scale={0.72} flip />
+
+      <ellipse cx="248" cy="70" rx="8" ry="13" fill="var(--color-accent)" />
+      <ellipse cx="248" cy="68" rx="3" ry="5.5" fill="var(--color-accent-soft)" />
+      <Floret x={248} y={118} scale={0.62} variant="c" />
+      <Floret x={248} y={172} scale={0.8} flip variant="b" />
+      <Floret x={248} y={236} scale={0.98} variant="a" />
+      <Floret x={248} y={304} scale={1.05} flip variant="a" />
+      <Floret x={248} y={368} scale={0.78} variant="b" />
+
+      <ellipse
+        cx="412"
+        cy="486"
+        rx="84"
+        ry="15"
+        fill="var(--color-illustration-bag-side)"
+        stroke="var(--color-text)"
         strokeWidth="1.5"
       />
       <path
-        d="M72 340 H388"
-        stroke="var(--color-border-strong)"
-        strokeWidth="1.5"
-        strokeDasharray="4 4"
+        d="M354 412 H470 L458 470 C452 488 434 496 412 496 C390 496 372 488 366 470 Z"
+        fill="var(--color-illustration-bag)"
+        stroke="var(--color-text)"
+        strokeWidth="1.6"
       />
-      <circle
-        cx="236"
-        cy="192"
-        r="128"
-        fill="var(--color-surface)"
-        stroke="var(--color-border)"
-        strokeWidth="1.25"
+      <path
+        d="M354 412 H470 L466 434 H358 Z"
+        fill="var(--color-accent)"
+        stroke="var(--color-text)"
+        strokeWidth="1.6"
       />
-
-      {/* Ground shadow under bag and cup */}
       <ellipse
-        cx="228"
-        cy="342"
-        rx="136"
-        ry="14"
-        fill="var(--color-illustration-shadow)"
+        cx="412"
+        cy="412"
+        rx="58"
+        ry="13"
+        fill="var(--color-illustration-roast)"
+        stroke="var(--color-text)"
+        strokeWidth="1.6"
+      />
+      <ellipse cx="412" cy="410" rx="40" ry="7" fill="var(--color-illustration-crema)" />
+      <path
+        d="M470 428 C 506 426, 508 474, 466 482"
+        stroke="var(--color-text)"
+        strokeWidth="7"
+        strokeLinecap="round"
+      />
+      <path
+        d="M470 428 C 506 426, 508 474, 466 482"
+        stroke="var(--color-illustration-bag)"
+        strokeWidth="3.4"
+        strokeLinecap="round"
       />
 
-      {/* Kraft Gusseted Coffee Bag */}
-      <g className="illustration-bag">
-        {/* Side gusset shadow */}
-        <path
-          d="M112 108 L130 92 L254 92 L268 108 L260 334 L106 334 Z"
-          fill="var(--color-illustration-bag-side)"
-          stroke="var(--color-text)"
-          strokeWidth="2"
-          strokeLinejoin="round"
-        />
-        {/* Front face of coffee bag */}
-        <path
-          d="M104 110 C104 104 108 100 114 100 H246 C252 100 256 104 256 110 L262 330 C262 335 258 338 253 338 H107 C102 338 98 335 98 330 L104 110 Z"
-          fill="var(--color-illustration-bag)"
-          stroke="var(--color-text)"
-          strokeWidth="2"
-        />
-        {/* Top tin-tie crimp fold */}
-        <rect
-          x="100"
-          y="88"
-          width="160"
-          height="16"
-          rx="4"
-          fill="var(--color-illustration-crimp)"
-          stroke="var(--color-text)"
-          strokeWidth="2"
-        />
-        <line
-          x1="112"
-          y1="96"
-          x2="248"
-          y2="96"
-          stroke="var(--color-text)"
-          strokeWidth="1.5"
-          strokeDasharray="6 4"
-        />
-
-        {/* One-way degassing valve */}
-        <circle
-          cx="180"
-          cy="128"
-          r="9"
-          fill="var(--color-surface)"
-          stroke="var(--color-text)"
-          strokeWidth="1.5"
-        />
-        <circle cx="180" cy="128" r="2.2" fill="var(--color-accent)" />
-        <circle cx="176" cy="128" r="1.2" fill="var(--color-text-muted)" />
-        <circle cx="184" cy="128" r="1.2" fill="var(--color-text-muted)" />
-
-        {/* Apothecary Stamped Lot Label on Bag */}
-        <rect
-          x="118"
-          y="150"
-          width="124"
-          height="156"
-          rx="6"
-          fill="var(--color-illustration-label)"
-          stroke="var(--color-text)"
-          strokeWidth="1.75"
-        />
-        {/* Terracotta top band on label */}
-        <path
-          d="M119 156 C119 152.5 121.5 151 124 151 H236 C238.5 151 241 152.5 241 156 V176 H119 V156 Z"
-          fill="var(--color-accent)"
-        />
-        <text
-          x="180"
-          y="167"
-          textAnchor="middle"
-          fill="var(--color-accent-contrast)"
-          fontSize="9"
-          fontWeight="700"
-          letterSpacing="1.6"
-          fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
-        >
-          LOT № 042 · WASHED
-        </text>
-        <text
-          x="180"
-          y="201"
-          textAnchor="middle"
-          fill="var(--color-text)"
-          fontSize="15"
-          fontWeight="700"
-          fontFamily="Georgia, serif"
-        >
-          LARKSPUR
-        </text>
-        <text
-          x="180"
-          y="217"
-          textAnchor="middle"
-          fill="var(--color-text-muted)"
-          fontSize="9.5"
-          letterSpacing="1.2"
-          fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
-        >
-          HUEHUETENANGO
-        </text>
-        <line
-          x1="134"
-          y1="229"
-          x2="226"
-          y2="229"
-          stroke="var(--color-border-strong)"
-          strokeWidth="1.2"
-        />
-        {/* Tasting bar meters inside bag label */}
-        <rect
-          x="134"
-          y="240"
-          width="58"
-          height="6"
-          rx="3"
-          fill="var(--color-accent)"
-        />
-        <rect
-          x="196"
-          y="240"
-          width="30"
-          height="6"
-          rx="3"
-          fill="var(--color-surface-alt)"
-        />
-        <rect
-          x="134"
-          y="254"
-          width="74"
-          height="6"
-          rx="3"
-          fill="var(--color-illustration-crema)"
-        />
-        <rect
-          x="212"
-          y="254"
-          width="14"
-          height="6"
-          rx="3"
-          fill="var(--color-surface-alt)"
-        />
-        <text
-          x="180"
-          y="284"
-          textAnchor="middle"
-          fill="var(--color-text)"
-          fontSize="8.5"
-          fontWeight="600"
-          letterSpacing="0.8"
-          fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
-        >
-          1,880 MASL · 250G NET
-        </text>
-      </g>
-
-      {/* Rising Steam Wisps above Ceramic Cup */}
       <g className="steam-group">
-        <path
-          className="steam-wisp steam-wisp-1"
-          d="M312 198 C298 176 326 154 312 130 C300 110 318 92 314 74"
-          stroke="var(--color-accent)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-        <path
-          className="steam-wisp steam-wisp-2"
-          d="M338 190 C326 166 354 144 340 118 C328 96 346 80 342 62"
-          stroke="var(--color-illustration-crema)"
-          strokeWidth="2.25"
-          strokeLinecap="round"
-        />
-        <path
-          className="steam-wisp steam-wisp-3"
-          d="M364 198 C354 178 376 160 364 138"
-          stroke="var(--color-text-muted)"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
+        <path className="steam-wisp steam-wisp-1" d="M386 392 C 372 370, 400 350, 384 326 C 372 308, 392 292, 386 272" />
+        <path className="steam-wisp steam-wisp-2" d="M412 388 C 426 364, 398 344, 414 320 C 426 302, 408 286, 416 266" />
+        <path className="steam-wisp steam-wisp-3" d="M436 394 C 448 374, 430 358, 440 340" />
       </g>
 
-      {/* Hand-thrown Stoneware Cup & Saucer */}
-      <g className="illustration-cup">
-        {/* Saucer */}
-        <path
-          d="M266 330 H406 C402 341 386 346 336 346 C286 346 270 341 266 330 Z"
-          fill="var(--color-illustration-bag)"
-          stroke="var(--color-text)"
-          strokeWidth="2"
-        />
-        {/* Cup Handle */}
-        <path
-          d="M384 242 H402 C415 242 424 252 424 266 C424 280 415 290 402 290 H380"
-          fill="none"
-          stroke="var(--color-text)"
-          strokeWidth="8"
-          strokeLinecap="round"
-        />
-        <path
-          d="M384 242 H402 C415 242 424 252 424 266 C424 280 415 290 402 290 H380"
-          fill="none"
-          stroke="var(--color-illustration-label)"
-          strokeWidth="4"
-          strokeLinecap="round"
-        />
-        {/* Cup Body */}
-        <path
-          d="M278 222 H394 L384 304 C381 320 367 330 348 330 H324 C305 330 291 320 288 304 L278 222 Z"
-          fill="var(--color-illustration-label)"
-          stroke="var(--color-text)"
-          strokeWidth="2"
-          strokeLinejoin="round"
-        />
-        {/* Terracotta stoneware glaze dip base */}
-        <path
-          d="M286 292 H386 L384 304 C381 320 367 330 348 330 H324 C305 330 291 320 288 304 L286 292 Z"
-          fill="var(--color-accent)"
-          stroke="var(--color-text)"
-          strokeWidth="2"
-        />
-        {/* Top Coffee Surface & Crema Rim */}
+      <g transform="translate(318 504) rotate(-20)">
         <ellipse
-          cx="336"
-          cy="222"
-          rx="58"
-          ry="13"
+          cx="0"
+          cy="0"
+          rx="12"
+          ry="7.5"
           fill="var(--color-illustration-roast)"
           stroke="var(--color-text)"
-          strokeWidth="2"
-        />
-        <ellipse
-          cx="336"
-          cy="222"
-          rx="46"
-          ry="8"
-          fill="var(--color-illustration-crema)"
+          strokeWidth="1.2"
         />
         <path
-          d="M312 222 C322 218 346 218 358 223"
-          stroke="var(--color-illustration-label)"
-          strokeWidth="2"
+          d="M-8 0 C -2 -2.2, 5 2.2, 8 0"
+          stroke="var(--color-illustration-crema)"
+          strokeWidth="1.2"
           strokeLinecap="round"
         />
       </g>
-
-      {/* Whole Roasted Coffee Beans in Foreground */}
-      <g className="illustration-beans">
-        <g transform="translate(78 326) rotate(-22)">
-          <ellipse
-            cx="14"
-            cy="9"
-            rx="13"
-            ry="8.5"
-            fill="var(--color-illustration-roast)"
-            stroke="var(--color-text)"
-            strokeWidth="1.75"
-          />
-          <path
-            d="M4 9 C9 6 19 12 24 9"
-            stroke="var(--color-illustration-crema)"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </g>
-        <g transform="translate(242 332) rotate(16)">
-          <ellipse
-            cx="13"
-            cy="8"
-            rx="12"
-            ry="7.5"
-            fill="var(--color-illustration-roast)"
-            stroke="var(--color-text)"
-            strokeWidth="1.75"
-          />
-          <path
-            d="M4 8 C8 5 18 11 22 8"
-            stroke="var(--color-illustration-crema)"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-        </g>
+      <g transform="translate(492 498) rotate(16)">
+        <ellipse
+          cx="0"
+          cy="0"
+          rx="10"
+          ry="6.5"
+          fill="var(--color-illustration-roast)"
+          stroke="var(--color-text)"
+          strokeWidth="1.2"
+        />
+        <path
+          d="M-6 0 C -1 -2, 4 2, 7 0"
+          stroke="var(--color-illustration-crema)"
+          strokeWidth="1.15"
+          strokeLinecap="round"
+        />
       </g>
     </svg>
   );
@@ -562,42 +485,21 @@ function StickyNav() {
     <header className="site-header">
       <div className="container nav-inner">
         <a href="#top" className="brand-wordmark" aria-label="Larkspur Coffee Co. home">
-          <span className="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 28 28" fill="none">
-              <rect
-                x="1.5"
-                y="1.5"
-                width="25"
-                height="25"
-                rx="7"
-                fill="var(--color-accent)"
-                stroke="var(--color-text)"
-                strokeWidth="1.5"
-              />
-              <path
-                d="M14 5.5C10.2 8.6 9 12.6 10.6 16.5C11.8 19.5 13.5 21.2 14 22.8C14.5 21.2 16.2 19.5 17.4 16.5C19 12.6 17.8 8.6 14 5.5Z"
-                fill="var(--color-accent-contrast)"
-              />
-              <path
-                d="M14 7.5C13.2 11.8 13.2 16.5 14 21"
-                stroke="var(--color-accent)"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-            </svg>
+          <span className="brand-mark">
+            <LarkspurMark />
           </span>
           <span className="brand-text">
-            <span className="brand-name">Larkspur Coffee Co.</span>
-            <span className="brand-sub">Portland · Micro-Lot Roasters</span>
+            <span className="brand-name">Larkspur</span>
+            <span className="brand-sub">Coffee Co. · Portland</span>
           </span>
         </a>
 
-        <nav className="primary-nav" aria-label="Primary navigation">
+        <nav className="primary-nav" aria-label="Primary">
           <a href="#how-it-works" className="nav-link">
             How it works
           </a>
           <a href="#origins" className="nav-link">
-            Current lots
+            Lots
           </a>
           <a href="#pricing" className="nav-link">
             Pricing
@@ -625,55 +527,57 @@ function HeroSection() {
         <div className="hero-copy">
           <div className="roast-dispatch-pill">
             <span className="status-dot" aria-hidden="true" />
-            <span>NEXT ROAST LOG: TUESDAY 06:00 PST · 42 BAGS REMAINING</span>
+            <span>Next roast: Tuesday, 6:00 AM Pacific. 42 bags left.</span>
           </div>
 
           <h1 className="hero-headline">
-            Single-origin coffee roasted on Tuesday, on your counter by Friday.
+            <span className="hero-line">
+              <span className="hero-break">Coffee roasted</span>
+              <span className="hero-break">on Tuesday.</span>
+            </span>
+            <span className="hero-line hero-line-italic">
+              <span className="hero-break">On your counter</span>
+              <span className="hero-break">by Friday.</span>
+            </span>
           </h1>
 
           <p className="hero-subcopy">
-            We source high-elevation micro-lots directly from partner mills in
-            Guatemala, Ethiopia, and Colombia, roast them to order in 12 kg
-            batches, and dispatch within 18 hours of the cooling tray.
+            Small lots from Guatemala, Ethiopia, and Colombia. We roast them in
+            Portland only after you order, then ship within 18 hours.
           </p>
 
           <div className="hero-cta-group">
             <a href="#pricing" className="btn btn-primary btn-lg">
-              Start subscription
+              Start a subscription
             </a>
             <a href="#origins" className="btn btn-secondary btn-lg">
-              Explore this week’s lots
+              See this week&apos;s lots
             </a>
           </div>
 
-          <dl className="hero-ledger" aria-label="Roastery guarantees">
+          <dl className="hero-ledger" aria-label="Roastery promises">
             <div className="ledger-item">
-              <dt>Roast-to-ship window</dt>
-              <dd>&lt; 18 hours</dd>
+              <dt>Roast to mailbox</dt>
+              <dd>18 hours</dd>
             </div>
             <div className="ledger-item">
-              <dt>Farm-gate premium</dt>
-              <dd>$4.85 / lb avg FOB</dd>
+              <dt>Paid to farmers</dt>
+              <dd>$4.85 / lb</dd>
             </div>
             <div className="ledger-item">
-              <dt>Cupping score floor</dt>
-              <dd>87.5+ SCA points</dd>
+              <dt>Tasting score</dt>
+              <dd>87.5 and up</dd>
             </div>
           </dl>
         </div>
 
-        <div className="hero-visual-card">
-          <div className="visual-card-header">
-            <span className="mono-tag">DISPATCH SPECIMEN · SPRING HARVEST</span>
-            <span className="mono-tag accent-tag">AGTRON 65 · LIGHT</span>
-          </div>
+        <div className="hero-visual">
           <CoffeeHeroIllustration />
-          <div className="visual-card-footer">
+          <div className="visual-caption">
             <div>
-              <p className="visual-lot-title">Finquita La Loma · Washed Caturra</p>
+              <p className="visual-lot-title">Finquita La Loma</p>
               <p className="visual-lot-sub">
-                Notes of brown butter, blood orange zest, and toasted marcona almond
+                Washed Caturra. Brown butter, blood orange zest, toasted almond.
               </p>
             </div>
             <span className="visual-price-badge">From $18/mo</span>
@@ -686,11 +590,9 @@ function HeroSection() {
 
 function TrustStrip() {
   return (
-    <section className="trust-strip" aria-label="Partner mills and estates">
+    <section className="trust-strip" aria-label="Farms we buy from">
       <div className="container trust-inner">
-        <p className="trust-eyebrow">
-          DIRECT-TRADE HARVEST CONTRACTS WITH INDEPENDENT PARTNER MILLS
-        </p>
+        <p className="trust-eyebrow">Farms and mills we buy from directly</p>
         <ul className="trust-logos">
           {PARTNER_ROASTERS.map((partner) => (
             <li key={partner.name} className="trust-logo-item">
@@ -707,14 +609,14 @@ function TrustStrip() {
 function HowItWorksSection() {
   return (
     <section id="how-it-works" className="section how-section">
-      <div className="container">
+      <div className="container how-layout">
         <div className="section-header">
-          <p className="section-eyebrow">FROM MILL TO MORNING POUR</p>
-          <h2 className="section-title">How it works</h2>
+          <p className="section-eyebrow">Three steps</p>
+          <h2 className="section-title">How the Tuesday roast works</h2>
           <p className="section-subtitle">
-            Supermarket coffee sits in distribution warehouses for four months.
-            Larkspur operates on a strict weekly roast clock so every bag reaches
-            your grinder at peak aromatics.
+            Supermarket coffee can sit in a warehouse for months. We roast on
+            Tuesday and ship the same day, so the bag is still fresh when you
+            open it.
           </p>
         </div>
 
@@ -741,11 +643,11 @@ function FeaturedOriginsSection() {
     <section id="origins" className="section origins-section">
       <div className="container">
         <div className="section-header">
-          <p className="section-eyebrow">CURRENT TUESDAY ROAST MENU</p>
-          <h2 className="section-title">Featured single-origin lots</h2>
+          <p className="section-eyebrow">On the roaster this month</p>
+          <h2 className="section-title">Three lots, three farms</h2>
           <p className="section-subtitle">
-            Each shipment rotates through freshly landed seasonal harvests. Here
-            are the three lots on our Loring S15 Falcon roaster this month.
+            Each box changes with the harvest. These are the coffees we are
+            roasting in Portland right now. Every lot has a place, and a story.
           </p>
         </div>
 
@@ -758,7 +660,7 @@ function FeaturedOriginsSection() {
               </div>
 
               <p className="origin-country">
-                {lot.country} · {lot.region}
+                {lot.country}, {lot.region}
               </p>
               <h3 className="origin-name">{lot.name}</h3>
               <p className="origin-story">{lot.story}</p>
@@ -777,12 +679,16 @@ function FeaturedOriginsSection() {
                   <dd>{lot.process}</dd>
                 </div>
                 <div>
-                  <dt>Cultivar</dt>
+                  <dt>Variety</dt>
                   <dd>{lot.cultivar}</dd>
                 </div>
                 <div>
-                  <dt>Roast profile</dt>
+                  <dt>Roast</dt>
                   <dd>{lot.roastLevel}</dd>
+                </div>
+                <div>
+                  <dt>Harvest</dt>
+                  <dd>{lot.harvest}</dd>
                 </div>
               </dl>
             </article>
@@ -794,38 +700,30 @@ function FeaturedOriginsSection() {
 }
 
 function PricingSection() {
-  const [selectedGrind, setSelectedGrind] = useState<string>('Whole Bean');
+  const [selectedGrind, setSelectedGrind] = useState<string>('Whole bean');
   const [selectedTier, setSelectedTier] = useState<string>('regular');
 
-  const grindOptions = ['Whole Bean', 'Pour-Over (V60 / Chemex)', 'Espresso Fine'];
+  const grindOptions = ['Whole bean', 'Pour-over', 'Espresso'];
 
   return (
     <section id="pricing" className="section pricing-section">
       <div className="container">
         <div className="section-header">
-          <p className="section-eyebrow">SIMPLE MONTHLY CADENCE</p>
-          <h2 className="section-title">Transparent roast subscriptions</h2>
+          <p className="section-eyebrow">Monthly, no lock-in</p>
+          <h2 className="section-title">Pick how much coffee you drink</h2>
           <p className="section-subtitle">
-            Every tier includes traceable single-origin lots, printed brew
-            recipes, and zero lock-in. Skip a month or cancel in two clicks.
+            Every plan is single-origin coffee with a recipe card. Skip a month
+            or cancel whenever you want. No phone call.
           </p>
 
-          <div
-            className="grind-selector"
-            role="group"
-            aria-label="Select your preferred grind preparation"
-          >
-            <span className="grind-label">Preparation:</span>
+          <div className="grind-selector" role="group" aria-label="How should we grind it?">
+            <span className="grind-label">Grind</span>
             <div className="grind-pills">
               {grindOptions.map((option) => (
                 <button
                   key={option}
                   type="button"
-                  className={
-                    selectedGrind === option
-                      ? 'grind-pill grind-pill-active'
-                      : 'grind-pill'
-                  }
+                  className={selectedGrind === option ? 'grind-pill grind-pill-active' : 'grind-pill'}
                   aria-pressed={selectedGrind === option}
                   onClick={() => setSelectedGrind(option)}
                 >
@@ -839,24 +737,22 @@ function PricingSection() {
         <div className="pricing-grid">
           {PRICING_TIERS.map((tier) => {
             const isSelected = selectedTier === tier.id;
+            const slash = tier.price.indexOf('/');
+            const amount = slash === -1 ? tier.price : tier.price.slice(0, slash);
+            const per = slash === -1 ? '' : `/${tier.price.slice(slash + 1)}`;
             return (
               <article
                 key={tier.id}
-                className={
-                  tier.popular
-                    ? 'pricing-card pricing-card-popular'
-                    : 'pricing-card'
-                }
-                aria-label={`${tier.name} subscription tier`}
+                className={tier.popular ? 'pricing-card pricing-card-popular' : 'pricing-card'}
+                aria-label={`${tier.name} subscription`}
+                data-selected={isSelected}
               >
-                {tier.popular && (
-                  <div className="popular-badge">Most popular</div>
-                )}
-
                 <div className="pricing-card-head">
+                  {tier.popular ? <p className="popular-flag">Household favorite</p> : null}
                   <h3 className="pricing-tier-name">{tier.name}</h3>
                   <div className="pricing-price-row">
-                    <span className="pricing-price">{tier.price}</span>
+                    <span className="pricing-price">{amount}</span>
+                    {per ? <span className="pricing-per">{per}</span> : null}
                   </div>
                   <p className="pricing-cadence">{tier.cadenceLabel}</p>
                 </div>
@@ -876,16 +772,15 @@ function PricingSection() {
                   <button
                     type="button"
                     className={
-                      tier.popular || isSelected
-                        ? 'btn btn-primary btn-block'
-                        : 'btn btn-secondary btn-block'
+                      tier.popular || isSelected ? 'btn btn-primary btn-block' : 'btn btn-secondary btn-block'
                     }
+                    aria-pressed={isSelected}
                     onClick={() => setSelectedTier(tier.id)}
                   >
                     {tier.ctaLabel}
                   </button>
                   <p className="pricing-prep-note">
-                    Ships as <strong>{selectedGrind}</strong> · Cancel anytime
+                    Ships as <strong>{selectedGrind}</strong>. Cancel anytime.
                   </p>
                 </div>
               </article>
@@ -899,50 +794,41 @@ function PricingSection() {
 
 function TestimonialSection() {
   return (
-    <section className="section testimonial-section" aria-label="Subscriber reviews">
+    <section className="section testimonial-section" aria-label="What subscribers say">
       <div className="container">
         <div className="testimonial-banner">
           <div className="testimonial-main">
-            <p className="section-eyebrow">IN THE CUP</p>
+            <p className="section-eyebrow">In the cup</p>
             <blockquote className="testimonial-quote">
-              “I used to bounce between three local cafés trying to find bags
-              roasted within the last two weeks. Larkspur’s Tuesday roast clock
-              changed my mornings—every V60 blooms like crazy, and the printed
-              ratio card means I never waste half a bag dialing in.”
+              I used to check three cafes to find coffee roasted in the last two
+              weeks. Larkspur roasts every Tuesday. The pour-over smells big and
+              sweet, and the recipe card means I do not waste half a bag figuring
+              it out.
             </blockquote>
             <div className="testimonial-author">
-              <div className="author-avatar" aria-hidden="true">
-                MR
-              </div>
-              <div>
-                <p className="author-name">Maya R. — Architectural Designer, Seattle</p>
-                <p className="author-meta">
-                  Regular Plan subscriber (14 months) · Brews on Hario V60 02
-                </p>
-              </div>
+              <p className="author-name">Maya R.</p>
+              <p className="author-meta">
+                Architectural designer in Seattle. Regular plan for 14 months. Brews on a Hario V60.
+              </p>
             </div>
           </div>
 
           <div className="testimonial-side-cards">
             <article className="mini-review">
               <p className="mini-review-text">
-                “The Worka Sakaro natural smelled like jasmine and ripe peach
-                the second I opened the mailer. Easily rivals $28 boutique café
-                boxes.”
+                The Worka Sakaro bag smelled like jasmine and ripe peach the
+                second I opened the mail. It tastes as good as the $28 boxes
+                from fancy cafes.
               </p>
-              <p className="mini-review-byline">
-                — Jonas K., Chicago · Café Plan
-              </p>
+              <p className="mini-review-byline">Jonas K., Chicago, Cafe plan</p>
             </article>
             <article className="mini-review">
               <p className="mini-review-text">
-                “Being able to skip a shipment from the Friday reminder email
-                without logging into a clunky portal is how every subscription
-                should work.”
+                I can skip a shipment from the Friday email. I do not have to
+                log into a clunky website. That is how a subscription should
+                work.
               </p>
-              <p className="mini-review-byline">
-                — Elena V., Austin · Regular Plan
-              </p>
+              <p className="mini-review-byline">Elena V., Austin, Regular plan</p>
             </article>
           </div>
         </div>
@@ -956,21 +842,16 @@ function FaqSection() {
     <section id="faq" className="section faq-section">
       <div className="container faq-container">
         <div className="section-header">
-          <p className="section-eyebrow">QUESTIONS & PROVENANCE</p>
-          <h2 className="section-title">Frequently asked questions</h2>
+          <p className="section-eyebrow">Questions</p>
+          <h2 className="section-title">Before you subscribe</h2>
           <p className="section-subtitle">
-            Everything you need to know about our Tuesday roast schedule, grind
-            calibration, and direct-trade sourcing.
+            Roast day, grind, shipping, and what the farmers are paid.
           </p>
         </div>
 
         <div className="faq-list">
           {FAQ_ITEMS.map((item, idx) => (
-            <details
-              key={item.question}
-              className="faq-item"
-              open={idx === 0}
-            >
+            <details key={item.question} className="faq-item" open={idx === 0}>
               <summary className="faq-summary">
                 <span>{item.question}</span>
                 <span className="faq-indicator" aria-hidden="true">
@@ -1003,16 +884,16 @@ function NewsletterSection() {
   return (
     <section className="section newsletter-section" aria-labelledby="newsletter-heading">
       <div className="container">
-        <div className="newsletter-card">
+        <div className="newsletter-layout">
           <div className="newsletter-copy">
-            <p className="section-eyebrow">FIELD DISPATCH & CUPPING LOG</p>
+            <p className="section-eyebrow">Tuesday letter</p>
             <h2 id="newsletter-heading" className="newsletter-title">
-              Receive the Tuesday Roast Dispatch
+              A short note on roast morning
             </h2>
             <p className="newsletter-description">
-              One concise letter every Tuesday morning with harvest arrival
-              notes, water-mineral targets, and early reservations on 30-bag
-              micro-lots. Never shared, unsubscribed in one click.
+              Which farms arrived, how to brew them, and first chance at lots we
+              only have 30 bags of. We never share your email. Unsubscribe in
+              one click.
             </p>
           </div>
 
@@ -1026,24 +907,23 @@ function NewsletterSection() {
                 type="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(event) => setEmail(event.target.value)}
                 placeholder="you@domain.com"
                 className="newsletter-input"
                 autoComplete="email"
               />
               <button type="submit" className="btn btn-primary">
-                Join the dispatch
+                Send me the letter
               </button>
             </form>
             {submittedEmail ? (
               <p className="newsletter-feedback" role="status">
-                You’re on the list ({submittedEmail}). Look for Lot № 045 notes
-                this Tuesday at 6:00 AM PST.
+                You are on the list ({submittedEmail}). Look for Lot 045 notes
+                this Tuesday at 6:00 AM Pacific.
               </p>
             ) : (
               <p className="newsletter-fineprint">
-                Sent Tuesdays at 06:00 PST · Includes a $6 credit toward your
-                first tasting box.
+                Tuesdays at 6:00 AM Pacific. Includes $6 toward your first box.
               </p>
             )}
           </div>
@@ -1058,14 +938,14 @@ function SiteFooter() {
     <footer className="site-footer">
       <div className="container footer-grid">
         <div className="footer-brand">
-          <p className="footer-title">Larkspur Coffee Co.</p>
+          <p className="footer-title">
+            <em>Larkspur</em> Coffee Co.
+          </p>
           <p className="footer-blurb">
-            Small-batch single-origin coffee roasted every Tuesday on SE
-            Alder Street in Portland, Oregon. Traceable to the farm gate.
+            Small-batch coffee roasted every Tuesday on SE Alder Street in
+            Portland, Oregon. You can trace every bag back to the farm.
           </p>
-          <p className="footer-address">
-            842 SE Alder St, Suite B · Portland, OR 97214
-          </p>
+          <p className="footer-address">842 SE Alder St, Suite B, Portland, OR 97214</p>
         </div>
 
         <div className="footer-col">
@@ -1075,13 +955,13 @@ function SiteFooter() {
               <a href="#how-it-works">How Tuesday roasting works</a>
             </li>
             <li>
-              <a href="#origins">Current single-origin menu</a>
+              <a href="#origins">This month&apos;s lots</a>
             </li>
             <li>
-              <a href="#pricing">Taster, Regular & Café plans</a>
+              <a href="#pricing">Taster, Regular, and Cafe</a>
             </li>
             <li>
-              <a href="#faq">Grind & shipping FAQ</a>
+              <a href="#faq">Grind and shipping</a>
             </li>
           </ul>
         </div>
@@ -1090,34 +970,37 @@ function SiteFooter() {
           <h3 className="footer-heading">Transparency</h3>
           <ul className="footer-links">
             <li>
-              <a href="#origins">2026 Farm Gate Price Ledger</a>
+              <a href="#origins">2026 farm price list</a>
             </li>
             <li>
-              <a href="#how-it-works">Loring S15 roast telemetry</a>
+              <a href="#how-it-works">Tuesday roast log</a>
             </li>
             <li>
-              <a href="#faq">Compostable valve packaging</a>
+              <a href="#faq">Valve bags you can compost</a>
             </li>
           </ul>
         </div>
 
         <div className="footer-col">
-          <h3 className="footer-heading">Roastery Hours</h3>
+          <h3 className="footer-heading">Roastery hours</h3>
           <p className="footer-schedule">
-            <strong>Production Roast:</strong> Tue 06:00–14:00 PST
+            <strong>Roast day</strong>
+            Tuesday, 6:00 AM to 2:00 PM Pacific
           </p>
           <p className="footer-schedule">
-            <strong>Public Cupping Table:</strong> Fri 10:00–12:00 PST
+            <strong>Public tasting</strong>
+            Friday, 10:00 AM to 12:00 PM Pacific
           </p>
           <p className="footer-schedule">
-            <strong>Dispatch Inquiries:</strong> hello@larkspurcoffee.co
+            <strong>Email</strong>
+            hello@larkspurcoffee.co
           </p>
         </div>
       </div>
 
       <div className="container footer-bottom">
         <p>© 2026 Larkspur Coffee Co. All rights reserved.</p>
-        <p>100% Specialty Arabica · Certified B-Corp Roastery</p>
+        <p>100% specialty arabica. Certified B Corp roastery.</p>
       </div>
     </footer>
   );
