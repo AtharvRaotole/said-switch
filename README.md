@@ -6,7 +6,7 @@ Said turns any Switch room into a bilateral execution gatekeeper for AI coding a
 
 ![Said animated room demo](docs/media/said-hero.gif)
 
-> Demo video: _link pending. Record after the live Switch path is stable._
+> Live Mattermost UI evidence (real Switch 0.31.0 bridge): [docs/LIVE_RUN.md](docs/LIVE_RUN.md). Demo video: record from the same room before the Nov 7 deadline.
 
 ## Why it matters
 
@@ -107,7 +107,25 @@ npm run dev
 - The coding worker runs in a disposable git worktree with path allow-lists, typecheck, and build gates.
 - Missing or tampered ledger: fail closed. Said does not silently recreate an empty book.
 
-Full write-up: [docs/SECURITY.md](docs/SECURITY.md) (core stream). Live operations notes: [docs/LIVE_RUN.md](docs/LIVE_RUN.md).
+Full write-up: [docs/SECURITY.md](docs/SECURITY.md). Live operations notes: [docs/LIVE_RUN.md](docs/LIVE_RUN.md). Platform bridges (Slack, Telegram, Mattermost via Switch): [docs/PLATFORM_BRIDGES.md](docs/PLATFORM_BRIDGES.md).
+
+Verify a signed ledger or agreement receipt offline:
+
+```bash
+npx said verify path/to/ledger.md --public-key <base64>
+# or
+npm run verify -- path/to/ledger.md --public-key-file .said/said.pub
+```
+
+## Live on real Switch
+
+Captured against Switch 0.31.0 + Mattermost Team Edition on a throwaway local stack. Humans posted as `riya-dev` (Riya) and `dana-client` (Dana). Full beat list, ledger ids, and CLI steps: [docs/LIVE_RUN.md](docs/LIVE_RUN.md).
+
+![Timestamped ledger quote on dispute](docs/media/live/mm-ui-riya-dispute-ledger.png)
+
+![Dual lock, handoff, and builder run](docs/media/live/mm-ui-riya-lock-handoff.png)
+
+![Complete job and DRF-002 still pending Dana](docs/media/live/mm-ui-riya-complete-drf002.png)
 
 ## Marketing site and console
 
@@ -120,11 +138,32 @@ Static deploy steps (Cloudflare Pages or GitHub Pages): [docs/DEPLOY.md](docs/DE
 
 ## Tests and coverage
 
+Measured on this tree (`release/submit`) after `npm ci`:
+
+| Check | Result |
+| --- | --- |
+| `npm run lint` | 0 errors, 0 warnings |
+| `npm run typecheck` | clean across workspaces |
+| `npm test` (with coverage) | 24 files, 239 passed |
+| Statements / Branches / Functions / Lines | 92.74% / 80.42% / 95.14% / 96.1% |
+| `@said/web` + `@said/console` production build | ok |
+| `npm run demo:offline -- --script` | story complete (AGR locked, JOB completed) |
+| Landing Lighthouse (web stream, production build) | Performance 94, Accessibility 100, Best Practices 100, SEO 100 |
+
 ```bash
 npm test
+npm run test:coverage
+npm run lint
+npm run typecheck
 ```
 
-Coverage badge: TODO (core stream will publish real numbers). Do not invent a percentage.
+Reproduce the live Mattermost story against a local throwaway Switch + Mattermost stack:
+
+```bash
+npm run live:e2e
+```
+
+Evidence and UI screenshots: [docs/LIVE_RUN.md](docs/LIVE_RUN.md).
 
 ## Tech stack
 

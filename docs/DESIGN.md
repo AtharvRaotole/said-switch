@@ -15,7 +15,7 @@ Said is a consent notary that sits in a Switch room between two parties (a devel
 
 ## 2a. Copy and visual rules (apply to every UI, chat reply, README and doc)
 
-- **No em dashes or en dashes** (`—`, `–`) anywhere a person reads them. Use periods, commas, colons or parentheses. Hyphens in compound words are fine.
+- **No em dashes or en dashes** (Unicode U+2014 / U+2013) anywhere a person reads them. Use periods, commas, colons or parentheses. Hyphens in compound words are fine.
 - **Plain language first.** A non-technical person (or a 12-year-old) must understand any screen in five seconds. Lead with what is happening in everyday words ("Waiting for Dana to agree", "Both agreed. Work can start."); technical detail (hashes, signatures, participant ids) sits underneath, labeled in plain words ("Fingerprint of the exact terms", "Tamper seal").
 - **No AI-default look.** No orange/terracotta or purple-gradient themes, no generic sparkle/robot logos, no emoji-as-UI, no lorem ipsum. Real fonts (self-hosted via `@fontsource`), a deliberate palette, crafted SVG marks, purposeful motion.
 
@@ -117,7 +117,7 @@ Said never invents prices or deadlines.
 ## 7. Switch integration (verified against switch main @ b5b33c3, server 0.31, console 0.40)
 
 - Register with `POST /agents` using a registration API key; response `{id, api_key}` (key returned once). Names: `said`, `builder`.
-- Addressing: `said` → `anyone` (admits unlinked Mattermost users; verified in `core/switch_core/addressing.py`). `builder` → `owner_and_owner_agents` (default for new agents). Switch refuses the client visibly with: `You're not permitted to direct messages to me in this room — my operator has restricted who can address me here.` (or the unclaimed-account variant).
+- Addressing: `said` → `anyone` (admits unlinked Mattermost users; verified in `core/switch_core/addressing.py`). `builder` → `owner_and_owner_agents` (default for new agents). Switch refuses the client visibly with: `You're not permitted to direct messages to me in this room, my operator has restricted who can address me here.` (or the unclaimed-account variant).
 - Events: WebSocket `GET /agents/{id}/connection/ws?connection_id=<uuid>&rooms=<roomId>&filter=all`, `Authorization: Bearer <api key>`. Frames: `connection_state` first; domain events `{event, data:{type, room_id, payload, sequence}, id}`; answer every `ping` with `{"type":"pong","cursor":n}` before processing. Message payload: `addressed, sender, sender_name, message_id, body, timestamp, thread_id, attachments`.
 - Said uses `filter=all` so it sees bypass attempts addressed to the builder. The builder uses `filter=addressed`.
 - Operations: `POST /agents/{id}/ops/{op}` with `X-Switch-Connection-Id`, args unwrapped in body, response `{result}`. Used: `connect_to_room`, `post_message`, `send_targeted_message`, `read_context`, `list_participants`, `create_room_document`, `update_room_document`, `load_internal_documents`, `update_agent_detail`.

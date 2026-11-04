@@ -1,7 +1,7 @@
 /**
  * Headless Playwright screenshots of local throwaway Mattermost channel said-larkspur.
  */
-import { chromium, type Page, type BrowserContext } from 'playwright';
+import { chromium, type Page } from 'playwright';
 import { mkdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 

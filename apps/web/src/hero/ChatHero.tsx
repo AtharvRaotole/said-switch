@@ -237,7 +237,7 @@ export function ChatHero() {
           setTyping(null);
           setSealOn(true);
           setTermStatus('idle');
-          setTerminal((prev) => {
+          setTerminal((_prev) => {
             const base = HERO_IDLE_TERMINAL.map((l, i) => ({
               id: `${runId}-seal-idle-${i}`,
               text: l.text,
