@@ -2,6 +2,7 @@
 @import '@said/brand/fonts.css';
 @import '@said/brand/tokens.css';
 @import '@said/brand/seal.css';
+@import './hero/hero.css';
 
 @theme {
   --font-display: var(--said-display);
@@ -533,5 +534,280 @@
   .seal-on-paper {
     right: -12px;
     top: -28px;
+  }
+}
+
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -40px;
+  z-index: 50;
+  padding: 0.55rem 0.85rem;
+  background: var(--said-wax);
+  color: #fff;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 650;
+}
+
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+.hero-copy {
+  max-width: 40rem;
+}
+
+.hero-proof {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-proof li {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid #35506c;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: #c5d0db;
+}
+
+.section-head {
+  margin-bottom: 1.75rem;
+}
+
+.section-muted {
+  background: color-mix(in srgb, var(--said-mist) 35%, var(--said-vellum));
+}
+
+.section-demo {
+  padding-top: 3rem;
+}
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.problem-card {
+  background: var(--said-paper);
+  border: 1px solid var(--said-line);
+  border-radius: 12px;
+  padding: 1.25rem 1.2rem;
+}
+
+.problem-card b {
+  display: block;
+  font-family: var(--said-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--said-wax);
+  margin-bottom: 0.5rem;
+}
+
+.problem-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.15rem;
+}
+
+.problem-card p {
+  margin: 0;
+  color: var(--said-ink-2);
+  font-size: 0.96rem;
+}
+
+.security-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.security-list li {
+  background: var(--said-paper);
+  border: 1px solid var(--said-line);
+  border-left: 3px solid var(--said-teal);
+  border-radius: 0 10px 10px 0;
+  padding: 0.95rem 1.1rem;
+  color: var(--said-ink-2);
+}
+
+.security-list strong {
+  color: var(--said-ink);
+}
+
+.doc-link {
+  margin: 1.25rem 0 0;
+  color: var(--said-ink-3);
+  font-size: 0.92rem;
+}
+
+.doc-link code {
+  font-family: var(--said-mono);
+  font-size: 0.85em;
+  color: var(--said-ink-2);
+}
+
+.run-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.run-card {
+  background: var(--said-paper);
+  border: 1px solid var(--said-line);
+  border-radius: 12px;
+  padding: 1.25rem 1.2rem 1.35rem;
+}
+
+.run-card b {
+  display: block;
+  font-family: var(--said-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--said-wax);
+  margin-bottom: 0.45rem;
+}
+
+.run-card h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+}
+
+.run-card p {
+  margin: 0.85rem 0 0;
+  color: var(--said-ink-2);
+  font-size: 0.95rem;
+}
+
+.code-block {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  background: var(--said-night);
+  color: #d7e2ec;
+  border-radius: 10px;
+  font-family: var(--said-mono);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.faq {
+  display: grid;
+  gap: 0.65rem;
+  max-width: 48rem;
+}
+
+.faq details {
+  background: var(--said-paper);
+  border: 1px solid var(--said-line);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+}
+
+.faq summary {
+  cursor: pointer;
+  font-weight: 650;
+  color: var(--said-ink);
+}
+
+.faq details p {
+  margin: 0.65rem 0 0.15rem;
+  color: var(--said-ink-2);
+  font-size: 0.96rem;
+}
+
+.arch {
+  margin: 0;
+  background: var(--said-paper);
+  border: 1px solid var(--said-line);
+  border-radius: 14px;
+  padding: 1rem 0.75rem 1.1rem;
+  overflow-x: auto;
+}
+
+.arch-svg {
+  display: block;
+  width: 100%;
+  min-width: 640px;
+  height: auto;
+}
+
+.arch-title {
+  fill: #0b1c2c;
+  font-family: var(--said-sans), system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.arch-sub {
+  fill: #3d4f61;
+  font-family: var(--said-sans), system-ui, sans-serif;
+  font-size: 13px;
+}
+
+.arch-title-inv {
+  fill: #eef3f7;
+  font-family: var(--said-sans), system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.arch-sub-inv {
+  fill: #c5d0db;
+  font-family: var(--said-sans), system-ui, sans-serif;
+  font-size: 13px;
+}
+
+.arch-tiny {
+  font-family: var(--said-mono), ui-monospace, monospace;
+  font-size: 11px;
+}
+
+.arch figcaption {
+  margin: 0.75rem 0.5rem 0;
+  color: var(--said-ink-3);
+  font-size: 0.88rem;
+  max-width: 52rem;
+}
+
+.foot-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr;
+  gap: 2rem;
+}
+
+.foot-grid a {
+  color: #eef3f7;
+}
+
+.foot-label {
+  margin: 0 0 0.25rem;
+  font-family: var(--said-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8fa0b2;
+}
+
+.site-foot p {
+  margin: 0.55rem 0 0;
+}
+
+@media (max-width: 900px) {
+  .problem-grid,
+  .run-grid,
+  .foot-grid {
+    grid-template-columns: 1fr;
   }
 }
