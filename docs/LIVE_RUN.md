@@ -1,78 +1,114 @@
-# Live Switch run evidence (box, 2026-11-03 evening ET)
+# Live Switch + Mattermost run evidence
 
-This documents a real Switch 0.31.0 stack on the engineering box, not mock-switch.
+Box local time zone: America/New_York (ET). Captured during the 2026-11-03 evening / 2026-11-04 early-morning ET window.
 
-## What ran
+This is a real Switch 0.31.0 stack with a real Mattermost Team Edition bridge. Humans posted through the Mattermost API as throwaway accounts. No Atharv clicks were required for the story itself.
 
-- Docker static binary 27.5.1 with `vfs` storage and `--iptables=false` (box has no full iptables bridge path).
-- Compose from sandbox-quantum/switch standalone compose 0.31.0 under `/workspace/switch-live`, overridden to host networking because bridge DNS failed without iptables.
-- Containers: `postgres:16-alpine`, `ghcr.io/sandbox-quantum/switch-core:0.31.0`, `mattermost/mattermost-team-edition:11.9.0`.
-- Gateway profile disabled (port 3000 conflict); Switch HTTP UI/API on `:8000`.
-- `listeners_gate` LISTEN unhealthy is expected when `core_replicas=1` and is non-gating.
+## Stack
 
-## Agents and room
+| Piece | Where |
+| --- | --- |
+| Compose | `/workspace/switch-live` (host-network overlay; box lacks full iptables bridge DNS) |
+| Switch | `ghcr.io/sandbox-quantum/switch-core:0.31.0` on `http://127.0.0.1:8000` |
+| Mattermost | `mattermost/mattermost-team-edition:11.9.0` on `http://127.0.0.1:8065` |
+| Postgres | `postgres:16-alpine` |
+| Said notary | `http://127.0.0.1:7410` with `SAID_HOME=.said-live` |
+| Said builder | `http://127.0.0.1:7420`, `SAID_WORKER=scripted` |
+| Client site | `work/client-site` on `http://127.0.0.1:5173` |
+
+Local throwaway credentials live only under `/workspace/switch-live/.env` and `live-e2e-secrets.json` (gitignored). Never commit them.
+
+## Bridged room
 
 | Item | Value |
 | --- | --- |
-| Room id | `8acbcc8a-16bb-4d3b-843f-4e1fe1c3ebc4` |
-| Said agent id | `8727bf4e-…` (see `/workspace/switch-live/said-agents.json` on the box, not committed) |
-| Builder agent id | `70dd1521-…` |
-| Ledger document id | `7a361f55-8da7-47e7-be7e-2ac4b3d05ced` |
-| Switch version | `0.31.0` (agent-protocol speaks 9 / accepts 1) |
+| Switch room id | `10f9e293-f685-4c84-87f6-3650dc96a846` |
+| Room name | Said Larkspur |
+| Bridge id | `34c4799a-6d32-4260-83f3-5c88b78a46b5` |
+| Bridge type | mattermost |
+| External channel | `mattermost://127.0.0.1:8065/switch/channels/said-larkspur` |
+| Ledger document id | `f492ffcb-4852-4e89-98f9-4fbb5528a90b` |
+| Said agent id | `8727bf4e-ba2e-4697-8c4f-c740b6a8b3f8` |
+| Builder agent id | `70dd1521-0201-42c2-b7f0-53176b52a053` |
 
-Registration used a local registration key from the live Switch `.env` (never committed). Agents were registered with `POST /agents`. Ops required an open WebSocket (`/agents/{id}/connection/ws`) plus `x-switch-connection-id`. Direct `POST /agents/{id}/message` works without a WS connection.
+Enrollment codes (single-use, already redeemed in this run): Riya `S5G3H5Y7`, Dana `CYU7AUFZ`.
 
-## Probe results (text evidence)
+Live message senders are Matrix actor ids such as `@switch-mattermost-{bridge}-{username}:localhost`. Said matches those to roster parties by id or by username (`actorMatches` in `@said/switch-client`).
 
-From `scripts/live-ws-probe.ts` against real Switch:
+## Story beats that actually ran
 
-```
-opening ws connectionId=8f2bbffd-706d-4e2b-b953-1c5fac3c93a1 room=8acbcc8a-16bb-4d3b-843f-4e1fe1c3ebc4
-STATE {"state":"open",...,"serverVersion":{"version":"0.31.0",...}}
-connect_to_room ok
-post_message event_id=sw_a99f78f7acb849e5ac31029872497eb2
-create_room_document document_id=7a361f55-8da7-47e7-be7e-2ac4b3d05ced
-update_room_document by creator: {"document_id":"7a361f55-8da7-47e7-be7e-2ac4b3d05ced","status":"ok"}
-load_internal_documents count=1
-```
+Driven by posting as Mattermost users `user` (Riya / developer) and `dana-client` (Dana / client):
 
-From `scripts/live-doc-auth-probe.ts` (creator-only room documents):
+1. Dana directly commands `@builder Also add dark mode while you're in there` → Builder refuses (chat is not a signed start authorization).
+2. Scope lands as **DRF-001** with terms `+2 days, +$400`, terms hash prefix `65c6438c9b`.
+3. Riya accepts; Dana disputes (`Wait, I thought we agreed dark mode was free?`).
+4. Said replies with a timestamped ledger quote: status PENDING, terms on record, who accepted, who has not, and the earlier `@builder` bypass request time.
+5. Dana accepts → dual lock → **AGR-001** → signed handoff → scripted builder runs in a worktree.
+6. Builder completes **JOB-AGR-001-1**, commit `2e1e3d9` on `work/client-site` (dark mode over baseline `5101d11`).
+7. Post-complete `Amend AGR-001` is refused (`Open a new proposal instead of amending it`).
+8. Mid-engagement change request: `Propose: add a contrast-safe theme toggle | Terms: +1 day, +$150` → **DRF-002 v1** PENDING. Riya accepts; Said waits on Dana. Dual signature required before anything starts.
+
+## Creator-only ledger document
+
+Against a non-bridged probe room earlier the same evening:
 
 ```
 PASS: builder update rejected: Switch API 403: Agent 70dd1521-… did not create document 7a361f55-…
 PASS: builder delete rejected: Switch API 403: Agent 70dd1521-… did not create document 7a361f55-…
-PASS: said update ok: {"document_id":"7a361f55-8da7-47e7-be7e-2ac4b3d05ced","status":"ok"}
+PASS: said update ok
 ```
 
-That is the Switch primitive judges care about: agent-owned room state that a non-creator agent cannot edit. Human Mattermost UI edit rejection was not separately exercised in this run (agent non-creator 403 is proven).
+Against the live bridged Larkspur ledger, builder can `post_message` after `connect_to_room`, but `update_room_document` / `create_room_document` / `delete_room_document` are hard-rejected (Switch 0.31.0 returns `400 Not connected to a room` for those non-creator document writes on this bridged room). Said (creator) can update. Evidence: `/workspace/said-live-shots/ledger-edit-reject.json`, `builder-write-probe.json`.
 
-## Full bilateral chat E2E on this box
+Do not overwrite the live ledger from probes as Said with placeholder markdown. That removes the `said-ledger` fence and halts the notary. `scripts/live-doc-auth-probe.ts` is builder-only for that reason.
 
-A full Mattermost human UI accept/refuse story was not completed overnight because this box has no interactive Mattermost browser session for two human accounts. The agent protocol path (register, WS, connect, post, document CRUD, creator-only 403) is proven live. Offline E2E with mock-switch + scripted worker covers draft → refuse bypass → dual accept → handoff → builder execute → dispute quote.
+## Evidence paths (box)
 
-## Exact commands used (box)
+| Artifact | Path |
+| --- | --- |
+| Mattermost API transcript | `/workspace/said-live-shots/mm-transcript.json` |
+| HTML transcript (for screenshots) | `/workspace/said-live-shots/mm-transcript.html` |
+| Transcript screenshot | `/workspace/said-live-shots/mm-transcript.png` |
+| Mattermost login screenshot | `/workspace/said-live-shots/mm-login.png` |
+| Notary state snapshot | `/workspace/said-live-shots/notary-state.json` |
+| Story post ids | `/workspace/said-live-shots/story-posts.json` |
+| Change-request note | `/workspace/said-live-shots/story-mid.json` |
+| Ledger markdown restore copy | `/workspace/said-live-shots/ledger-restored.md` |
+| Builder worktree commit stat | `/workspace/said-live-shots/builder-worktree.txt` |
+| Switch container log tail | `/workspace/said-live-shots/switch-logs-tail.txt` |
+| Doc-edit reject probe | `/workspace/said-live-shots/ledger-edit-reject.json` |
+
+Committed media copies (sanitized, no secrets): `docs/media/live/`.
+
+## Re-run
 
 ```bash
-# Docker daemon (static)
-dockerd --storage-driver=vfs --iptables=false ...
-# Compose (host network override)
-cd /workspace/switch-live
-docker compose -f standalone-docker-compose.yml -f docker-compose.host.yml up -d postgres switch mattermost
-# Probes from said-core worktree
-npx tsx scripts/live-ws-probe.ts
-npx tsx scripts/live-doc-auth-probe.ts
+# Stack must already be up (compose under /workspace/switch-live). Said: SAID_HOME=.said-live npm run dev
+cd /workspace/said-core
+./scripts/live-e2e.sh --capture-only   # refresh transcript + state
+# or drive story posts again (best after npm run reset + re-enroll on a fresh channel):
+./scripts/live-e2e.sh
+# TypeScript entry:
+npm run live:e2e -- --capture-only
 ```
 
-## Mac plug-and-play (morning)
+`scripts/live-e2e.sh` leaves Switch, Mattermost, and Said running.
 
-See `scripts/mac/README.md` and `docs/ENGINEERING_NOTES.md`. Atharv supplies: Docker Desktop running, Switch Console local server, registration API key, two Mattermost accounts, room id. Then:
+Fresh bootstrap outline (throwaway MM):
 
-```bash
-cp .env.example .env   # fill SWITCH_URL, SWITCH_REGISTRATION_KEY, SAID_ROOM_ID
-npm install
-npm run setup && npm run register && npm run enroll -- --developer "…" --client "…" --wait
-npm run doctor
-npm run dev
-```
+1. `docker compose -f standalone-docker-compose.yml -f docker-compose.host.yml up -d postgres switch mattermost`
+2. Create admin + humans via Mattermost API (or first-run wizard); create team/channel.
+3. Connect the channel in Switch as a Mattermost bridge room; invite `@said` and `@builder`.
+4. `npm run setup && npm run register` with local registration key; put room id in `.said-live/config.json`.
+5. Set addressing-policy to anyone / owner_and_owner_agents via gateway if ops refuse.
+6. `npm run enroll -- --developer "Riya" --client "Dana" --wait` and redeem codes from each human account.
+7. `SAID_HOME=.said-live SAID_WORKER=scripted npm run dev`
+8. Write `live-e2e-secrets.json` (gitignored) with `channel_id` and passwords; run `./scripts/live-e2e.sh`.
 
-Or one-shot helper: `scripts/mac/live-checklist.sh` (prints the checklist; does not invent secrets).
+## Earlier non-bridge agent protocol probe
+
+Room `8acbcc8a-16bb-4d3b-843f-4e1fe1c3ebc4` still documents WS + ops + creator-only 403 via `scripts/live-ws-probe.ts` / the prior `live-doc-auth.json` under `/workspace/switch-live`.
+
+## Mac plug-and-play
+
+See `scripts/mac/README.md` and `docs/ENGINEERING_NOTES.md`. Atharv supplies Docker Desktop, Switch Console, registration API key, two Mattermost accounts, and the room id.

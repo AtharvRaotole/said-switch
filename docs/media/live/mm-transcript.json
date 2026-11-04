@@ -1,0 +1,416 @@
+[
+  {
+    "id": "kkqa7fdze7dx5kt3ubhk8kg6hh",
+    "user": "admin",
+    "message": "admin joined the channel.",
+    "create_at": 1793760844661
+  },
+  {
+    "id": "18h9nukxdjfrpr1qf87z7q3ibc",
+    "user": "admin",
+    "message": "user added to the channel by admin.",
+    "create_at": 1793760844679
+  },
+  {
+    "id": "yqgik9rgzpnc3k1r9mrt1n1ooc",
+    "user": "admin",
+    "message": "dana-client added to the channel by admin.",
+    "create_at": 1793760844686
+  },
+  {
+    "id": "8x73drzzw7rcjb85ixufoi5g8h",
+    "user": "admin",
+    "message": "said added to the channel by admin.",
+    "create_at": 1793760844696
+  },
+  {
+    "id": "tm7y99pdqpgzzg7z8dfz9c8qfc",
+    "user": "said",
+    "message": "Hey there! Tag @said if you need me.",
+    "create_at": 1793760845122
+  },
+  {
+    "id": "iz4scpp7rfyepjmfyccsu3rjrr",
+    "user": "user",
+    "message": "!invite-agent @builder",
+    "create_at": 1793760857410
+  },
+  {
+    "id": "hfbnempcsb8iixnjaydqy7jnow",
+    "user": "admin",
+    "message": "builder added to the channel by admin.",
+    "create_at": 1793760857504
+  },
+  {
+    "id": "m5ow931be7rq3rkfdytn9uiw8w",
+    "user": "builder",
+    "message": "Hey! Ping @builder and I'll jump in.",
+    "create_at": 1793760857508
+  },
+  {
+    "id": "hknguiimn3n33erojr9gt3regr",
+    "user": "admin",
+    "message": "switch-admin added to the channel by admin.",
+    "create_at": 1793760857543
+  },
+  {
+    "id": "dmaizw3os3nctc6h3j547zyx1c",
+    "user": "switch-admin",
+    "message": "Added **builder** to this room.",
+    "create_at": 1793760857551
+  },
+  {
+    "id": "349xy7cdojrktn4xmytdx7a8iy",
+    "user": "user",
+    "message": "@said enroll PNU6W4JR",
+    "create_at": 1793760953253
+  },
+  {
+    "id": "3e3kwz9nubb68bw6ehru15yqwr",
+    "user": "said",
+    "message": "Said could not confirm this account on the room roster, so nothing was recorded. Send the code again.",
+    "create_at": 1793760953423
+  },
+  {
+    "id": "mrsz679kai8u9nzeizs7fk3n1w",
+    "user": "dana-client",
+    "message": "@said enroll WH2WS6DF",
+    "create_at": 1793760955262
+  },
+  {
+    "id": "qiy8hcsq13nyxkneogyzdix74h",
+    "user": "said",
+    "message": "Said could not confirm this account on the room roster, so nothing was recorded. Send the code again.",
+    "create_at": 1793760955426
+  },
+  {
+    "id": "1a7kce4nbpdzffdtkj7j677mpo",
+    "user": "user",
+    "message": "@said enroll S5G3H5Y7",
+    "create_at": 1793761225324
+  },
+  {
+    "id": "raccishekbys3dc9mhgxxp94na",
+    "user": "said",
+    "message": "Riya is enrolled. Waiting for Dana to enroll from their own account.",
+    "create_at": 1793761225494
+  },
+  {
+    "id": "9e6rw49ef3d8zgqdqh7cgbhg4e",
+    "user": "dana-client",
+    "message": "@said enroll CYU7AUFZ",
+    "create_at": 1793761228333
+  },
+  {
+    "id": "tfgotezwpffyfj88p4c8ffrcir",
+    "user": "said",
+    "message": "\ud83d\udcc4 created room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761228509
+  },
+  {
+    "id": "ibei7nuekidy5xc5txtzym83qh",
+    "user": "said",
+    "message": "Riya and Dana are both enrolled. The signed ledger is now in this room. Work starts only when both of you accept the same draft.",
+    "create_at": 1793761228554
+  },
+  {
+    "id": "renc5obafjdtpkei38p4suaa4r",
+    "user": "dana-client",
+    "message": "@builder Also add dark mode while you're in there",
+    "create_at": 1793761269807
+  },
+  {
+    "id": "eipkf63ssj8d5dafko46xsjr8r",
+    "user": "builder",
+    "message": "@said I did not start work. That message is not from Said.",
+    "create_at": 1793761269967
+  },
+  {
+    "id": "eaf68es8k7buueb9a1fbxjhk4a",
+    "user": "said",
+    "message": "\ud83d\udcc4 updated room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761270008
+  },
+  {
+    "id": "yeyguirx3igi5gtzz6asrpc5po",
+    "user": "said",
+    "message": "Logged as **DRF-001 v0 \u00b7 Add dark mode** (needs terms). @builder only starts on scope both of you accept. Nothing has started. Riya, set terms with `Terms DRF-001: <time and price>`.",
+    "create_at": 1793761270033
+  },
+  {
+    "id": "1tsa3qtjs78r8keor1s91a84fy",
+    "user": "builder",
+    "message": "@said I did not start work. A chat message is not permission to change the site. Work starts only from a signed start authorization by Said.",
+    "create_at": 1793761270098
+  },
+  {
+    "id": "gjhrswk3ubywjgz4j5yo4b5wgc",
+    "user": "user",
+    "message": "Terms DRF-001: +2 days, +$400",
+    "create_at": 1793761271818
+  },
+  {
+    "id": "ny37toeb57nbunob5wtgwrq47c",
+    "user": "said",
+    "message": "\ud83d\udcc4 updated room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761271924
+  },
+  {
+    "id": "4gac38diifrep8qdyfmxqf1ddh",
+    "user": "said",
+    "message": "**DRF-001 v1 \u00b7 Add dark mode**. Terms: +2 days, +$400 \u00b7 hash `65c6438c9b`. Accept with `Accept DRF-001 v1`. Riya \u2610 \u00b7 Dana \u2610",
+    "create_at": 1793761271964
+  },
+  {
+    "id": "innn9kadcirjuxgyd8yxwz9hpy",
+    "user": "user",
+    "message": "Accept DRF-001 v1",
+    "create_at": 1793761273829
+  },
+  {
+    "id": "3zhmr3ftzbgg9mqn834wtp39bc",
+    "user": "said",
+    "message": "\ud83d\udcc4 updated room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761273937
+  },
+  {
+    "id": "mqqrtgzdxfdz9pbbwwtzbgw51o",
+    "user": "said",
+    "message": "Recorded **Riya**'s acceptance of **DRF-001 v1** at 2026-11-04 03:01:13 UTC. Waiting on **Dana**. Nothing has started.",
+    "create_at": 1793761273981
+  },
+  {
+    "id": "jxu7485tofd5dmu6pnt7hjzzka",
+    "user": "dana-client",
+    "message": "Wait, I thought we agreed dark mode was free?",
+    "create_at": 1793761275838
+  },
+  {
+    "id": "bzm6dezthib45xingc9m58yqhr",
+    "user": "said",
+    "message": "\ud83d\udcc4 updated room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761275938
+  },
+  {
+    "id": "tzcibqs3438gdbtt7oo8j97czr",
+    "user": "said",
+    "message": "**DRF-001 v1 \u00b7 Add dark mode** is **not agreed.** Status: PENDING.\nTerms on record: \u201c+2 days, +$400\u201d \u00b7 hash `65c6438c9b`, set by **Riya** at 2026-11-04 03:01:11 UTC: \u201cTerms DRF-001: +2 days, +$400\u201d\n- **Riya** (developer) accepted v1 at 2026-11-04 03:01:13 UTC: \u201cAccept DRF-001 v1\u201d\n- **Dana** (client): no acceptance on record.\nRequested by **Dana** at 2026-11-04 03:01:09 UTC: \u201c@builder Also add dark mode while you're in there\u201d\nNothing is agreed until both accept with `Accept DRF-001 v1`.",
+    "create_at": 1793761275996
+  },
+  {
+    "id": "9fpr8cxs6tftxcbq7k7q8uuiqy",
+    "user": "builder",
+    "message": "@said I did not start work. A chat message is not permission to change the site. Work starts only from a signed start authorization by Said.",
+    "create_at": 1793761276066
+  },
+  {
+    "id": "4zss1igsjibp5gcjy3askx1nfa",
+    "user": "dana-client",
+    "message": "I accept DRF-001 v1",
+    "create_at": 1793761281846
+  },
+  {
+    "id": "5fopwu6w4pruin5kpoxq1i8h5e",
+    "user": "said",
+    "message": "\ud83d\udcc4 updated room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761281954
+  },
+  {
+    "id": "8kdnrktkyif83pagak1f5j1shy",
+    "user": "said",
+    "message": "\ud83d\udd12 **AGR-001 locked.** Both accepted **DRF-001 v1** (hash `65c6438c9b`). Riya 03:01:13 \u00b7 Dana 03:01:21 UTC. Handing off to @builder.",
+    "create_at": 1793761282010
+  },
+  {
+    "id": "6rzf8a39gtdg9d5eigzbfrgmoy",
+    "user": "said",
+    "message": "@builder @builder Agreement AGR-001 is locked. Start authorization follows.\n```said-start\n{\"agreementId\":\"AGR-001\",\"expiresAt\":1793761882000,\"issuedAt\":1793761282000,\"jobId\":\"JOB-AGR-001-1\",\"keyId\":\"said-notary-2026-11-04\",\"ledgerDocumentId\":\"f492ffcb-4852-4e89-98f9-4fbb5528a90b\",\"ledgerRevision\":6,\"roomId\":\"10f9e293-f685-4c84-87f6-3650dc96a846\",\"signature\":\"qY612rFakI/lfOj9Oaj5H88NTw9nNbojBEbZXBCKoc+7ajdtR5UdTSWFurrPs2Y4yuAOUc69nP2rXZFc5NLNDg==\",\"termsHash\":\"65c6438c9b870326cd5285f40b64d236cfc18225d37f372f211c1d49886a3f75\",\"type\":\"said.start/v1\"}\n```",
+    "create_at": 1793761282070
+  },
+  {
+    "id": "8mndsc9xai8kzguejnxqx8oncc",
+    "user": "builder",
+    "message": "Both approvals check out. Starting JOB-AGR-001-1 for AGR-001.",
+    "create_at": 1793761282210
+  },
+  {
+    "id": "165gezs677dyirbrc9fx4qbfqr",
+    "user": "builder",
+    "message": "@said Job JOB-AGR-001-1 for AGR-001 is running.\n```said-receipt\n{\"agreementId\":\"AGR-001\",\"at\":1793761282185,\"baseCommit\":null,\"changedPaths\":[],\"checks\":[],\"error\":null,\"jobId\":\"JOB-AGR-001-1\",\"keyId\":\"said-builder-2026-11-04\",\"resultCommit\":null,\"roomId\":\"10f9e293-f685-4c84-87f6-3650dc96a846\",\"signature\":\"am7J/ZZ7IgPNZ1MsNLwmYWSEG3FcP+VBdHfzszUlgGPWcKTOeuDJOCOTlFOwMyg/LFbttLj4uFyXxebQdXDfBA==\",\"status\":\"RUNNING\",\"type\":\"said.receipt/v1\",\"worker\":\"scripted\"}\n```",
+    "create_at": 1793761282274
+  },
+  {
+    "id": "8one1db957yrjcujx59hdiq89w",
+    "user": "builder",
+    "message": "Preparing an isolated work folder.",
+    "create_at": 1793761282336
+  },
+  {
+    "id": "4d33moa883g3xykpd1px7maiwy",
+    "user": "said",
+    "message": "\ud83d\udcc4 updated room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761282379
+  },
+  {
+    "id": "c63gbxjzwig95xdfwkhrk484qc",
+    "user": "builder",
+    "message": "Running the scripted worker (no AI).",
+    "create_at": 1793761282408
+  },
+  {
+    "id": "e7jc9cc6n3rnjdksqmjwt1wkjw",
+    "user": "said",
+    "message": "**AGR-001** \u00b7 `JOB-AGR-001-1` is running (worker: scripted).",
+    "create_at": 1793761282454
+  },
+  {
+    "id": "gf6mmht3ftrhixkd8yrkbkcd1w",
+    "user": "builder",
+    "message": "Checking that only allowed files changed.",
+    "create_at": 1793761282478
+  },
+  {
+    "id": "itwkobrmatg9ig5qrnrzw39pew",
+    "user": "builder",
+    "message": "Running typecheck.",
+    "create_at": 1793761282503
+  },
+  {
+    "id": "d1dig91tipnf9xhabbfc651uwh",
+    "user": "builder",
+    "message": "Running the production build.",
+    "create_at": 1793761283822
+  },
+  {
+    "id": "dr193gxw8fdiuxd85k8fxq37ny",
+    "user": "builder",
+    "message": "Checking the agreement is still locked.",
+    "create_at": 1793761284255
+  },
+  {
+    "id": "6dfmd7gdr3nbpe7rofdy8bhuky",
+    "user": "builder",
+    "message": "Applying the change onto the site.",
+    "create_at": 1793761284311
+  },
+  {
+    "id": "87zn7hqjj3yrjxf6qw9wwcau8a",
+    "user": "builder",
+    "message": "@said Job JOB-AGR-001-1 for AGR-001 is done.\n```said-receipt\n{\"agreementId\":\"AGR-001\",\"at\":1793761284325,\"baseCommit\":\"5101d1105737ce53533d5ca503909a0305c1b91d\",\"changedPaths\":[\"src/App.tsx\",\"src/styles.css\"],\"checks\":[{\"detail\":\"> larkspur-site@1.0.0 typecheck\\n> tsc --noEmit -p tsconfig.json\",\"durationMs\":1287,\"name\":\"typecheck\",\"ok\":true},{\"detail\":\"> larkspur-site@1.0.0 build\\n> vite build\\n\\nvite v8.3.5 building client environment for production...\\ntransforming...\\n\u2713 19 modules transformed.\\nrendering chunks...\\ncomputing gzip size...\\ndist/index.html                                                     1.41 kB \u2502 gzip:  0.71 kB\\ndist/assets/hanken-grotesk-vietnamese-wght-normal-CHiFlh_0.woff2    9.32 kB\\ndist/assets/hanken-grotesk-latin-ext-wght-normal-Dg-wlmqe.woff2    19.58 kB\\ndist/assets/fraunces-vietnamese-full-normal-7BpKI3vF.woff2         34.30 kB\\ndist/assets/hanken-grotesk-latin-wght-normal-CaVRRdDk.woff2        34.70 kB\\ndist/assets/fraunces-vietnamese-full-italic-BHALq22K.woff2         40.23 kB\\ndist/assets/fraunces-latin-ext-full-normal-YHFkNujK.woff2         105.24 kB\\ndist/assets/fraunces-latin-full-normal-CFFu7zhK.woff2             121.01 kB\\ndist/assets/fraunces-latin-ext-full-italic-B8-t4Nou.woff2         130.09 kB\\ndist/assets/fraunces-latin-full-italic-D2JnYqd-.woff2             149.72 kB\\ndist/assets/index-Cg1C1hPe.css                                     30.65 kB \u2502 gzip:  7.92 kB\\ndist/assets/index-B_Yv3ec9.js                                     248.38 kB \u2502 gzip: 76.83 kB\\n\\n\u2713 built in 142ms\",\"durationMs\":398,\"name\":\"build\",\"ok\":true}],\"error\":null,\"jobId\":\"JOB-AGR-001-1\",\"keyId\":\"said-builder-2026-11-04\",\"resultCommit\":\"2e1e3d9c7a3648d3a77131aad6093b1b7f1a9950\",\"roomId\":\"10f9e293-f685-4c84-87f6-3650dc96a846\",\"signature\":\"cb3f6WamHhnJqqfULHVCcIbApdTCigXxwr4GWsvzdCmGiLfmEXBexxtkvaYYEAaJL7yVXYtUEVIpC8LVQCxrCA==\",\"status\":\"COMPLETED\",\"type\":\"said.receipt/v1\",\"worker\":\"scripted\"}\n```",
+    "create_at": 1793761284383
+  },
+  {
+    "id": "mgiy9e4tqiynfr6beez15ge7ny",
+    "user": "builder",
+    "message": "Sent the receipt to Said.",
+    "create_at": 1793761284422
+  },
+  {
+    "id": "5fdg8a16fjn3t8ap3o554ur3sc",
+    "user": "said",
+    "message": "\ud83d\udcc4 updated room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761284459
+  },
+  {
+    "id": "tnyjisx583bj9nsimj3mc9xt7c",
+    "user": "said",
+    "message": "**AGR-001** \u00b7 `JOB-AGR-001-1` completed, commit `2e1e3d9` \u00b7 2 files: src/App.tsx, src/styles.css \u00b7 checks: typecheck passed, build passed.",
+    "create_at": 1793761284500
+  },
+  {
+    "id": "nirih1hn8j8quqbi7qwifhd3wo",
+    "user": "dana-client",
+    "message": "Amend AGR-001: also add a contrast-safe toggle | Terms: +1 day, +$150",
+    "create_at": 1793761284860
+  },
+  {
+    "id": "3wgg3rcjopd3jxw18tp59awyfa",
+    "user": "said",
+    "message": "**AGR-001** already completed as JOB-AGR-001-1. Open a new proposal instead of amending it.",
+    "create_at": 1793761284951
+  },
+  {
+    "id": "yc8fmgnkutnktytc7xykf3986w",
+    "user": "dana-client",
+    "message": "Propose: add a contrast-safe theme toggle | Terms: +1 day, +$150",
+    "create_at": 1793761326901
+  },
+  {
+    "id": "1oo7e5oir7nc5coy89k5aobkco",
+    "user": "said",
+    "message": "\ud83d\udcc4 updated room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761327000
+  },
+  {
+    "id": "jd1ksh8tefggbkfxnnahdmobch",
+    "user": "said",
+    "message": "**DRF-002 v1 \u00b7 add a contrast-safe theme toggle**. Terms: +1 day, +$150 \u00b7 hash `e8f693cf7d`. Accept with `Accept DRF-002 v1`. Riya \u2610 \u00b7 Dana \u2610",
+    "create_at": 1793761327039
+  },
+  {
+    "id": "f7xkbng14igmx8bmqhb3x8e54e",
+    "user": "user",
+    "message": "Accept DRF-002 v1",
+    "create_at": 1793761329908
+  },
+  {
+    "id": "9oqmoj9jopn95g5miz4mysuwra",
+    "user": "said",
+    "message": "\ud83d\udcc4 updated room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761330005
+  },
+  {
+    "id": "msaebrzmfbyotg7mt96mrcwaow",
+    "user": "said",
+    "message": "Recorded **Riya**'s acceptance of **DRF-002 v1** at 2026-11-04 03:02:09 UTC. Waiting on **Dana**. Nothing has started.",
+    "create_at": 1793761330047
+  },
+  {
+    "id": "ruya1ddmmbbj9cx1sdyqjeitno",
+    "user": "said",
+    "message": "\ud83d\udcc4 updated room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761492981
+  },
+  {
+    "id": "q6cojwbyrprexnpqcjxfhnh69e",
+    "user": "said",
+    "message": "Said has stopped authorizing. The ledger is missing, unreadable, or the signature does not check. Nothing new will be approved, and Said will not create a replacement ledger. Reason: The ledger document is malformed. No said-ledger block found",
+    "create_at": 1793761496508
+  },
+  {
+    "id": "df35cw5g3byrfnpypxzqs5y95a",
+    "user": "user",
+    "message": "@said status",
+    "create_at": 1793761496959
+  },
+  {
+    "id": "yysup57hsi89pkezdhw5ycqpha",
+    "user": "said",
+    "message": "Said has stopped authorizing. The ledger is missing, unreadable, or the signature does not check. Nothing new will be approved, and Said will not create a replacement ledger. Reason: The ledger document is malformed. No said-ledger block found",
+    "create_at": 1793761497068
+  },
+  {
+    "id": "ku915cktt7bj9jw1gsibtaqteo",
+    "user": "said",
+    "message": "Said has stopped authorizing. The ledger is missing, unreadable, or the signature does not check. Nothing new will be approved, and Said will not create a replacement ledger. Reason: The ledger document is malformed. No said-ledger block found",
+    "create_at": 1793761527282
+  },
+  {
+    "id": "hoahbec3338e9kce79opo6gfwh",
+    "user": "builder",
+    "message": "builder write-probe (ignore)",
+    "create_at": 1793761543204
+  },
+  {
+    "id": "qsphboc5xtdhd8g9b3fj3gektc",
+    "user": "said",
+    "message": "Said has stopped authorizing. The ledger is missing, unreadable, or the signature does not check. Nothing new will be approved, and Said will not create a replacement ledger. Reason: The ledger document is malformed. No said-ledger block found",
+    "create_at": 1793761545998
+  },
+  {
+    "id": "nu8mtceamif3ukwp5hjsxkwxwa",
+    "user": "said",
+    "message": "\ud83d\udcc4 updated room document \u201cSaid Ledger\u201d.",
+    "create_at": 1793761596820
+  }
+]

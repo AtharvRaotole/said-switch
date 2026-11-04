@@ -52,14 +52,24 @@ export function attemptOf(agreementId: string, jobId: string): number | null {
  */
 export async function authorizeStart(input: {
   senderId: string;
+  senderName?: string | null;
   saidAgentId: string;
+  /** Agent name; used when live Switch message.sender is a Matrix actor id rather than the agent UUID. */
+  saidAgentName?: string | null;
   body: string;
   notaryPublicKey: string;
   expectedRoomId: string;
   now: number;
   loadLedgerDocument: (documentId: string) => Promise<string>;
 }): Promise<AuthorizedStart | RejectedStart> {
-  if (input.senderId !== input.saidAgentId) {
+  const fromSaid =
+    input.senderId === input.saidAgentId ||
+    Boolean(
+      input.saidAgentName &&
+        input.senderName &&
+        input.senderName.trim().toLowerCase() === input.saidAgentName.trim().toLowerCase(),
+    );
+  if (!fromSaid) {
     return { ok: false, reason: 'I did not start work. That message is not from Said.' };
   }
 

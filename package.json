@@ -25,7 +25,8 @@
     "demo:offline": "tsx scripts/demo-offline.ts",
     "lint": "eslint .",
     "test:coverage": "vitest run --coverage",
-    "verify": "tsx packages/cli/src/cli.ts"
+    "verify": "tsx packages/cli/src/cli.ts",
+    "live:e2e": "tsx scripts/live-e2e.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -218,7 +218,9 @@ export function createBuilder(opts: BuilderOptions): BuilderController {
 
     const auth = await authorizeStart({
       senderId: message.senderId,
+      senderName: message.senderName,
       saidAgentId: opts.config.said.agentId,
+      saidAgentName: opts.config.said.name,
       body: message.body,
       notaryPublicKey: opts.notaryPublicKey,
       expectedRoomId: opts.config.roomId,

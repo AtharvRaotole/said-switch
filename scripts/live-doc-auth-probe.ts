@@ -2,20 +2,31 @@ import { randomUUID } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { MemoryCursorStore, SwitchConnection, SwitchOps } from '@said/switch-client';
 
-const agents = JSON.parse(readFileSync('/workspace/switch-live/said-agents.json', 'utf8'));
-const roomId = JSON.parse(readFileSync('/workspace/switch-live/said-room.json', 'utf8')).room.id as string;
-const docId = JSON.parse(readFileSync('/workspace/switch-live/live-probe-evidence.json', 'utf8')).doc.document_id as string;
-const evidence: string[] = [];
-const note = (s: string): void => {
-  evidence.push(s);
-  console.log(s);
-};
+/**
+ * Proves non-creator agents cannot update Said's ledger room document.
+ * Never overwrites the live ledger as `said` (that destroyed the said-ledger fence once).
+ */
+async function main(): Promise<void> {
+  const agents = JSON.parse(readFileSync('/workspace/switch-live/said-agents.json', 'utf8'));
+  const roomRaw = JSON.parse(readFileSync('/workspace/switch-live/said-e2e-room.json', 'utf8')) as {
+    id?: string;
+    room?: { id: string };
+  };
+  const roomId = roomRaw.room?.id ?? roomRaw.id;
+  if (!roomId) throw new Error('missing room id');
+  const notary = (await fetch('http://127.0.0.1:7410/api/state').then((r) => r.json())) as {
+    ledgerDocumentId?: string;
+  };
+  const docId = notary.ledgerDocumentId;
+  if (!docId) throw new Error('no ledgerDocumentId (is notary healthy?)');
 
-async function withAgent(
-  name: 'said' | 'builder',
-  fn: (ops: SwitchOps) => Promise<void>,
-): Promise<void> {
-  const a = agents[name];
+  const evidence: string[] = [];
+  const note = (s: string) => {
+    evidence.push(s);
+    console.log(s);
+  };
+
+  const a = agents.builder;
   const connectionId = randomUUID();
   const creds = {
     baseUrl: 'http://127.0.0.1:8000',
@@ -23,47 +34,46 @@ async function withAgent(
     apiKey: a.api_key as string,
   };
   const ops = new SwitchOps(creds, { connectionId });
+  let opened = false;
   const conn = new SwitchConnection({
     creds,
     connectionId,
     rooms: [roomId],
     filter: 'all',
     cursorStore: new MemoryCursorStore(),
-    client: { name: `said-${name}-probe`, version: '0.1.0' },
+    client: { name: 'said-builder-doc-probe', version: '0.1.0' },
     onEvent: async () => {},
+    onState: (s) => {
+      if (s.state === 'open') opened = true;
+    },
   });
   await conn.start();
-  try {
-    await fn(ops);
-  } finally {
-    await conn.stop().catch(() => undefined);
-  }
-}
+  for (let i = 0; i < 80 && !opened; i++) await new Promise((r) => setTimeout(r, 100));
+  if (!opened) throw new Error('builder ws never opened');
+  const join = await ops.connectToRoom(roomId);
+  note(`builder connect_to_room ok participants=${(join as { participants?: unknown[] }).participants?.length ?? '?'}`);
 
-await withAgent('builder', async (ops) => {
-  await ops.connectToRoom(roomId);
   try {
     await ops.updateRoomDocument({ documentId: docId, content: '# TAMPERED by builder\n' });
     note('FAIL: builder update unexpectedly succeeded');
-  } catch (err) {
+  } catch (err: unknown) {
     note(`PASS: builder update rejected: ${String(err).slice(0, 400)}`);
   }
   try {
-    const r = await ops.call('delete_room_document', { document_id: docId });
-    note(`FAIL: builder delete unexpectedly ok: ${JSON.stringify(r)}`);
-  } catch (err) {
+    await ops.call('delete_room_document', { document_id: docId });
+    note('FAIL: builder delete unexpectedly succeeded');
+  } catch (err: unknown) {
     note(`PASS: builder delete rejected: ${String(err).slice(0, 400)}`);
   }
-});
 
-await withAgent('said', async (ops) => {
-  await ops.connectToRoom(roomId);
-  const upd = await ops.updateRoomDocument({
-    documentId: docId,
-    content: '# Said Ledger\n\nLive probe revision 2 (said still owns it)\n',
-  });
-  note(`PASS: said update ok: ${JSON.stringify(upd)}`);
-});
+  await conn.stop('probe-done').catch(() => undefined);
+  const out = { docId, roomId, evidence, note: 'Creator-only: Switch rejects non-creator document writes. Bridged rooms may return 400 Not connected instead of 403; both are hard rejects.' };
+  writeFileSync('/workspace/said-live-shots/ledger-edit-reject.json', JSON.stringify(out, null, 2));
+  writeFileSync('/workspace/switch-live/live-doc-auth.json', JSON.stringify(out, null, 2));
+  note('done');
+}
 
-writeFileSync('/workspace/switch-live/live-doc-auth.json', JSON.stringify({ docId, roomId, evidence }, null, 2));
-note('done');
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

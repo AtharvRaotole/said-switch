@@ -28,3 +28,4 @@ export type {
   SwitchMessageEvent,
   TargetedResult,
 } from './types.js';
+export { actorMatches } from './actors.js';

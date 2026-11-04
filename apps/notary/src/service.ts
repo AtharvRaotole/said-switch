@@ -51,6 +51,7 @@ import {
   type SaidConfig,
 } from '@said/runtime';
 import {
+  actorMatches,
   SwitchConnection,
   SwitchOps,
   type ConnectionStatus,
@@ -225,6 +226,7 @@ class NotaryApp {
   private readonly ops: SwitchOps;
   private readonly connection: SwitchConnection;
   private readonly agentIds: Set<string>;
+  private readonly agentNames: Set<string>;
   private readonly sinks = new Set<Sink>();
   private readonly chat: ChatEvent[] = [];
   private readonly aborters = new Set<() => void>();
@@ -264,6 +266,8 @@ class NotaryApp {
     this.docId = input.store.snapshot().ledgerDocumentId;
     this.agentIds = new Set([input.config.said.agentId]);
     if (input.config.builder) this.agentIds.add(input.config.builder.agentId);
+    this.agentNames = new Set([input.config.said.name.toLowerCase()]);
+    if (input.config.builder) this.agentNames.add(input.config.builder.name.toLowerCase());
     const connectionId = input.store.snapshot().connectionId;
     const creds = { baseUrl: input.config.switchUrl, agentId: input.config.said.agentId, apiKey: input.secretsApiKey };
     this.ops = new SwitchOps(creds, { connectionId });
@@ -596,7 +600,7 @@ class NotaryApp {
   }
 
   private async handleMessage(event: SwitchMessageEvent): Promise<void> {
-    const inbound = toInbound(event, this.agentIds);
+    const inbound = toInbound(event, this.agentIds, this.agentNames);
     this.emitChat({
       messageId: inbound.messageId,
       senderName: inbound.senderName,
@@ -675,7 +679,7 @@ class NotaryApp {
       await this.reply(wrongRoom(), inbound.threadId);
       return;
     }
-    const kind = inbound.fromAgent ? 'agent' : await this.rosterKind(inbound.senderId);
+    const kind = inbound.fromAgent ? 'agent' : await this.rosterKind(inbound.senderId, inbound.senderName);
     if (kind === 'agent') {
       await this.reply(agentsCannotEnroll(), inbound.threadId);
       return;
@@ -729,14 +733,26 @@ class NotaryApp {
    * A failed lookup does not count as a person: an agent that joined after
    * connect must not be able to spend a code while the roster is stale.
    */
-  private async rosterKind(senderId: string): Promise<'agent' | 'person' | 'unknown'> {
-    if (this.agentIds.has(senderId)) return 'agent';
+  private async rosterKind(senderId: string, senderName: string): Promise<'agent' | 'person' | 'unknown'> {
+    if (this.agentIds.has(senderId) || this.agentNames.has(senderName.trim().toLowerCase())) return 'agent';
     try {
       const room = await this.ops.connectToRoom(this.config.roomId);
       for (const participant of room.participants) {
-        if (participant.type === 'agent') this.agentIds.add(participant.id);
+        if (participant.type === 'agent') {
+          this.agentIds.add(participant.id);
+          if (participant.name) this.agentNames.add(participant.name.toLowerCase());
+        }
       }
-      const match = room.participants.find((participant) => participant.id === senderId);
+      // Live Switch: message.sender is a Matrix actor id; connect_to_room lists UUID ids.
+      // Match bridged humans (and agents) by roster name when the ids differ.
+      const match = room.participants.find((participant) =>
+        actorMatches({
+          senderId,
+          senderName,
+          id: participant.id,
+          name: participant.name,
+        }),
+      );
       if (!match) return 'unknown';
       return match.type === 'agent' ? 'agent' : 'person';
     } catch (err) {
@@ -888,7 +904,16 @@ class NotaryApp {
       return;
     }
     const builder = this.config.builder;
-    if (!builder || inbound.senderId !== builder.agentId || !inbound.fromAgent) {
+    if (
+      !builder ||
+      !inbound.fromAgent ||
+      !actorMatches({
+        senderId: inbound.senderId,
+        senderName: inbound.senderName,
+        id: builder.agentId,
+        name: builder.name,
+      })
+    ) {
       await this.reply(receiptIgnoredSender(), inbound.threadId);
       return;
     }

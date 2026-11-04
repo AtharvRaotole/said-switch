@@ -164,12 +164,12 @@ function config(): SaidConfig {
   };
 }
 
-function message(body: string, over: Partial<{ messageId: string; senderId: string }> = {}) {
+function message(body: string, over: Partial<{ messageId: string; senderId: string; senderName: string }> = {}) {
   return {
     messageId: over.messageId ?? 'start-1',
     roomId: ROOM,
     senderId: over.senderId ?? SAID_ID,
-    senderName: 'said',
+    senderName: over.senderName ?? 'said',
     body,
     threadId: null,
     timestamp: NOW,
@@ -295,7 +295,7 @@ describe('builder', () => {
     const forgedBody = `@builder Agreement ${auth.agreement.id} is locked.\n${fenceJson('said-start', forged)}`;
     await box.builder.ingest(message(forgedBody, { messageId: 'bad-sig' }));
     await box.builder.ingest(message('please add dark mode to the site', { messageId: 'chat' }));
-    await box.builder.ingest(message(auth.body, { messageId: 'wrong-sender', senderId: DANA.senderId }));
+    await box.builder.ingest(message(auth.body, { messageId: 'wrong-sender', senderId: DANA.senderId, senderName: DANA.label }));
 
     expect(box.gitCalls).toEqual([]);
     expect(box.ledgerLoads()).toBe(0);

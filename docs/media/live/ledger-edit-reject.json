@@ -1,0 +1,12 @@
+{
+  "docId": "f492ffcb-4852-4e89-98f9-4fbb5528a90b",
+  "roomId": "10f9e293-f685-4c84-87f6-3650dc96a846",
+  "evidence": [
+    "said participants=5 name=Mattermost: Said Larkspur",
+    "said load ok name=Said Ledger len=11796",
+    "said UPDATE OK {\"document_id\":\"f492ffcb-4852-4e89-98f9-4fbb5528a90b\",\"status\":\"ok\"}",
+    "builder participants=5 name=Mattermost: Said Larkspur",
+    "builder load ok name=Said Ledger len=16",
+    "builder UPDATE FAIL status=400 SwitchApiError: Switch API 400: Not connected to a room. Call connect_to_room first."
+  ]
+}

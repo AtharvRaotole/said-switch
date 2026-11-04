@@ -7,6 +7,7 @@ dist/
 .env
 .said/
 .said-offline/
+.said-live/
 work/
 work-offline/
 
@@ -14,3 +15,4 @@ work-offline/
 .superpowers/
 coverage/
 **/.tmp/
+scripts/_*.ts

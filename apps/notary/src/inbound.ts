@@ -25,17 +25,23 @@ export function isAutoReply(event: SwitchMessageEvent): boolean {
   return isRecord(payload) && (payload['com.switch.auto_reply'] === true || payload.auto_reply === true);
 }
 
-export function toInbound(event: SwitchMessageEvent, agentIds: ReadonlySet<string>): InboundMessage {
+export function toInbound(
+  event: SwitchMessageEvent,
+  agentIds: ReadonlySet<string>,
+  agentNames: ReadonlySet<string> = new Set(),
+): InboundMessage {
+  const senderName = event.senderName || 'unknown';
+  const fromAgent = agentIds.has(event.sender) || agentNames.has(senderName.trim().toLowerCase());
   return {
     messageId: event.messageId,
     senderId: event.sender,
-    senderName: event.senderName || 'unknown',
+    senderName,
     body: event.body,
     timestamp: event.timestamp || Date.now(),
     threadId: event.threadId,
     addressedToSaid: event.addressed,
     mentions: mentionsIn(event.body),
-    fromAgent: agentIds.has(event.sender),
+    fromAgent,
     autoReply: isAutoReply(event),
   };
 }
