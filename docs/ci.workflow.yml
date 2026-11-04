@@ -1,0 +1,29 @@
+name: ci
+
+on:
+  push:
+    branches: [main, 'polish/**']
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12'
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Install demo client site (offline e2e)
+        run: npm ci --prefix demo/client-site
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Test with coverage
+        run: npm run test:coverage
+      - name: Build console and web
+        run: npm run build --workspaces --if-present
