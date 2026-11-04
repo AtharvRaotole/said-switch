@@ -13,3 +13,4 @@ work-offline/
 # Tooling scratch
 .superpowers/
 coverage/
+**/.tmp/
