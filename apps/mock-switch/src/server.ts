@@ -513,7 +513,7 @@ export async function createMockSwitch(opts: {
       return c.json({ detail: (error as Error).message }, 404);
     }
   });
-  app.get('/mock/stream', (c) => {
+  app.get('/mock/stream', (_c) => {
     const stream = new ReadableStream({
       start(controller) {
         const encoder = new TextEncoder();

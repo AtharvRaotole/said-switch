@@ -77,12 +77,7 @@ export async function authorizeStart(input: {
   }
   const token: StartToken = parsed.data;
 
-  let tokenVerified = false;
-  try {
-    tokenVerified = await verifyStartToken(token, input.notaryPublicKey);
-  } catch {
-    tokenVerified = false;
-  }
+  const tokenVerified = await verifyStartToken(token, input.notaryPublicKey).catch(() => false);
   if (!tokenVerified) {
     return {
       ok: false,

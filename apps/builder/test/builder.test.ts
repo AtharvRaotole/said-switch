@@ -513,3 +513,50 @@ describe('builder', () => {
     expect(box.builder.listJobs()).toHaveLength(1);
   });
 });
+
+
+describe('allowlist path escapes', () => {
+  it('rejects .. segments, absolute paths, and symlink targets', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'said-allow-'));
+    await mkdir(join(dir, 'src'), { recursive: true });
+    await writeFile(join(dir, 'src', 'ok.tsx'), 'export {}\n');
+    await symlink(join(dir, 'src', 'ok.tsx'), join(dir, 'src', 'link.tsx'));
+    const violations = await inspectChanges(dir, [
+      '../etc/passwd',
+      '/etc/passwd',
+      'src/link.tsx',
+      'package.json',
+      'src/ok.tsx',
+    ]);
+    const paths = violations.map((v) => v.path);
+    expect(paths).toEqual(expect.arrayContaining(['../etc/passwd', '/etc/passwd', 'src/link.tsx', 'package.json']));
+    expect(paths).not.toContain('src/ok.tsx');
+    await rm(dir, { recursive: true, force: true });
+  });
+});
+
+
+describe('builder HTTP shared secret', () => {
+  it('rejects API routes without the secret when SAID_HTTP_SHARED_SECRET is set', async () => {
+    const prev = process.env.SAID_HTTP_SHARED_SECRET;
+    process.env.SAID_HTTP_SHARED_SECRET = 'test-secret';
+    try {
+      const app = createBuilderServer({
+        listJobs: () => [],
+        recentLogs: () => [],
+        subscribe: () => () => undefined,
+      });
+      const denied = await app.request('http://127.0.0.1/api/jobs');
+      expect(denied.status).toBe(401);
+      const health = await app.request('http://127.0.0.1/health');
+      expect(health.status).toBe(200);
+      const ok = await app.request('http://127.0.0.1/api/jobs', {
+        headers: { authorization: 'Bearer test-secret' },
+      });
+      expect(ok.status).toBe(200);
+    } finally {
+      if (prev === undefined) delete process.env.SAID_HTTP_SHARED_SECRET;
+      else process.env.SAID_HTTP_SHARED_SECRET = prev;
+    }
+  });
+});

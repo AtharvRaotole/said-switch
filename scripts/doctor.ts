@@ -223,8 +223,8 @@ async function main(): Promise<void> {
       if (!pointer.ledgerDocumentId) {
         return warn('no ledger yet (enrollment not completed)', 'Run `npm run enroll -- --developer "Riya" --client "Dana" --wait` and have both type their line.');
       }
-      let signed: SignedLedger | null = null;
-      let source = '';
+      let signed: SignedLedger;
+      let source: string;
       if (notaryRunning) {
         // Taking the room for a second connection would evict the running notary, so read through its API.
         const state = await fetchJson<{ signedLedger: SignedLedger | null; ledgerDocumentId: string | null; halted?: { reason: string } | null }>(`${notaryUrl}/api/state`);

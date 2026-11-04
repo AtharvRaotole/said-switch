@@ -1,5 +1,5 @@
 import { lstat, readFile } from 'node:fs/promises';
-import { isAbsolute, relative, resolve, sep } from 'node:path';
+import { isAbsolute, relative, resolve } from 'node:path';
 import picomatch from 'picomatch';
 
 export const ALLOWED_PATTERNS = ['src/**/*.tsx', 'src/**/*.ts', 'src/**/*.css', 'index.html'] as const;

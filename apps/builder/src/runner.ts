@@ -8,7 +8,7 @@ import { parsePorcelainZ } from './porcelain.js';
 import { commitSubject } from './prompt.js';
 import { tail } from './text.js';
 import type { JobRecord, JobStepKey, JobStepState, LogStream } from './types.js';
-import { JobFailed, runConfiguredWorker, type WorkerContext } from './workers.js';
+import { JobFailed, type WorkerContext } from './workers.js';
 
 const SAFE_JOB = /^JOB-[A-Za-z0-9]+(?:-[A-Za-z0-9]+)+$/;
 
@@ -183,12 +183,7 @@ async function runCheck(input: RunJobInput, worktree: string, name: 'typecheck' 
 }
 
 async function assertStillLocked(input: RunJobInput): Promise<void> {
-  let tokenVerified = false;
-  try {
-    tokenVerified = await verifyStartToken(input.token, input.notaryPublicKey);
-  } catch {
-    tokenVerified = false;
-  }
+  const tokenVerified = await verifyStartToken(input.token, input.notaryPublicKey).catch(() => false);
   if (!tokenVerified) throw new JobFailed('The start token no longer matches the pinned notary key.', 'applied');
   let content: string;
   try {

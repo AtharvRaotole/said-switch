@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
+import { requestHasSharedSecret, sharedSecretFromEnv } from '@said/runtime';
 import type { JobView, LogEvent } from './types.js';
 
 export interface BuilderApi {
@@ -11,6 +12,7 @@ export interface BuilderApi {
 
 export function createBuilderServer(api: BuilderApi): Hono {
   const app = new Hono();
+  const sharedSecret = sharedSecretFromEnv();
   app.use(
     '*',
     cors({
@@ -18,6 +20,13 @@ export function createBuilderServer(api: BuilderApi): Hono {
       allowMethods: ['GET', 'OPTIONS'],
     }),
   );
+  app.use('*', async (c, next) => {
+    if (!sharedSecret) return next();
+    if (c.req.method === 'OPTIONS') return next();
+    if (c.req.path === '/health') return next();
+    if (requestHasSharedSecret(c.req.raw.headers, sharedSecret)) return next();
+    return c.json({ error: 'unauthorized', reason: 'Missing or invalid shared secret' }, 401);
+  });
 
   app.get('/health', (c) => c.json({ status: 'ok' }));
   app.get('/api/jobs', (c) => c.json(api.listJobs()));

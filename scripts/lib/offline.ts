@@ -26,7 +26,7 @@ import { prepareClientRepo } from './client-repo.js';
 import { deploymentIdFor } from './deployment.js';
 import { buildEnrollment, enrollLine } from './enrollment.js';
 import { resetClientRepo } from './git.js';
-import { fetchJson, isUp, pollUntil, sleep, waitForUp } from './http.js';
+import { fetchJson, pollUntil, sleep, waitForUp } from './http.js';
 import { c } from './output.js';
 import { startService, stopAll, diedReason, type Service } from './proc.js';
 import { ensureAddressing, registerOne, roomIdsOf } from './register.js';
@@ -125,7 +125,7 @@ async function wipeOfflineHome(home: string): Promise<void> {
       const mode = (JSON.parse(await readFile(configPath, 'utf8')) as { mode?: string }).mode;
       if (mode === 'live') throw new Error(`Refusing to wipe ${home}: its config.json is a LIVE configuration.`);
     } catch (err) {
-      if (err instanceof SyntaxError) throw new Error(`Refusing to wipe ${home}: config.json is unreadable.`);
+      if (err instanceof SyntaxError) throw new Error(`Refusing to wipe ${home}: config.json is unreadable.`, { cause: err });
       throw err;
     }
   }
