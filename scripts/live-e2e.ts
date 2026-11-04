@@ -186,24 +186,51 @@ async function main(): Promise<void> {
     }, 'DRF-002 developer-only');
     writeFileSync(join(SHOTS, 'story-mid.json'), JSON.stringify({ change_request: 'DRF-002', stateSnippet: state.signedLedger?.payload?.drafts }, null, 2));
   } else if (!args.has('--skip-story')) {
-    // Core story beats. Safe to re-run after reset; on an already-completed AGR-001 the amend/propose beats still demo refusal + dual-sig.
+    // Core story beats. After @builder refusal Said logs DRF-001 (needs terms); developer sets terms, both accept.
     await record('dana', dana.token, "@builder Also add dark mode while you're in there");
     await sleep(2500);
-    await record('riya', riya.token, 'Propose: Add dark mode | Terms: +2 days, +$400');
-    await sleep(3000);
+    await waitNotary((s) => {
+      const drafts = s?.signedLedger?.payload?.drafts || [];
+      return drafts.some((d: any) => d.id === 'DRF-001' && d.status === 'NEEDS_TERMS');
+    }, 'DRF-001 needs terms');
+    await record('riya', riya.token, 'Terms DRF-001: +2 days, +$400');
+    await sleep(2500);
+    await waitNotary((s) => {
+      const drafts = s?.signedLedger?.payload?.drafts || [];
+      return drafts.some((d: any) => d.id === 'DRF-001' && d.status === 'PENDING' && d.version >= 1);
+    }, 'DRF-001 pending with terms');
     await record('riya', riya.token, 'Accept DRF-001 v1');
-    await sleep(2500);
+    await sleep(2000);
     await record('dana', dana.token, 'Wait, I thought we agreed dark mode was free?');
-    await sleep(2500);
-    await record('dana', dana.token, 'I accept DRF-001 v1');
-    // Dual lock -> signed handoff -> scripted builder (~2s). Catch mid-work amend window if still RUNNING.
-    await sleep(800);
+    await sleep(3000);
+    await record('dana', dana.token, 'Accept DRF-001 v1');
+    // Dual lock -> signed handoff -> scripted builder. Wait for COMPLETED (or RUNNING) before amend.
+    const locked = await waitNotary((s) => {
+      const ag = s?.signedLedger?.payload?.agreements || [];
+      return ag.some((a: any) => a.id === 'AGR-001');
+    }, 'AGR-001 locked', 60_000);
+    const agr = (locked?.signedLedger?.payload?.agreements || []).find((a: any) => a.id === 'AGR-001');
+    console.log('AGR-001 execution', agr?.execution?.status || 'LOCKED');
+    // Prefer amend while RUNNING; if already COMPLETED, amend is refused (demo).
     await record('dana', dana.token, 'Amend AGR-001: also add a contrast-safe toggle | Terms: +1 day, +$150');
-    await sleep(5000);
-    // Change request needing both signatures (post-complete amend is refused; Propose opens DRF-002).
+    await sleep(3000);
+    await waitNotary((s) => {
+      const ag = s?.signedLedger?.payload?.agreements || [];
+      return ag.some((a: any) => a.id === 'AGR-001' && a.execution?.status === 'COMPLETED');
+    }, 'AGR-001 execution completed', 90_000);
     await record('dana', dana.token, 'Propose: add a contrast-safe theme toggle | Terms: +1 day, +$150');
     await sleep(3000);
-    await record('riya', riya.token, 'Accept DRF-002 v1');
+    await waitNotary((s) => {
+      const drafts = s?.signedLedger?.payload?.drafts || [];
+      return drafts.some((d: any) => d.status === 'PENDING' && d.version >= 1 && d.id !== 'DRF-001');
+    }, 'change-request draft pending');
+    const afterPropose = await fetch(`${NOTARY}/api/state`).then((r) => r.json());
+    const cr = (afterPropose?.signedLedger?.payload?.drafts || []).find(
+      (d: any) => d.status === 'PENDING' && d.id !== 'DRF-001',
+    );
+    const crId = cr?.id || 'DRF-002';
+    const crVer = cr?.version || 1;
+    await record('riya', riya.token, `Accept ${crId} v${crVer}`);
     await sleep(3000);
   }
 

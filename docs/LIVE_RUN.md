@@ -27,24 +27,24 @@ Local throwaway credentials live only under `/workspace/switch-live/.env` and `l
 | Bridge id | `34c4799a-6d32-4260-83f3-5c88b78a46b5` |
 | Bridge type | mattermost |
 | External channel | `mattermost://127.0.0.1:8065/switch/channels/said-larkspur` |
-| Ledger document id | `f492ffcb-4852-4e89-98f9-4fbb5528a90b` |
+| Ledger document id | `300b11e5-fe8d-4aee-9ac0-c48dc363e6ba` |
 | Said agent id | `8727bf4e-ba2e-4697-8c4f-c740b6a8b3f8` |
 | Builder agent id | `70dd1521-0201-42c2-b7f0-53176b52a053` |
 
-Enrollment codes (single-use, already redeemed in this run): Riya `S5G3H5Y7`, Dana `CYU7AUFZ`.
+Enrollment codes (single-use, already redeemed in this run): Riya `26SYA5Q5`, Dana `7TW8S9Y6`.
 
 Live message senders are Matrix actor ids such as `@switch-mattermost-{bridge}-{username}:localhost`. Said matches those to roster parties by id or by username (`actorMatches` in `@said/switch-client`).
 
 ## Story beats that actually ran
 
-Driven by posting as Mattermost users `user` (Riya / developer) and `dana-client` (Dana / client):
+Driven by posting as Mattermost users `riya-dev` (display Riya / developer) and `dana-client` (display Dana / client):
 
 1. Dana directly commands `@builder Also add dark mode while you're in there` → Builder refuses (chat is not a signed start authorization).
 2. Scope lands as **DRF-001** with terms `+2 days, +$400`, terms hash prefix `65c6438c9b`.
 3. Riya accepts; Dana disputes (`Wait, I thought we agreed dark mode was free?`).
 4. Said replies with a timestamped ledger quote: status PENDING, terms on record, who accepted, who has not, and the earlier `@builder` bypass request time.
 5. Dana accepts → dual lock → **AGR-001** → signed handoff → scripted builder runs in a worktree.
-6. Builder completes **JOB-AGR-001-1**, commit `2e1e3d9` on `work/client-site` (dark mode over baseline `5101d11`).
+6. Builder completes **JOB-AGR-001-1**, commit `8f5a51b` on `work/client-site` (dark mode over baseline `5101d11`).
 7. Post-complete `Amend AGR-001` is refused (`Open a new proposal instead of amending it`).
 8. Mid-engagement change request: `Propose: add a contrast-safe theme toggle | Terms: +1 day, +$150` → **DRF-002 v1** PENDING. Riya accepts; Said waits on Dana. Dual signature required before anything starts.
 
@@ -62,6 +62,21 @@ Against the live bridged Larkspur ledger, builder can `post_message` after `conn
 
 Do not overwrite the live ledger from probes as Said with placeholder markdown. That removes the `said-ledger` fence and halts the notary. `scripts/live-doc-auth-probe.ts` is builder-only for that reason.
 
+## Real Mattermost UI screenshots
+
+Headless Playwright/Chromium against `http://127.0.0.1:8065` (1440x900 viewport, 2x device scale). Logged in as `riya-dev` and `dana-client` with the throwaway secrets file. Navy custom theme; preview-mode banner disabled; teammate names show as **Riya** and **Dana**.
+
+| Beat | File |
+| --- | --- |
+| Terms + first accept + dispute opens | `docs/media/live/mm-ui-riya-terms-accept.png` |
+| Timestamped ledger quote on dispute | `docs/media/live/mm-ui-riya-dispute-ledger.png` |
+| Dual lock, handoff, builder run, amend refused | `docs/media/live/mm-ui-riya-lock-handoff.png` |
+| Builder complete (commit + checks) | `docs/media/live/mm-ui-riya-builder-complete.png` |
+| Complete + DRF-002 pending (Riya accepted, waiting on Dana) | `docs/media/live/mm-ui-riya-complete-drf002.png` |
+| Same channel as Dana | `docs/media/live/mm-ui-dana-lock-handoff.png` |
+
+Raw captures (including extras) also live under `/workspace/said-live-shots/ui/`. Re-capture with `npx tsx scripts/mm-ui-shots.ts`.
+
 ## Evidence paths (box)
 
 | Artifact | Path |
@@ -77,6 +92,7 @@ Do not overwrite the live ledger from probes as Said with placeholder markdown. 
 | Builder worktree commit stat | `/workspace/said-live-shots/builder-worktree.txt` |
 | Switch container log tail | `/workspace/said-live-shots/switch-logs-tail.txt` |
 | Doc-edit reject probe | `/workspace/said-live-shots/ledger-edit-reject.json` |
+| Real Mattermost UI PNGs | `/workspace/said-live-shots/ui/` |
 
 Committed media copies (sanitized, no secrets): `docs/media/live/`.
 
