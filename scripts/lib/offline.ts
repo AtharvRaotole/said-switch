@@ -12,7 +12,6 @@ import { createMockSwitch, type MockSwitch } from '@said/mock-switch';
 import {
   loadOrCreateKeyPair,
   paths,
-  ports,
   resolveServicePorts,
   repoRoot,
   saveConfig,
