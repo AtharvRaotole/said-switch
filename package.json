@@ -22,13 +22,24 @@
     "doctor": "tsx scripts/doctor.ts",
     "reset": "tsx scripts/reset.ts",
     "dev": "concurrently -k -n notary,builder,console,site -c magenta,yellow,cyan,green \"npm -w @said/notary run dev\" \"npm -w @said/builder run dev\" \"npm -w @said/console run dev\" \"npm --prefix work/client-site run dev\"",
-    "demo:offline": "tsx scripts/demo-offline.ts"
+    "demo:offline": "tsx scripts/demo-offline.ts",
+    "lint": "eslint .",
+    "test:coverage": "vitest run --coverage",
+    "verify": "tsx packages/cli/src/cli.ts"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^22.20.5",
+    "@vitest/coverage-v8": "^5.1.0",
     "concurrently": "^10.0.6",
+    "eslint": "^10.14.0",
+    "globals": "^17.14.0",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.72.1",
     "vitest": "^5.1.0"
+  },
+  "bin": {
+    "said": "./packages/cli/bin/said.mjs"
   }
 }
