@@ -61,8 +61,10 @@ import {
   badCode,
   bothEnrolled,
   codeUsed,
+  agentsCannotEnroll,
   enrollmentIncomplete,
   enrolledWaiting,
+  tooManyCodes,
   ledgerAlreadyThere,
   noEnrollmentFile,
   plain,
@@ -232,6 +234,7 @@ class NotaryApp {
   private docId: string | null;
   private halted: { reason: string } | null = null;
   private enrollmentLogged = false;
+  private readonly enrollFails = new Map<string, number>();
 
   constructor(input: {
     config: SaidConfig;
@@ -628,13 +631,24 @@ class NotaryApp {
       await this.reply(wrongRoom(), inbound.threadId);
       return;
     }
+    if (inbound.fromAgent || (await this.senderIsAgent(inbound.senderId))) {
+      await this.reply(agentsCannotEnroll(), inbound.threadId);
+      return;
+    }
+    const fails = this.enrollFails.get(inbound.senderId) ?? 0;
+    if (fails >= 8) {
+      await this.reply(tooManyCodes(), inbound.threadId);
+      return;
+    }
     const allowed = new Set<Role>(ROLES_BY_MODE[this.config.roomMode]);
     let bindings = this.store.snapshot().bindings.filter((b) => enrollment.codes.some((c) => c.role === b.role && c.code === b.code));
     const entry = enrollment.codes.find((c) => c.code === intent.code);
     if (!entry || !allowed.has(entry.role)) {
+      this.enrollFails.set(inbound.senderId, fails + 1);
       await this.reply(badCode(), inbound.threadId);
       return;
     }
+    this.enrollFails.delete(inbound.senderId);
     const sameRole = bindings.find((b) => b.role === entry.role);
     if (sameRole && sameRole.senderId === inbound.senderId) {
       const other = enrollment.codes.find((c) => c.role !== entry.role);
@@ -659,6 +673,21 @@ class NotaryApp {
       return;
     }
     await this.createInitial(bindings);
+  }
+
+  /** Agents already in the room cannot spend a person's enrollment code. */
+  private async senderIsAgent(senderId: string): Promise<boolean> {
+    if (this.agentIds.has(senderId)) return true;
+    try {
+      const room = await this.ops.connectToRoom(this.config.roomId);
+      for (const participant of room.participants) {
+        if (participant.type === 'agent') this.agentIds.add(participant.id);
+      }
+      return room.participants.some((participant) => participant.id === senderId && participant.type === 'agent');
+    } catch (err) {
+      this.log.warn('could not refresh the room participants before enrollment', plain(msg(err)));
+      return false;
+    }
   }
 
   private async waitingLabels(): Promise<string[]> {

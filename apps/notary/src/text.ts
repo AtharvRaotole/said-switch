@@ -42,6 +42,14 @@ export function badCode(): string {
   return 'That code does not match either enrollment code for this room. Nothing was recorded.';
 }
 
+export function agentsCannotEnroll(): string {
+  return 'Enrollment codes are for the two people, not for an agent. Nothing was recorded.';
+}
+
+export function tooManyCodes(): string {
+  return 'Too many wrong codes from this account. Ask the operator to issue a new enrollment. Nothing was recorded.';
+}
+
 export function codeUsed(label: string): string {
   return `That code was already used by ${label}. Nothing was recorded.`;
 }

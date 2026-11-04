@@ -8,14 +8,14 @@ import { chooseWorker } from '../lib/offline.js';
 import { enrollmentSchema } from '@said/runtime';
 
 describe('enrollment codes', () => {
-  it('uses 4 uppercase characters and no look-alikes', () => {
-    expect(CODE_LENGTH).toBe(4);
+  it('uses 8 uppercase characters and no look-alikes', () => {
+    expect(CODE_LENGTH).toBe(8);
     expect(CODE_ALPHABET).not.toMatch(/[O0I1L]/);
     expect(CODE_ALPHABET).toMatch(/^[A-Z2-9]+$/);
     for (let i = 0; i < 500; i++) {
       const code = generateCode();
-      expect(code).toHaveLength(4);
-      expect(code).toMatch(/^[A-HJKMNP-Z2-9]{4}$/);
+      expect(code).toHaveLength(8);
+      expect(code).toMatch(/^[A-HJKMNP-Z2-9]{8}$/);
     }
   });
 

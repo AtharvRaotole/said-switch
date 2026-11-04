@@ -494,6 +494,21 @@
   color: #eef3f7;
 }
 
+@media (max-width: 720px) {
+  .play-status {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .play-status .btn {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .play-status h3 {
+    font-size: 1.45rem;
+  }
+}
+
 @media (max-width: 900px) {
   .hero,
   .play-grid,

@@ -1166,7 +1166,7 @@ section[id] {
   cursor: pointer;
   padding: var(--space-5) 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-4);
   font-family: var(--font-serif);
@@ -1180,7 +1180,14 @@ section[id] {
   display: none;
 }
 
+.faq-summary > span:first-child {
+  min-width: 0;
+  flex: 1;
+  overflow-wrap: break-word;
+}
+
 .faq-indicator {
+  flex: none;
   font-family: var(--font-sans);
   font-size: 1.35rem;
   font-weight: 400;

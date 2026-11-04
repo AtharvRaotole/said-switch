@@ -310,7 +310,10 @@ export async function startOfflineStack(opts: OfflineOptions = {}): Promise<Offl
       notaryPublicKey: notaryKey.publicKey,
       notaryState: () => fetchJson<NotaryApiState>(`${notaryUrl}/api/state`),
       async jobs() {
-        return (await fetchJson<{ jobs: BuilderJob[] }>(`${builderUrl}/api/jobs`)).jobs;
+        const body = await fetchJson<BuilderJob[] | { jobs?: BuilderJob[] }>(`${builderUrl}/api/jobs`);
+        const jobs = Array.isArray(body) ? body : body.jobs;
+        if (!Array.isArray(jobs)) throw new Error('Builder /api/jobs returned an unexpected shape');
+        return jobs;
       },
       stop,
     };
