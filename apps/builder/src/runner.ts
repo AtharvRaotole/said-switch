@@ -1,6 +1,6 @@
 import { lstat, mkdir, symlink, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
-import { checkStartAuthorization, parseLedgerDocument, verifySignedLedger } from '@said/core';
+import { checkStartAuthorization, parseLedgerDocument, verifySignedLedger, verifyStartToken } from '@said/core';
 import type { CheckResult, StartToken, WorkerKind } from '@said/core';
 import { inspectChanges } from './allowlist.js';
 import type { ExecCommand } from './exec.js';
@@ -183,17 +183,24 @@ async function runCheck(input: RunJobInput, worktree: string, name: 'typecheck' 
 }
 
 async function assertStillLocked(input: RunJobInput): Promise<void> {
+  let tokenVerified = false;
+  try {
+    tokenVerified = await verifyStartToken(input.token, input.notaryPublicKey);
+  } catch {
+    tokenVerified = false;
+  }
+  if (!tokenVerified) throw new JobFailed('The start token no longer matches the pinned notary key.', 'applied');
   let content: string;
   try {
     content = await input.loadLedgerDocument(input.token.ledgerDocumentId);
-  } catch (err) {
-    throw new JobFailed(err instanceof Error ? err.message : 'I could not reload the ledger.', 'applied');
+  } catch {
+    throw new JobFailed('I could not reload the ledger.', 'applied');
   }
   let signed;
   try {
     signed = parseLedgerDocument(content);
-  } catch (err) {
-    throw new JobFailed(err instanceof Error ? err.message : 'The ledger document is not readable.', 'applied');
+  } catch {
+    throw new JobFailed('The ledger document is not readable.', 'applied');
   }
   const verified = await verifySignedLedger(signed, input.notaryPublicKey);
   if (!verified.ok) throw new JobFailed(verified.reason, 'applied');
@@ -201,7 +208,7 @@ async function assertStillLocked(input: RunJobInput): Promise<void> {
     signedLedgerVerified: true,
     ledger: signed.payload,
     token: input.token,
-    tokenVerified: true,
+    tokenVerified,
     expectedRoomId: input.expectedRoomId,
     expectedParties: null,
     now: input.now(),

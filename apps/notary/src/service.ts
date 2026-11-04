@@ -62,6 +62,7 @@ import {
   bothEnrolled,
   codeUsed,
   agentsCannotEnroll,
+  rosterUnconfirmed,
   enrollmentIncomplete,
   enrolledWaiting,
   tooManyCodes,
@@ -321,6 +322,7 @@ class NotaryApp {
     this.log.info(`Notary API listening on ${this.url} (${where})`);
   }
 
+  /** Local console only. There is no shared secret. listen() binds 127.0.0.1. */
   private http(): Hono {
     const allowed = new Set([
       'http://localhost:7400',
@@ -631,8 +633,13 @@ class NotaryApp {
       await this.reply(wrongRoom(), inbound.threadId);
       return;
     }
-    if (inbound.fromAgent || (await this.senderIsAgent(inbound.senderId))) {
+    const kind = inbound.fromAgent ? 'agent' : await this.rosterKind(inbound.senderId);
+    if (kind === 'agent') {
       await this.reply(agentsCannotEnroll(), inbound.threadId);
+      return;
+    }
+    if (kind === 'unknown') {
+      await this.reply(rosterUnconfirmed(), inbound.threadId);
       return;
     }
     const fails = this.enrollFails.get(inbound.senderId) ?? 0;
@@ -675,18 +682,24 @@ class NotaryApp {
     await this.createInitial(bindings);
   }
 
-  /** Agents already in the room cannot spend a person's enrollment code. */
-  private async senderIsAgent(senderId: string): Promise<boolean> {
-    if (this.agentIds.has(senderId)) return true;
+  /**
+   * Enrollment refuses anyone Said cannot see on the live roster.
+   * A failed lookup does not count as a person: an agent that joined after
+   * connect must not be able to spend a code while the roster is stale.
+   */
+  private async rosterKind(senderId: string): Promise<'agent' | 'person' | 'unknown'> {
+    if (this.agentIds.has(senderId)) return 'agent';
     try {
       const room = await this.ops.connectToRoom(this.config.roomId);
       for (const participant of room.participants) {
         if (participant.type === 'agent') this.agentIds.add(participant.id);
       }
-      return room.participants.some((participant) => participant.id === senderId && participant.type === 'agent');
+      const match = room.participants.find((participant) => participant.id === senderId);
+      if (!match) return 'unknown';
+      return match.type === 'agent' ? 'agent' : 'person';
     } catch (err) {
       this.log.warn('could not refresh the room participants before enrollment', plain(msg(err)));
-      return false;
+      return 'unknown';
     }
   }
 

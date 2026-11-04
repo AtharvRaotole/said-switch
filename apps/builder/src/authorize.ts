@@ -93,17 +93,15 @@ export async function authorizeStart(input: {
   let content: string;
   try {
     content = await input.loadLedgerDocument(token.ledgerDocumentId);
-  } catch (err) {
-    const detail = err instanceof Error ? err.message : String(err);
-    return { ok: false, reason: `I did not start work. I could not load the ledger document. ${detail}`.trim() };
+  } catch {
+    return { ok: false, reason: 'I did not start work. I could not load the ledger document.' };
   }
 
   let signed;
   try {
     signed = parseLedgerDocument(content);
-  } catch (err) {
-    const detail = err instanceof Error ? err.message : 'The ledger document is not readable.';
-    return { ok: false, reason: `I did not start work. ${detail}` };
+  } catch {
+    return { ok: false, reason: 'I did not start work. The ledger document is not readable.' };
   }
 
   const ledgerCheck = await verifySignedLedger(signed, input.notaryPublicKey);

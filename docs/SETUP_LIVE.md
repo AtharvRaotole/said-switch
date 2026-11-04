@@ -41,7 +41,7 @@ npm run enroll -- --developer "Riya" --client "Dana" --wait
 npm run dev          # notary, builder, console, client site
 ```
 
-Each person types the code printed for them (e.g. `@said enroll K7QM`) from their own Mattermost account. Said binds each code to that account's Switch participant id and creates the signed ledger.
+Each person types the code printed for them (e.g. `@said enroll K7QMP3NX`) from their own Mattermost account. Said binds each code to that account's Switch participant id and creates the signed ledger. An agent cannot spend a code. Eight wrong codes from one account stop, and a new enrollment has to be issued.
 
 ## 5. Check everything
 
@@ -50,3 +50,7 @@ npm run doctor
 ```
 
 Every line should be ✓ before recording.
+
+## 6. What stays on this machine
+
+The notary (`127.0.0.1:7410`) and the builder (`127.0.0.1:7420`) have no password. They exist so the console on this computer can read the ledger. Do not publish, proxy, or SSH-forward those ports. The mock Switch on `127.0.0.1` can post as any simulated person and uses the fixed key `mock-registration-key`. That process is the offline demo. Live mode must point at the Switch server from step 1, never at the mock.

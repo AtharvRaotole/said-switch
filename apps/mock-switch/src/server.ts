@@ -7,6 +7,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 
 const SERVER_NAME = 'switch.local';
 const OWNER_ID = 'user-dev';
+/** Offline simulator only. Live Switch uses SWITCH_REGISTRATION_KEY from the environment. */
 const REGISTRATION_KEY = 'mock-registration-key';
 const BUSINESS_ROOM = '11111111-1111-4111-8111-111111111111';
 const PERSONAL_ROOM = '22222222-2222-4222-8222-222222222222';
@@ -471,6 +472,7 @@ export async function createMockSwitch(opts: {
     const room = resolveRoom(c.req.query('room'));
     return c.json({ documents: publicDocuments(room) });
   });
+  // Offline only. These routes let the demo speak as Dana or Riya. They are not a security boundary.
   app.post('/mock/say', async (c) => {
     const body = await jsonObject(c);
     if (!body.ok) return body.response;

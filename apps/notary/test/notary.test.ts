@@ -430,4 +430,32 @@ describe('notary on mock Switch', () => {
     expect(mock.messages().some((m) => m.body.includes('said-start'))).toBe(false);
     for (const body of saidBodies(mock)) expect(body).not.toMatch(/[—–]/);
   });
+
+  it('refuses an agent that joins after connect, and locks an account after eight wrong codes', async () => {
+    env = await boot();
+    const { mock, notary } = env;
+    const intruder = await registerAgent({
+      baseUrl: mock.url,
+      registrationKey: REGISTRATION_KEY,
+      name: 'intruder',
+      description: 'Late agent',
+      displayName: 'Intruder',
+    });
+    const posted = await fetch(`${mock.url}/agents/${intruder.id}/message`, {
+      method: 'POST',
+      headers: { authorization: `Bearer ${intruder.apiKey}`, 'content-type': 'application/json' },
+      body: JSON.stringify({ room_id: BUSINESS, content: '@said enroll RIYA0001' }),
+    });
+    expect(posted.ok).toBe(true);
+    await waitFor('agent refused', async () => saidBodies(mock).some((body) => body.includes('not for an agent')));
+
+    for (let i = 0; i < 8; i++) await mock.say('developer', '@said enroll NOPE0000');
+    await waitFor('eight wrong codes', async () => saidBodies(mock).filter((body) => body.includes('does not match')).length >= 8);
+    await mock.say('developer', '@said enroll RIYA0001');
+    await waitFor('locked out', async () => saidBodies(mock).some((body) => body.includes('Too many wrong codes')));
+
+    const state = await getState(notary.url);
+    expect(state.signedLedger).toBeNull();
+    expect(state.enrollment?.roles.every((role) => role.bound === false)).toBe(true);
+  });
 });

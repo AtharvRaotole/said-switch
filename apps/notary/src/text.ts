@@ -46,6 +46,10 @@ export function agentsCannotEnroll(): string {
   return 'Enrollment codes are for the two people, not for an agent. Nothing was recorded.';
 }
 
+export function rosterUnconfirmed(): string {
+  return 'Said could not confirm this account on the room roster, so nothing was recorded. Send the code again.';
+}
+
 export function tooManyCodes(): string {
   return 'Too many wrong codes from this account. Ask the operator to issue a new enrollment. Nothing was recorded.';
 }
