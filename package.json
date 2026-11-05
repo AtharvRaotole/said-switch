@@ -15,6 +15,7 @@
   "scripts": {
     "ensure:demo-client": "node scripts/ensure-demo-client.mjs",
     "pretest": "npm run ensure:demo-client",
+    "pretest:coverage": "npm run ensure:demo-client",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "npm run typecheck --workspaces --if-present",

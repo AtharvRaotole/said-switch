@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { prepareClientRepo } from '../lib/client-repo.js';
+import { assertDemoClient } from '../lib/demo-client.js';
 import {
   DirtyRepoError,
   assertClean,
@@ -136,9 +137,9 @@ describe('job artifact archive', () => {
 
 describe('client repo preparation', () => {
   const template = paths.clientTemplate;
-  const installed = existsSync(join(template, 'node_modules'));
 
-  it.skipIf(!installed)('creates a clean baseline repo (node_modules symlink and dist are ignored)', async () => {
+  it('creates a clean baseline repo (node_modules symlink and dist are ignored)', async () => {
+    assertDemoClient();
     const target = join(await tmp(), 'client-site');
     const first = await prepareClientRepo({ target, template, dependencies: 'link' });
     expect(first.created).toBe(true);

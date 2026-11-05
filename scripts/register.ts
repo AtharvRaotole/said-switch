@@ -19,6 +19,7 @@ import { SwitchApiError, SwitchOps, health } from '@said/switch-client';
 import { parseFlags } from './lib/args.js';
 import { deploymentIdFor, normalizeSwitchUrl } from './lib/deployment.js';
 import { c, die, errorMessage, fail, fixLine, info, ok, out, step, warn } from './lib/output.js';
+import { inviteHint, parsePlatform } from './lib/platform.js';
 import {
   ensureAddressing,
   manualAddressingFix,
@@ -220,8 +221,9 @@ async function main(): Promise<void> {
   }
   if (missing.length > 0) {
     out();
-    info('Type these in the Mattermost channel of that room (as the developer):');
-    for (const name of missing) out(`    ${c.bold(`!invite-agent @${name}`)}`);
+    const where = parsePlatform(process.env.SAID_PLATFORM).platform;
+    info('Invite each missing agent from your own account:');
+    for (const name of missing) out(`    ${c.bold(inviteHint(where, name))}`);
     info('Then run `npm run doctor` to confirm.');
   }
 
