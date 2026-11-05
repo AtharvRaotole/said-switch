@@ -1,6 +1,6 @@
 /**
  * `npm run doctor` - one-command preflight: Node, .env, room id, shared secret (presence only),
- * ports, Switch health, Mattermost, keys present (never print values), registration, ledger, workers.
+ * ports, Switch health, the room's chat platform, keys present (never print values), registration, ledger, workers.
  * Exits non-zero when any check is ✖ (warnings do not fail). Never prints secret values.
  *
  *   npm run doctor
@@ -37,6 +37,14 @@ import { effectivePolicy, roomIdsOf } from './lib/register.js';
 import { withRoomSession } from './lib/switch-session.js';
 import { ledgerPointer, readNotaryState } from './lib/state.js';
 import { findOnPath, versionOf } from './lib/which.js';
+import {
+  inviteHint,
+  platformLabel,
+  resolvePlatform,
+  shouldProbeMattermost,
+  type ChatPlatform,
+  type PlatformResolution,
+} from './lib/platform.js';
 
 type Status = 'ok' | 'warn' | 'fail';
 interface Outcome {
@@ -182,17 +190,6 @@ async function main(): Promise<void> {
     return ok(lines.join(', '));
   });
 
-  // Mattermost (optional bridge for live demos).
-  const mmUrl = (process.env.MATTERMOST_URL?.trim() || 'http://127.0.0.1:8065').replace(/\/+$/, '');
-  if (!offline) {
-    await check('Mattermost reachable', async () => {
-      const up = await isUp(`${mmUrl}/api/v4/system/ping`);
-      return up
-        ? ok(mmUrl)
-        : warn(`GET ${mmUrl}/api/v4/system/ping failed`, 'Needed only for the Mattermost bridge live demo; start the stack under SWITCH_LIVE_DIR or set MATTERMOST_URL.');
-    });
-  }
-
   // Switch.
   let switchUp = false;
   if (cfg) {
@@ -223,6 +220,7 @@ async function main(): Promise<void> {
   }
   const details = new Map<string, unknown>();
   const keyOk = new Set<string>();
+  let chat: ChatPlatform | null = null;
 
   if (switchUp) {
     for (const h of handles) {
@@ -237,6 +235,78 @@ async function main(): Promise<void> {
       });
       void r;
     }
+
+    if (!offline) {
+      let room: unknown = null;
+      let context: unknown = null;
+      let roomWasRead = false;
+      const saidHandle = keyOk.has('said') ? handles.find((h) => h.role === 'said') : undefined;
+      if (saidHandle && cfg) {
+        try {
+          room = await saidHandle.ops.getRoomDetail(cfg.roomId);
+          roomWasRead = true;
+        } catch {
+          roomWasRead = false;
+        }
+        if (roomWasRead) {
+          try {
+            context = await saidHandle.ops.getMyContext();
+          } catch {
+            context = null;
+          }
+        }
+      }
+      const resolved: PlatformResolution = resolvePlatform({
+        envValue: process.env.SAID_PLATFORM,
+        room,
+        context,
+        roomWasRead,
+      });
+      chat = resolved.platform;
+      await check('Chat platform', async () => {
+        if (resolved.invalidEnv) {
+          return warn(
+            `SAID_PLATFORM=${resolved.invalidEnv} is not a platform key`,
+            'Use telegram, mattermost, slack, discord, teams, or none.',
+          );
+        }
+        if (resolved.conflict) return warn(resolved.conflict, 'Make SAID_PLATFORM match the room, or clear it and let doctor read the bridge.');
+        if (resolved.platform) return ok(`${platformLabel(resolved.platform)} (${resolved.source})`);
+        return ok('not set. Mattermost is not probed. Set SAID_PLATFORM, or register the agents so the room bridge can be read.');
+      });
+      if (shouldProbeMattermost(chat, Boolean(process.env.MATTERMOST_URL?.trim()))) {
+        const mmUrl = (process.env.MATTERMOST_URL?.trim() || 'http://127.0.0.1:8065').replace(/\/+$/, '');
+        await check('Mattermost reachable', async () => {
+          const up = await isUp(`${mmUrl}/api/v4/system/ping`);
+          return up
+            ? ok(mmUrl)
+            : warn(
+                `GET ${mmUrl}/api/v4/system/ping failed`,
+                'This room is Mattermost. Start that server or set MATTERMOST_URL. Telegram rooms do not need it.',
+              );
+        });
+      } else if (chat && chat !== 'none' && chat !== 'mattermost') {
+        await check(`${platformLabel(chat)} bridge`, async () => {
+          if (resolved.appConnected === null) {
+            return ok(`${platformLabel(chat)} selected. Said does not talk to ${platformLabel(chat)} itself. The app token stays in Switch.`);
+          }
+          if (!resolved.appConnected) {
+            return warn(
+              `no ${platformLabel(chat)} app is connected in this Switch workspace`,
+              `Switch Console → Messaging apps → Connect → ${platformLabel(chat)}.`,
+            );
+          }
+          if (resolved.accountLinked === false) {
+            return warn(
+              `your Switch user is not linked to ${platformLabel(chat)}`,
+              'Post once in the chat, then Switch Console → Link my account → This is me. The builder will not treat you as its owner until you do.',
+            );
+          }
+          return ok('messaging app connected, account linked');
+        });
+      }
+    }
+
     for (const h of handles.filter((x) => keyOk.has(x.role))) {
       try {
         details.set(h.role, await h.ops.getAgentDetail(h.id));
@@ -262,7 +332,7 @@ async function main(): Promise<void> {
         if (rooms === null) return warn('could not read its room list', 'Check in Switch Console that the agent is in the room.');
         return rooms.includes(cfg!.roomId)
           ? ok(cfg!.roomName ?? cfg!.roomId)
-          : fail('not a member of the configured room', `In the Mattermost channel type: !invite-agent @${h.name}`);
+          : fail('not a member of the configured room', inviteHint(chat, h.name));
       });
     }
   }

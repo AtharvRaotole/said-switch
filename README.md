@@ -101,7 +101,7 @@ Switch bridges the group. Said does not speak the Telegram Bot API. The bot toke
 4. In Switch Console, open the server **Home → Messaging apps → Connect → Telegram**. Name the connection, paste the bot token, and enter the bot username. Switch starts polling. A private chat with the bot is not a room.
 5. In Telegram, create a group, add Riya and Dana, and add the bot. Switch creates a room for that group. Copy the room id from Switch Console.
 6. Each person posts one message in the group (a username is required; a phone number is not enough). Then, in Switch Console, **Link my account** on the Telegram connection and pick **This is me**. Riya must link, or the builder will not treat Riya as its owner. Dana stays an unlinked client.
-7. From a clean clone, with `.env` filled in (`SWITCH_URL` is the agent bridge URL whose `GET /health` returns 200, plus `SWITCH_REGISTRATION_KEY` and `SAID_ROOM_ID`):
+7. From a clean clone, with `.env` filled in (`SWITCH_URL` is the agent bridge URL whose `GET /health` returns 200, plus `SWITCH_REGISTRATION_KEY`, `SAID_ROOM_ID`, and `SAID_PLATFORM=telegram`):
 
 ```bash
 npm install
@@ -170,13 +170,13 @@ Static deploy steps (Cloudflare Pages or GitHub Pages): [docs/DEPLOY.md](docs/DE
 
 ## Tests and coverage
 
-Measured on branch `cursor/telegram-said-sender-6d19` after a fresh `npm install` (Node v22.23.4), then `npm run ensure:demo-client` so the offline end-to-end test is not skipped:
+Measured on branch `cursor/coverage-platform-6d19` after removing `demo/client-site/node_modules` and running `npm run test:coverage` (Node v22.23.4). That command installs the demo client first, then runs every test. 0 skipped.
 
 | Check | Result |
 | --- | --- |
 | `npm run lint` | exit 0, no findings |
 | `npm run typecheck` | clean across workspaces |
-| `npm run test:coverage` | 31 files, 279 passed |
+| `npm run test:coverage` | 32 files, 287 passed, 0 skipped |
 | Statements / Branches / Functions / Lines | 92.95% / 81.11% / 95.27% / 96.12% |
 | `@said/web` + `@said/console` production build | ok |
 | `npm run demo:offline -- --script --headless` | story complete (AGR-001 locked, JOB-AGR-001-1 completed, `src/App.tsx` and `src/styles.css`) |

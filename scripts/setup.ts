@@ -17,13 +17,14 @@ import {
 import { prepareClientRepo } from './lib/client-repo.js';
 import { MIN_NODE_LABEL, nodeVersionOk } from './lib/node-version.js';
 import { box, c, die, errorMessage, info, ok, out, step, warn } from './lib/output.js';
+import { parsePlatform, setupSteps } from './lib/platform.js';
 
 
 /** Ensure SAID_HTTP_SHARED_SECRET is set in .env (generate if blank/missing). Never prints the value. */
 async function ensureSharedSecret(envFile: string): Promise<void> {
   const raw = await readFile(envFile, 'utf8');
   const match = /^SAID_HTTP_SHARED_SECRET=(.*)$/m.exec(raw);
-  const current = match ? match[1].trim().replace(/^["']|["']$/g, '') : '';
+  const current = match?.[1]?.trim().replace(/^["']|["']$/g, '') ?? '';
   if (current) {
     ok('SAID_HTTP_SHARED_SECRET is set in .env (value not printed)');
     return;
@@ -93,19 +94,16 @@ async function main(): Promise<void> {
     }
   }
 
+  const platform = parsePlatform(process.env.SAID_PLATFORM);
+  if (platform.invalid) {
+    warn(`SAID_PLATFORM=${platform.invalid} is not a platform key. Use telegram, mattermost, slack, discord, teams, or none.`);
+  }
+
   out();
-  box('Next steps (live mode)', [
-    '1. Install Switch Console, run a server on this computer   → docs/SETUP_LIVE.md §1',
-    '2. Mattermost: developer + client accounts, make a room   → §2',
-    `3. Put SWITCH_URL, SWITCH_REGISTRATION_KEY and SAID_ROOM_ID in ${c.bold('.env')}`,
-    `4. ${c.bold('npm run register')}     registers @said and @builder, sets addressing → §3`,
-    '5. In the channel: !invite-agent @said and !invite-agent @builder (register prints this if needed)',
-    `6. ${c.bold('npm run enroll -- --developer "Riya" --client "Dana" --wait')}   → §4`,
-    `7. ${c.bold('npm run dev')}          starts notary, builder, console and the client site`,
-    `8. ${c.bold('npm run doctor')}       every line should be ✓ before you record  → §5`,
-    '',
-    `No Switch handy? ${c.bold('npm run demo:offline')} runs the whole story against a clearly-labeled simulator.`,
-  ]);
+  box(
+    'Next steps (live mode)',
+    setupSteps(platform.platform).map((line) => line.replaceAll('npm run ', `${c.bold('npm run ')}`).replaceAll('.env', c.bold('.env'))),
+  );
 }
 
 main().catch((err) => die(errorMessage(err)));

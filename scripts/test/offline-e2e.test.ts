@@ -8,17 +8,19 @@ import { parseLedgerDocument, verifySignedLedger } from '@said/core';
 import { repoRoot } from '@said/runtime';
 import { commitCount, changedFiles, dirtyEntries } from '../lib/git.js';
 import { LEDGER_NAME } from '../lib/ledger.js';
+import { assertDemoClient } from '../lib/demo-client.js';
 import { playStory, startOfflineStack, type OfflineStack } from '../lib/offline.js';
 
 /**
  * End to end: the real notary and builder processes, the mock Switch, the scripted worker (no AI),
  * in throwaway SAID_HOME / SAID_WORK directories and on free ports. Needs the notary and builder entrypoints
  * and an installed demo/client-site (the client copy symlinks its node_modules, so no network is used).
- * Set SAID_E2E=0 to skip it.
+ * `npm test` and `npm run test:coverage` install it first. A missing install fails this file.
+ * Set SAID_E2E=0 to skip it on purpose.
  */
 const entrypoints = ['apps/notary/src/main.ts', 'apps/builder/src/main.ts'].every((f) => existsSync(join(repoRoot, f)));
-const clientInstalled = existsSync(join(repoRoot, 'demo', 'client-site', 'node_modules'));
-const enabled = process.env.SAID_E2E !== '0' && (entrypoints || process.env.SAID_E2E === '1') && clientInstalled;
+/** SAID_E2E=0 is an explicit opt-out. A missing demo client is a failure, not a skip. */
+const optedOut = process.env.SAID_E2E === '0';
 
 async function freePort(): Promise<number> {
   return new Promise((resolve, reject) => {
@@ -33,12 +35,14 @@ async function freePort(): Promise<number> {
 
 const ALLOWED = /^(src\/.+\.(tsx|ts|css)|index\.html)$/;
 
-describe.skipIf(!enabled)('offline demo end to end (scripted worker, headless)', () => {
+describe.skipIf(optedOut)('offline demo end to end (scripted worker, headless)', () => {
   let stack: OfflineStack;
   let root = '';
   const saved: Record<string, string | undefined> = {};
 
   beforeAll(async () => {
+    if (!entrypoints) throw new Error('apps/notary/src/main.ts or apps/builder/src/main.ts is missing.');
+    assertDemoClient();
     root = await mkdtemp(join(tmpdir(), 'said-e2e-'));
     const env: Record<string, string> = {
       MOCK_SWITCH_PORT: String(await freePort()),

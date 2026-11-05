@@ -131,6 +131,16 @@ export class SwitchOps {
     return this.call('list_rooms', withDefined({ include_archived: includeArchived }));
   }
 
+  /** Room membership detail, including `bridge_id` and `bridge_display_name`. No room connection required. */
+  getRoomDetail(roomId: string): Promise<unknown> {
+    return this.call('get_room_detail', { room_id: roomId });
+  }
+
+  /** Workspace messaging apps (`messaging_apps.connected[].platform`). Absent on older Switch servers. */
+  getMyContext(): Promise<unknown> {
+    return this.call('get_my_context');
+  }
+
   /** `POST /agents/{id}/message`: posts to a room without any connection. */
   async postMessageDirect(roomId: string, content: string): Promise<{ ok: boolean; event_id: string }> {
     const body = (await requestJson(this.fetchImpl, `${credsBase(this.creds)}/message`, {
