@@ -28,4 +28,5 @@ export type {
   SwitchMessageEvent,
   TargetedResult,
 } from './types.js';
-export { actorMatches } from './actors.js';
+export { actorMatches, isHumanPlatformSender, isSwitchAgentTransportId, senderIsAgent, senderIsKnownAgent } from './actors.js';
+export type { AgentSenderCheck } from './actors.js';

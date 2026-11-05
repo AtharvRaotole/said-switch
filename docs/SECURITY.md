@@ -37,4 +37,4 @@
 - Do not commit `.env`, `.said/secrets.json`, or Switch registration keys.
 
 6. **Enrollment lockout**: eight wrong codes lock that sender id; the count is persisted in `notary-state.json` so a restart does not reset it.
-7. **Said-sender check**: the builder prefers the Said agent UUID. Display-name fallback is off unless `SAID_ALLOW_SAID_NAME_FALLBACK=1` (Mattermost bridge).
+7. **Said-sender check**: the builder accepts Said's registration UUID, or the current Switch agent transport id (`@switch-agent-<8 hex>:<server>`) together with the exact agent identifier in `sender_name`. A Telegram, Slack, Discord, Teams, member, or `@switch-user-` sender never passes, including when their name is `said` and `SAID_ALLOW_SAID_NAME_FALLBACK=1`. That flag is only the Switch 0.31 Mattermost actor-id path. Receipts from the builder use the same rule, plus an exact-name match for those Mattermost actor ids, and still require the builder's signature.

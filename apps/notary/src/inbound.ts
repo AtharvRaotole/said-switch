@@ -1,5 +1,5 @@
 import type { InboundMessage } from '@said/core';
-import type { SwitchMessageEvent } from '@said/switch-client';
+import { senderIsKnownAgent, type SwitchMessageEvent } from '@said/switch-client';
 import { SWITCH_ADDRESSING_DENIED, SWITCH_ADDRESSING_UNCLAIMED } from './text.js';
 
 export function mentionsIn(body: string): string[] {
@@ -31,7 +31,12 @@ export function toInbound(
   agentNames: ReadonlySet<string> = new Set(),
 ): InboundMessage {
   const senderName = event.senderName || 'unknown';
-  const fromAgent = agentIds.has(event.sender) || agentNames.has(senderName.trim().toLowerCase());
+  const fromAgent = senderIsKnownAgent({
+    senderId: event.sender,
+    senderName,
+    agentIds,
+    agentNames,
+  });
   return {
     messageId: event.messageId,
     senderId: event.sender,
