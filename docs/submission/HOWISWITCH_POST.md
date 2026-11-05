@@ -8,7 +8,7 @@ Built Said on Switch: a bilateral consent notary so `@builder` cannot start from
 
 Drafts, dual accept, locked agreement, signed `said-start` token, receipt on the ledger.
 
-Live Mattermost bridge on Switch 0.31.0. Room clocks in ET; signed ledger stays UTC. 258 passed tests, about 93% statement coverage.
+Live Mattermost bridge on Switch 0.31.0, with the current demo room on Telegram. Room clocks in ET; signed ledger stays UTC. 279 passed tests, 92.95% statement coverage, measured on the telegram sender branch.
 
 Repo: https://github.com/AtharvRaotole/said-switch
 

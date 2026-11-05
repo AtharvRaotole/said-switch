@@ -53,6 +53,9 @@ import {
 } from '@said/runtime';
 import {
   actorMatches,
+  isHumanPlatformSender,
+  senderIsAgent,
+  senderIsKnownAgent,
   SwitchConnection,
   SwitchOps,
   type ConnectionStatus,
@@ -275,8 +278,8 @@ class NotaryApp {
     this.docId = input.store.snapshot().ledgerDocumentId;
     this.agentIds = new Set([input.config.said.agentId]);
     if (input.config.builder) this.agentIds.add(input.config.builder.agentId);
-    this.agentNames = new Set([input.config.said.name.toLowerCase()]);
-    if (input.config.builder) this.agentNames.add(input.config.builder.name.toLowerCase());
+    this.agentNames = new Set([input.config.said.name.trim()]);
+    if (input.config.builder) this.agentNames.add(input.config.builder.name.trim());
     const connectionId = input.store.snapshot().connectionId;
     const creds = { baseUrl: input.config.switchUrl, agentId: input.config.said.agentId, apiKey: input.secretsApiKey };
     this.ops = new SwitchOps(creds, { connectionId });
@@ -752,26 +755,44 @@ class NotaryApp {
     await this.store.update({ enrollFails });
   }
 
-    private async rosterKind(senderId: string, senderName: string): Promise<'agent' | 'person' | 'unknown'> {
-    if (this.agentIds.has(senderId) || this.agentNames.has(senderName.trim().toLowerCase())) return 'agent';
+  private async rosterKind(senderId: string, senderName: string): Promise<'agent' | 'person' | 'unknown'> {
+    if (
+      senderIsKnownAgent({
+        senderId,
+        senderName,
+        agentIds: this.agentIds,
+        agentNames: this.agentNames,
+      })
+    ) {
+      return 'agent';
+    }
     try {
       const room = await this.ops.connectToRoom(this.config.roomId);
       for (const participant of room.participants) {
         if (participant.type === 'agent') {
           this.agentIds.add(participant.id);
-          if (participant.name) this.agentNames.add(participant.name.toLowerCase());
+          if (participant.name) this.agentNames.add(participant.name.trim());
         }
       }
       // Live Switch: message.sender is a Matrix actor id; connect_to_room lists UUID ids.
       // Match bridged humans (and agents) by roster name when the ids differ.
-      const match = room.participants.find((participant) =>
-        actorMatches({
+      const match = room.participants.find((participant) => {
+        if (participant.type === 'agent') {
+          return senderIsAgent({
+            senderId,
+            senderName,
+            agentId: participant.id,
+            agentName: participant.name,
+            allowLegacyExactName: true,
+          });
+        }
+        return actorMatches({
           senderId,
           senderName,
           id: participant.id,
           name: participant.name,
-        }),
-      );
+        });
+      });
       if (!match) return 'unknown';
       return match.type === 'agent' ? 'agent' : 'person';
     } catch (err) {
@@ -930,12 +951,13 @@ class NotaryApp {
     const builder = this.config.builder;
     if (
       !builder ||
-      !inbound.fromAgent ||
-      !actorMatches({
+      isHumanPlatformSender(inbound.senderId) ||
+      !senderIsAgent({
         senderId: inbound.senderId,
         senderName: inbound.senderName,
-        id: builder.agentId,
-        name: builder.name,
+        agentId: builder.agentId,
+        agentName: builder.name,
+        allowLegacyExactName: true,
       })
     ) {
       await this.reply(receiptIgnoredSender(), inbound.threadId);

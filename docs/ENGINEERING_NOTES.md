@@ -46,7 +46,7 @@ See `docs/LIVE_RUN.md` and `docs/SETUP_LIVE.md`. Switch binds agent protocol at 
 
 Live mode requires `SAID_HTTP_SHARED_SECRET` (`npm run setup` generates one into `.env` when blank). Notary/builder reject non-health HTTP without `Authorization: Bearer …`, `X-Said-Shared-Secret`, or `?said_shared_secret=` (for EventSource). Opt out on loopback with `SAID_HTTP_ALLOW_INSECURE=1`. They still bind `127.0.0.1` only.
 
-Mattermost bridge: set `SAID_ALLOW_SAID_NAME_FALLBACK=1` so the builder accepts Said messages whose `sender` is a Matrix actor id but whose display name matches the Said agent. Prefer the agent UUID whenever Switch provides it.
+Current Switch (Telegram included) puts `@switch-agent-<8 hex>:<server>` in `sender` and the agent identifier in `sender_name`. The registration UUID is a different string. The builder accepts that pair without `SAID_ALLOW_SAID_NAME_FALLBACK`. Human bridge ids never match. Set the flag only for a Switch 0.31 Mattermost bridge, where `sender` is `@switch-mattermost-…`.
 
 `npm run demo:offline` auto-picks free ports when the live stack holds 7410/7420 (override with `NOTARY_PORT`, `BUILDER_PORT`, `CONSOLE_PORT`, `MOCK_SWITCH_PORT`, `CLIENT_SITE_PORT`).
 

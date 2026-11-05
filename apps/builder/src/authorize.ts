@@ -8,6 +8,7 @@ import {
   verifyStartToken,
 } from '@said/core';
 import type { Agreement, Ledger, Party, StartToken } from '@said/core';
+import { senderIsAgent } from '@said/switch-client';
 
 const startTokenSchema = z.object({
   type: z.literal('said.start/v1'),
@@ -49,9 +50,9 @@ export function attemptOf(agreementId: string, jobId: string): number | null {
 }
 
 /**
- * Prefer the Said agent UUID. A display-name fallback is only enabled when
- * `allowSaidNameFallback` is true (set SAID_ALLOW_SAID_NAME_FALLBACK=1 for the
- * Mattermost / Matrix bridge, where message.sender can be an actor id).
+ * Said's registration UUID, or the transport id current Switch puts on Said's
+ * own messages (`@switch-agent-…` plus the agent identifier). The name fallback
+ * is only for Mattermost 0.31 actor ids and never accepts a human bridge id.
  */
 export function isSaidSender(input: {
   senderId: string;
@@ -60,13 +61,13 @@ export function isSaidSender(input: {
   saidAgentName?: string | null;
   allowSaidNameFallback?: boolean;
 }): boolean {
-  if (input.senderId === input.saidAgentId) return true;
-  if (!input.allowSaidNameFallback) return false;
-  return Boolean(
-    input.saidAgentName &&
-      input.senderName &&
-      input.senderName.trim().toLowerCase() === input.saidAgentName.trim().toLowerCase(),
-  );
+  return senderIsAgent({
+    senderId: input.senderId,
+    senderName: input.senderName,
+    agentId: input.saidAgentId,
+    agentName: input.saidAgentName,
+    allowNameFallback: input.allowSaidNameFallback,
+  });
 }
 
 /**
@@ -78,7 +79,7 @@ export async function authorizeStart(input: {
   senderId: string;
   senderName?: string | null;
   saidAgentId: string;
-  /** Agent name; used only when allowSaidNameFallback is true (Mattermost bridge). */
+  /** Agent identifier. Required for the Switch transport-id check, and for the Mattermost name fallback. */
   saidAgentName?: string | null;
   allowSaidNameFallback?: boolean;
   body: string;

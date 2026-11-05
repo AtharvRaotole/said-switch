@@ -36,6 +36,29 @@ describe('isSaidSender', () => {
     expect(isSaidSender({ ...base, allowSaidNameFallback: true, senderName: 'Said' })).toBe(true);
     expect(isSaidSender({ ...base, allowSaidNameFallback: true, senderName: 'other' })).toBe(false);
   });
+
+  it('accepts the Switch agent transport id Said uses on Telegram without the name-fallback flag', () => {
+    expect(
+      isSaidSender({
+        senderId: '@switch-agent-a1b2c3d4:localhost',
+        senderName: 'said',
+        saidAgentId: SAID_ID,
+        saidAgentName: 'said',
+      }),
+    ).toBe(true);
+  });
+
+  it('rejects a Telegram human who copies the agent name, even with the fallback flag', () => {
+    const base = {
+      senderId: '@switch-telegram-9f3a1c2e-dana:localhost',
+      senderName: 'said',
+      saidAgentId: SAID_ID,
+      saidAgentName: 'said',
+      allowSaidNameFallback: true,
+    };
+    expect(isSaidSender(base)).toBe(false);
+    expect(isSaidSender({ ...base, senderName: 'Said' })).toBe(false);
+  });
 });
 
 async function sealedStart(opts?: { allowSaidNameFallback?: boolean; senderId?: string; senderName?: string }) {
@@ -86,6 +109,27 @@ describe('authorizeStart expectedParties', () => {
   it('rejects a non-Said sender even when the display name says said', async () => {
     const { result } = await sealedStart({ senderId: 'impostor', senderName: 'said' });
     expect(result).toMatchObject({ ok: false });
+  });
+
+  it('accepts a Telegram Said transport id and still rejects a human replaying the same token', async () => {
+    const allowed = await sealedStart({
+      senderId: '@switch-agent-a1b2c3d4:localhost',
+      senderName: 'said',
+    });
+    expect(allowed.result.ok).toBe(true);
+
+    const spoofed = await sealedStart({
+      senderId: '@switch-telegram-9f3a1c2e-dana:localhost',
+      senderName: 'said',
+      allowSaidNameFallback: true,
+    });
+    expect(spoofed.result).toMatchObject({ ok: false, reason: expect.stringMatching(/not from Said/) });
+
+    const wrongAgent = await sealedStart({
+      senderId: '@switch-agent-deadbeef:localhost',
+      senderName: 'builder',
+    });
+    expect(wrongAgent.result.ok).toBe(false);
   });
 
   it('accepts a Mattermost actor id only when SAID name fallback is enabled', async () => {

@@ -268,8 +268,8 @@ export function App() {
             <p className="eyebrow">Run it yourself</p>
             <h2>Offline in under two minutes.</h2>
             <p className="sub">
-              Offline is a labeled simulation with a mock Switch server. Live mode talks to a real Switch server and
-              Mattermost.
+              Offline is a labeled simulation with a mock Switch server. Live mode talks to a real Switch server. The
+              demo room is a Telegram group bridged by Switch. Mattermost works the same way.
             </p>
           </div>
           <div className="run-grid">
@@ -282,7 +282,7 @@ npm run demo:offline -- --script`}</pre>
             </article>
             <article className="run-card">
               <b>Live Switch</b>
-              <h3>Mattermost room</h3>
+              <h3>Telegram group</h3>
               <pre className="code-block">{`npm install
 npm run setup
 npm run register
@@ -290,7 +290,9 @@ npm run enroll -- --developer "Riya" --client "Dana" --wait
 npm run doctor
 npm run dev`}</pre>
               <p>
-                Follow <code>docs/SETUP_LIVE.md</code> for Switch Console, registration key, and enrollment codes.
+                Two agents: <code>said</code> (anyone) and <code>builder</code> (owner and owner agents). Telegram
+                steps, including Group Privacy and account linking, are in the README. Mattermost is{' '}
+                <code>docs/SETUP_LIVE.md</code>.
               </p>
             </article>
           </div>

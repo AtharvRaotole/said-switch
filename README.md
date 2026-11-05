@@ -6,7 +6,11 @@ Said turns any Switch room into a bilateral execution gatekeeper for AI coding a
 
 ![Said animated room demo](docs/media/said-hero.gif)
 
-> Live Mattermost UI evidence (real Switch 0.31.0 bridge): [docs/LIVE_RUN.md](docs/LIVE_RUN.md). Demo video: record from the same room before the Nov 7 deadline.
+Live Mattermost UI evidence (real Switch 0.31.0 bridge): [docs/LIVE_RUN.md](docs/LIVE_RUN.md). Marketing site: [https://said-switch.pages.dev](https://said-switch.pages.dev).
+
+**Demo video:** PASTE_DEMO_VIDEO_URL
+
+Replace `PASTE_DEMO_VIDEO_URL` with the link to the Telegram walkthrough before you submit. Submissions close November 7, 2026, 11:59 PM IST. Do not leave the placeholder in the form.
 
 ## Why it matters
 
@@ -60,41 +64,69 @@ flowchart LR
 | Agent-owned state | Room documents | Signed `Said Ledger` revisions. Only Said can update. Console verifies Ed25519 in the browser. |
 | Authenticated handoff | Agent registration + WebSocket sessions + targeted messages | After both accepts, Said sends a signed start token aimed at the builder. Builder reloads the ledger and re-checks before any worker runs. |
 
-## Quickstart (offline, under 2 minutes)
+## Agents
 
-This path is a **labeled simulation**. It does **not** talk to Switch. Use it to see the consent path, console, and client site change without installing Switch Console.
+Said registers two Switch agents. Nothing else joins the room as an agent.
+
+| Agent | Switch name | Who can address it | What it does |
+| --- | --- | --- | --- |
+| Said | `said` | anyone | Logs scope changes, holds the signed ledger, quotes the record, sends the start token |
+| Builder | `builder` | owner and that owner's agents | Refuses ordinary chat. Runs only after a signed start from Said, in a local git worktree |
+
+Humans in the demo are Riya (developer, owner of both agents) and Dana (client). They are people in the chat, not agents.
+
+## Quickstart from a clean clone
+
+Needs Node `>=22.12` (`node -v`) and npm. This path does **not** talk to Switch. The banner says so.
 
 ```bash
 git clone https://github.com/AtharvRaotole/said-switch.git
 cd said-switch
 npm install
+npm test
+npm run typecheck
+npm run lint
 npm run demo:offline -- --script
 ```
 
-You should see a banner that says this is not Switch, plus URLs for the chat simulator, Said Console, and the client site. Ctrl-C stops everything.
+`npm install` also installs the demo client site the first time the tests or the offline demo need it. You should see the chat simulator, Said Console, and the client site. The scripted story ends with AGR-001 locked and JOB-AGR-001-1 completed. Ctrl-C stops the processes.
 
-Prove the engine without the UI:
+## Live Telegram room
 
-```bash
-npm test
-npm run typecheck
-```
+Switch bridges the group. Said does not speak the Telegram Bot API. The bot token goes into Switch Console, never into this repo.
 
-## Live Switch setup
-
-For a real Mattermost room with Switch Console:
-
-1. Follow [docs/SETUP_LIVE.md](docs/SETUP_LIVE.md) (Docker, Switch Console, registration key, room id).
-2. Then:
+1. Install [Docker](https://docs.docker.com/get-docker/) and [Switch Console](https://github.com/sandbox-quantum/switch/releases/latest). In Console, **Add a server → Run a server on this computer**, and wait until it says the server is running.
+2. In Telegram, open @BotFather and send `/newbot`. Save the token and the bot username (the one that ends in `bot`).
+3. In BotFather, send `/mybots`, open the bot, then **Bot Settings → Group Privacy → Turn off**. Do this **before** the bot joins any group. If the bot is already in the group, remove it and add it again after privacy is off.
+4. In Switch Console, open the server **Home → Messaging apps → Connect → Telegram**. Name the connection, paste the bot token, and enter the bot username. Switch starts polling. A private chat with the bot is not a room.
+5. In Telegram, create a group, add Riya and Dana, and add the bot. Switch creates a room for that group. Copy the room id from Switch Console.
+6. Each person posts one message in the group (a username is required; a phone number is not enough). Then, in Switch Console, **Link my account** on the Telegram connection and pick **This is me**. Riya must link, or the builder will not treat Riya as its owner. Dana stays an unlinked client.
+7. From a clean clone, with `.env` filled in (`SWITCH_URL` is the agent bridge URL whose `GET /health` returns 200, plus `SWITCH_REGISTRATION_KEY` and `SAID_ROOM_ID`):
 
 ```bash
 npm install
 npm run setup
 npm run register
+```
+
+8. In the group, invite both agents. Telegram has no @ autocomplete for agent names, so type the commands in full:
+
+```text
+!invite-agent @said
+!invite-agent @builder
+```
+
+9. Enroll, check, and start. `npm run register` sets `said` to anyone and `builder` to owner and owner agents. If Console still shows the wrong policy, set it there before you record.
+
+```bash
 npm run enroll -- --developer "Riya" --client "Dana" --wait
 npm run doctor
 npm run dev
 ```
+
+10. Each person sends `@said enroll <their code>` from their own Telegram account. The manual script is [TESTING.md](TESTING.md). Mattermost instead of Telegram: [docs/SETUP_LIVE.md](docs/SETUP_LIVE.md).
+
+On current Switch, Said's messages arrive at the builder with sender `@switch-agent-<8 hex>:<server>` and sender name `said`, not the registration UUID. The builder accepts that transport id only together with the exact agent name. A Telegram user cannot pass by renaming themselves. Leave `SAID_ALLOW_SAID_NAME_FALLBACK` unset for Telegram. Set it to `1` only for a Switch 0.31 Mattermost bridge, where the sender is a `@switch-mattermost-…` actor id.
 
 `npm run doctor` should be green before you record.
 
@@ -138,17 +170,18 @@ Static deploy steps (Cloudflare Pages or GitHub Pages): [docs/DEPLOY.md](docs/DE
 
 ## Tests and coverage
 
-Measured on this tree (`release/submit`) after `npm ci`:
+Measured on branch `cursor/telegram-said-sender-6d19` after a fresh `npm install` (Node v22.23.4), then `npm run ensure:demo-client` so the offline end-to-end test is not skipped:
 
 | Check | Result |
 | --- | --- |
-| `npm run lint` | 0 errors, 0 warnings |
+| `npm run lint` | exit 0, no findings |
 | `npm run typecheck` | clean across workspaces |
-| `npm test` (with coverage) | 28 files, 258 passed |
-| Statements / Branches / Functions / Lines | 92.89% / 81.08% / 95.27% / 96.12% |
+| `npm run test:coverage` | 31 files, 279 passed |
+| Statements / Branches / Functions / Lines | 92.95% / 81.11% / 95.27% / 96.12% |
 | `@said/web` + `@said/console` production build | ok |
-| `npm run demo:offline -- --script` | story complete (AGR locked, JOB completed) |
-| Landing Lighthouse (web stream, production build) | Performance 94, Accessibility 100, Best Practices 100, SEO 100 (`docs/media/lighthouse/`) |
+| `npm run demo:offline -- --script --headless` | story complete (AGR-001 locked, JOB-AGR-001-1 completed, `src/App.tsx` and `src/styles.css`) |
+
+Coverage is the gated set in `vitest.config.ts` (core, builder allowlist/authorize/exec, notary inbound, runtime http-auth). An earlier Lighthouse run of the landing page is in `docs/media/lighthouse/` (Performance 94, Accessibility 100, Best Practices 100, SEO 100). That page was not re-measured for this branch.
 
 ```bash
 npm test
@@ -190,14 +223,20 @@ packages/brand
 scripts/             setup, register, enroll, doctor, demo-offline
 templates/           Switch room template(s)
 docs/                Setup, design, deploy, security
+TESTING.md           Manual Telegram script for the owner
 demo/                Client site fixture and patches
 ```
 
 ## Track and judging
 
-Built for [Flip the Switch](https://www.wemakedevs.org/hackathons/switch) (WeMakeDevs), primary track **Best Business Workflow**.
+Built for [Flip the Switch](https://www.wemakedevs.org/hackathons/switch) (WeMakeDevs × DevTools Academy × Switch), primary track **Best Business Workflow**. Submissions close November 7, 2026, 11:59 PM IST. Solo entry.
 
-Judging weights: Switch usage 30%, technical execution 25%, creativity and impact 25%, presentation 20% (demo video + README clarity).
+| Criterion | Weight | What to look at |
+| --- | --- | --- |
+| Use of Switch | 30% | Addressing, the room document, and the targeted handoff. Said stops working if those are removed. |
+| Technical execution | 25% | `npm install` on a clean clone, `npm test`, `npm run demo:offline -- --script`, and [TESTING.md](TESTING.md) for the live Telegram room. |
+| Creativity and impact | 25% | Bilateral scope control for a coding agent in a shared channel, with a quote from the signed ledger when someone disputes the deal. |
+| Presentation | 20% | This README plus the demo video. The video line at the top is a placeholder until the recording is linked. |
 
 ## Team
 
