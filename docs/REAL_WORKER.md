@@ -63,9 +63,11 @@ cwd = the job worktree. No Bash / WebFetch / WebSearch.
 ### Codex argv (what Builder execs)
 
 ```text
-codex exec --sandbox workspace-write --ask-for-approval never --json \
+codex exec --sandbox workspace-write --json \
   --ephemeral --skip-git-repo-check --color never -C <worktree> <prompt>
 ```
+
+`codex exec` does not accept `--ask-for-approval` (Codex 0.166.0 exits 2 with `unexpected argument '--ask-for-approval'`). That flag is only on the interactive `codex` command. Exec already runs with approval never. The sandbox stays `workspace-write`.
 
 ## Expected output
 
@@ -87,8 +89,8 @@ working branch.
 If the CLI is missing or not signed in:
 
 - `npm run doctor` fails the worker check with install / login hints.
-- A job fails at step `worker` with "Claude Code could not be started." /
-  "Codex could not be started." / "Claude Code failed." / "Codex failed."
+- A missing binary fails at step `worker` with "Claude Code could not be started." or "Codex could not be started."
+- A non-zero exit includes the CLI's own error, for example `Codex exited 2. error: unexpected argument '--ask-for-approval' found`.
 
 ## Fall back to scripted
 

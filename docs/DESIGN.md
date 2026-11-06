@@ -155,7 +155,7 @@ Signature covers `canonicalJson` of the token without `signature`. Builder → S
 3. Worker prompt contains only: agreement id, scope, terms, allowed paths, acceptance checklist (for dark mode: accessible toggle, keyboard operable, persists choice in localStorage, covers hero/pricing/footer/background, readable contrast, focus rings visible).
 4. Worker adapters:
    - `claude`: `claude -p <prompt> --restricted --tools Read,Edit,Write,Glob,Grep --permission-mode acceptEdits --permission-prompts none --output-format stream-json --verbose --no-session-persistence`, cwd = worktree.
-   - `codex`: `codex exec --sandbox workspace-write --ask-for-approval never --json --ephemeral --skip-git-repo-check --color never -C <worktree> <prompt>`.
+   - `codex`: `codex exec --sandbox workspace-write --json --ephemeral --skip-git-repo-check --color never -C <worktree> <prompt>`. `codex exec` is already non-interactive. Codex 0.166 rejects `--ask-for-approval` on `exec`. Do not use `danger-full-access` or `--dangerously-bypass-approvals-and-sandbox`.
    - `scripted` (tests and offline CI only, labeled "scripted worker (no AI)"): applies a fixture patch.
 5. Validate: `git status --porcelain` paths ⊆ allowlist (`src/**/*.tsx`, `src/**/*.ts`, `src/**/*.css`, `index.html`), no symlinks, no binary files, no package/config changes.
 6. Checks in worktree: `npm run typecheck`, `npm run build`. Record each with duration and output tail.

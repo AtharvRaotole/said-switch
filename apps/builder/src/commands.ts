@@ -17,15 +17,21 @@ export function claudeArgs(prompt: string): string[] {
   ];
 }
 
-/** Argv for `codex`. `-C` is the worktree. */
+/**
+ * Argv for `codex exec`. `-C` is the worktree.
+ *
+ * `codex exec` is the non-interactive command. Codex 0.166.0 rejects
+ * `--ask-for-approval` there (`unexpected argument '--ask-for-approval' found`).
+ * That flag belongs to the interactive `codex` command, not to `exec`.
+ * Exec already runs with approval never. The sandbox stays `workspace-write`,
+ * which is the documented unattended edit mode. Do not pass
+ * `--dangerously-bypass-approvals-and-sandbox` or `danger-full-access`.
+ */
 export function codexArgs(worktree: string, prompt: string): string[] {
-  // Unattended: workspace-write + never ask (Codex non-interactive docs).
   return [
     'exec',
     '--sandbox',
     'workspace-write',
-    '--ask-for-approval',
-    'never',
     '--json',
     '--ephemeral',
     '--skip-git-repo-check',

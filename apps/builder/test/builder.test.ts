@@ -27,7 +27,7 @@ import { parsePorcelainZ } from '../src/porcelain.js';
 import { createBuilderServer } from '../src/server.js';
 import { BuilderStateStore } from '../src/state.js';
 import { freshSteps } from '../src/types.js';
-import { runConfiguredWorker } from '../src/workers.js';
+import { runConfiguredWorker, workerFailure } from '../src/workers.js';
 
 const ROOM = '11111111-1111-4111-8111-111111111111';
 const SAID_ID = 'agent-said';
@@ -243,8 +243,6 @@ describe('worker commands', () => {
       'exec',
       '--sandbox',
       'workspace-write',
-      '--ask-for-approval',
-      'never',
       '--json',
       '--ephemeral',
       '--skip-git-repo-check',
@@ -254,6 +252,10 @@ describe('worker commands', () => {
       '/work/job',
       'PROMPT',
     ]);
+    const codex = codexArgs('/work/job', 'PROMPT').join(' ');
+    expect(codex).not.toMatch(/ask-for-approval/);
+    expect(codex).not.toMatch(/dangerously-bypass|danger-full-access|\byolo\b/);
+    expect(codex).toContain('--sandbox workspace-write');
     expect(scriptedApplyArgs('/tmp/dark-mode.patch')).toEqual(['apply', '/tmp/dark-mode.patch']);
   });
 
@@ -286,6 +288,46 @@ describe('worker commands', () => {
       log: () => {},
     });
     expect(calls).toEqual([{ cmd: 'codex', args: codexArgs('/wt', 'PROMPT'), cwd: '/wt' }]);
+  });
+
+  it('reports the Codex CLI error instead of a bare failure', async () => {
+    const stderr = "error: unexpected argument '--ask-for-approval' found\n\nUsage: codex exec [OPTIONS] [PROMPT]\n";
+    await expect(
+      runConfiguredWorker({
+        worker: 'codex',
+        worktree: '/wt',
+        prompt: 'PROMPT',
+        fixturePatch: '/patch',
+        execCommand: async () => ({ code: 2, output: stderr }),
+        log: () => {},
+      }),
+    ).rejects.toMatchObject({
+      name: 'JobFailed',
+      step: 'worker',
+      message: expect.stringContaining("unexpected argument '--ask-for-approval'"),
+    });
+    expect(workerFailure('Codex', 2, stderr)).toBe(
+      "Codex exited 2. error: unexpected argument '--ask-for-approval' found",
+    );
+  });
+
+  it('keeps the sandbox flag when Codex exits for another reason', async () => {
+    const calls: string[][] = [];
+    await expect(
+      runConfiguredWorker({
+        worker: 'codex',
+        worktree: '/wt',
+        prompt: 'PROMPT',
+        fixturePatch: '/patch',
+        execCommand: async (_cmd, args) => {
+          calls.push(args);
+          return { code: 1, output: 'error: not logged in' };
+        },
+        log: () => {},
+      }),
+    ).rejects.toThrow(/Codex exited 1\. error: not logged in/);
+    expect(calls[0]).toContain('workspace-write');
+    expect(calls[0]).not.toContain('--ask-for-approval');
   });
 
   it('surfaces a missing Claude / Codex binary as JobFailed', async () => {
