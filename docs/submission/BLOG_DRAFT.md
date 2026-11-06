@@ -1,6 +1,8 @@
 # Said: bilateral consent before an agent may work
 
-Draft for the WeMakeDevs Flip the Switch Best Blog track. Not published. Facts and numbers below come from this repo and a real local Switch 0.31.0 + Mattermost Team Edition live run. No invented metrics.
+Published post: https://atharvraotole.hashnode.dev/i-put-a-coding-agent-in-a-client-chat-and-taught-it-to-say-no
+
+This file is the draft that led to that post. Facts and numbers below that describe the Mattermost capture come from this repo and a real local Switch 0.31.0 + Mattermost Team Edition run. The published post is the link above. This draft is not a second copy of the live page.
 
 ## The problem
 
@@ -51,7 +53,7 @@ UI screenshots (Playwright 1440x900 @2x against real Mattermost):
 - [docs/media/live/mm-ui-riya-complete-drf002.png](../media/live/mm-ui-riya-complete-drf002.png): complete plus change request waiting on Dana
 - [docs/media/live/mm-ui-dana-lock-handoff.png](../media/live/mm-ui-dana-lock-handoff.png): same channel as Dana
 
-Measured quality on the merged tree at this draft: `npm test` 28 files / 258 passed; coverage Statements 92.84% / Branches 80.78% / Functions 95.21% / Lines 96.17%. Lint and typecheck clean.
+Measured quality on main: `npm run test:coverage` 32 files / 289 passed / 0 skipped; coverage Statements 92.95% / Branches 81.11% / Functions 95.27% / Lines 96.12%. Lint and typecheck clean on that same run.
 
 ## What was hard
 

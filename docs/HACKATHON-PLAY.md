@@ -71,7 +71,7 @@ First screen, in this order:
 
 Before you hit submit:
 
-- Repository is **public**. A private repo fails "clone it and reproduce it."
+- Judges clone `main`. A private repo fails "clone it and reproduce it." Visibility is a separate owner step. This file does not change it.
 - Video is public, shows the workflow running, and includes the refusal, the second yes, and the page change.
 - README names the agents, the channel, and the run steps. Commit the room template if you have one. Aayush's test: delete the room and the agents and recreate them the way a stranger would, on Saturday morning, while someone else drives and you stay quiet.
 - `npm run doctor` is green on the machine you will mention.

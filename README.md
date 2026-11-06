@@ -8,9 +8,11 @@ Said turns any Switch room into a bilateral execution gatekeeper for AI coding a
 
 Live Mattermost UI evidence (real Switch 0.31.0 bridge): [docs/LIVE_RUN.md](docs/LIVE_RUN.md). Marketing site: [https://said-switch.pages.dev](https://said-switch.pages.dev).
 
-**Demo video:** PASTE_DEMO_VIDEO_URL
+**Demo video:** https://youtu.be/1vA87efXzM8
 
-Replace `PASTE_DEMO_VIDEO_URL` with the link to the Telegram walkthrough before you submit. Submissions close November 7, 2026, 11:59 PM IST. Do not leave the placeholder in the form.
+**Write-up:** https://atharvraotole.hashnode.dev/i-put-a-coding-agent-in-a-client-chat-and-taught-it-to-say-no
+
+Submissions close November 7, 2026, 11:59 PM IST. Judges clone `main`.
 
 ## Why it matters
 
@@ -170,18 +172,18 @@ Static deploy steps (Cloudflare Pages or GitHub Pages): [docs/DEPLOY.md](docs/DE
 
 ## Tests and coverage
 
-Measured on branch `cursor/coverage-platform-6d19` after removing `demo/client-site/node_modules` and running `npm run test:coverage` (Node v22.23.4). That command installs the demo client first, then runs every test. 0 skipped.
+Measured on `main` (Node v22.23.4) with `npm run test:coverage`. That command installs the demo client first, then runs every test. 0 skipped.
 
 | Check | Result |
 | --- | --- |
 | `npm run lint` | exit 0, no findings |
 | `npm run typecheck` | clean across workspaces |
-| `npm run test:coverage` | 32 files, 287 passed, 0 skipped |
+| `npm run test:coverage` | 32 files, 289 passed, 0 skipped |
 | Statements / Branches / Functions / Lines | 92.95% / 81.11% / 95.27% / 96.12% |
 | `@said/web` + `@said/console` production build | ok |
 | `npm run demo:offline -- --script --headless` | story complete (AGR-001 locked, JOB-AGR-001-1 completed, `src/App.tsx` and `src/styles.css`) |
 
-Coverage is the gated set in `vitest.config.ts` (core, builder allowlist/authorize/exec, notary inbound, runtime http-auth). An earlier Lighthouse run of the landing page is in `docs/media/lighthouse/` (Performance 94, Accessibility 100, Best Practices 100, SEO 100). That page was not re-measured for this branch.
+Coverage is the gated set in `vitest.config.ts` (core, builder allowlist/authorize/exec, notary inbound, runtime http-auth). An earlier Lighthouse run of the landing page is in `docs/media/lighthouse/` (Performance 94, Accessibility 100, Best Practices 100, SEO 100). That page was not re-measured for the Codex exec change.
 
 ```bash
 npm test
@@ -236,7 +238,7 @@ Built for [Flip the Switch](https://www.wemakedevs.org/hackathons/switch) (WeMak
 | Use of Switch | 30% | Addressing, the room document, and the targeted handoff. Said stops working if those are removed. |
 | Technical execution | 25% | `npm install` on a clean clone, `npm test`, `npm run demo:offline -- --script`, and [TESTING.md](TESTING.md) for the live Telegram room. |
 | Creativity and impact | 25% | Bilateral scope control for a coding agent in a shared channel, with a quote from the signed ledger when someone disputes the deal. |
-| Presentation | 20% | This README plus the demo video. The video line at the top is a placeholder until the recording is linked. |
+| Presentation | 20% | This README, the demo video, and the Hashnode write-up. |
 
 ## Team
 
