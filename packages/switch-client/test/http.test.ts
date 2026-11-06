@@ -205,6 +205,23 @@ describe('SwitchOps', () => {
     expect(last()).toEqual({ path: '/agents/agent-1/ops/list_rooms', body: {} });
   });
 
+  it('createInternalRoom posts create_room with internal_only and no bridge', async () => {
+    fake.httpHandler = () => ({ status: 200, json: { result: { id: 'room-demo', name: 'Said demo' } } });
+    const ops = new SwitchOps(creds, { connectionId: 'c' });
+    await expect(ops.createInternalRoom({ name: 'Said demo', description: 'Read only demo', agentNames: ['said', 'builder'] })).resolves.toEqual({
+      id: 'room-demo',
+      name: 'Said demo',
+    });
+    expect(fake.requests[0]!.path).toBe('/agents/agent-1/ops/create_room');
+    expect(fake.requests[0]!.body).toEqual({
+      name: 'Said demo',
+      description: 'Read only demo',
+      agent_names: ['said', 'builder'],
+      internal_only: true,
+    });
+    expect(JSON.stringify(fake.requests[0]!.body)).not.toMatch(/bridge_id|user_names/);
+  });
+
   it('postMessageDirect posts {room_id, content} without a connection header', async () => {
     fake.httpHandler = () => ({ status: 200, json: { ok: true, event_id: 'e-7' } });
     const ops = new SwitchOps(creds, { connectionId: 'c' });

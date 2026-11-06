@@ -29,7 +29,10 @@
     "lint": "eslint .",
     "test:coverage": "vitest run --coverage",
     "verify": "tsx packages/cli/src/cli.ts",
-    "live:e2e": "tsx scripts/live-e2e.ts"
+    "live:e2e": "tsx scripts/live-e2e.ts",
+    "demo:room": "tsx scripts/demo-room.ts",
+    "demo:services": "tsx scripts/demo-services.ts",
+    "witness": "tsx apps/witness/src/main.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
