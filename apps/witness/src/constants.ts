@@ -10,6 +10,10 @@ export const DEMO_NOTARY_URL = 'http://127.0.0.1:8110';
 export const DEMO_BUILDER_PORT = 8120;
 export const DEMO_GATEWAY_PORT = 8130;
 export const DEMO_MATTERMOST_PORT = 8165;
+export const DEMO_MATTERMOST_URL = 'http://127.0.0.1:8165';
+
+/** Room name that means the accepts came from local fixture accounts. */
+export const FIXTURE_ROOM_NAME = 'Said fixture demo';
 export const DEMO_HOME_NAME = '.said-demo';
 
 /** Ports that belong to the current Telegram stack or the local console. */

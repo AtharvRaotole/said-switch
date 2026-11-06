@@ -1,6 +1,6 @@
-import { DEMO_SWITCH_URL, PRIVATE_TELEGRAM_ROOM_ID } from './constants.js';
+import { DEMO_SWITCH_URL, FIXTURE_ROOM_NAME, PRIVATE_TELEGRAM_ROOM_ID } from './constants.js';
 
-export { PRIVATE_TELEGRAM_ROOM_ID } from './constants.js';
+export { FIXTURE_ROOM_NAME, PRIVATE_TELEGRAM_ROOM_ID } from './constants.js';
 
 export type DraftStatus = 'NEEDS_TERMS' | 'PENDING' | 'LOCKED' | 'REJECTED';
 export type WorkStatus = 'READY' | 'RUNNING' | 'VALIDATING' | 'COMPLETED' | 'FAILED';
@@ -53,6 +53,8 @@ export interface WitnessView {
   /** Ledger update time. Absent until the demo room records an event. */
   lastEventAt: string | null;
   reason: string | null;
+  /** `demo-fixtures` only when the room name is the local fixture room. Never means two people. */
+  accounts: 'demo-fixtures' | 'unknown';
   switchVersion: string | null;
   roomName: string | null;
   drafts: WitnessDraft[];
@@ -61,6 +63,7 @@ export interface WitnessView {
   work: WitnessWork | null;
 }
 
+const TOKEN = /^[A-Za-z0-9][A-Za-z0-9._-]{0,32}$/;
 const DRAFT_STATUS = new Set<DraftStatus>(['NEEDS_TERMS', 'PENDING', 'LOCKED', 'REJECTED']);
 const WORK_STATUS = new Set<WorkStatus>(['READY', 'RUNNING', 'VALIDATING', 'COMPLETED', 'FAILED']);
 const PRIVATE_TEXT = /@switch-|said-start|said-receipt|BEGIN [A-Z ]*PRIVATE|enroll\s+[A-Za-z0-9]{4,8}/i;
@@ -76,6 +79,7 @@ export function emptyView(now: string | null, reason: string): WitnessView {
     heartbeatAt: now,
     lastEventAt: null,
     reason,
+    accounts: 'unknown',
     switchVersion: null,
     roomName: null,
     drafts: [],
@@ -83,6 +87,12 @@ export function emptyView(now: string | null, reason: string): WitnessView {
     lock: null,
     work: null,
   };
+}
+
+function token(value: unknown): string | null {
+  if (typeof value !== 'string' || !TOKEN.test(value)) return null;
+  if (PRIVATE_TEXT.test(value) || value.includes(PRIVATE_TELEGRAM_ROOM_ID)) return null;
+  return value;
 }
 
 function text(value: unknown, max: number): string | null {
@@ -138,6 +148,7 @@ function liveShell(now: string, version: unknown, name: unknown): WitnessView {
     heartbeatAt: now,
     lastEventAt: null,
     reason: null,
+    accounts: text(name, 80) === FIXTURE_ROOM_NAME ? 'demo-fixtures' : 'unknown',
     switchVersion: text(version, 40),
     roomName: text(name, 80),
     drafts: [],
@@ -155,16 +166,17 @@ function projectLedger(ledger: Record<string, unknown>, now: string, version: un
 
   for (const item of draftsIn) {
     const draft = record(item);
-    if (!draft || typeof draft.id !== 'string' || !DRAFT_STATUS.has(draft.status as DraftStatus)) continue;
-    if (typeof draft.version !== 'number') continue;
+    const draftId = token(draft?.id);
+    if (!draft || !draftId || !DRAFT_STATUS.has(draft.status as DraftStatus)) continue;
+    if (typeof draft.version !== 'number' || !Number.isInteger(draft.version) || draft.version < 1 || draft.version > 99) continue;
     const scope = text(draft.scope, 180);
     if (!scope) continue;
     const terms = draft.terms === null ? null : text(draft.terms, 80);
     if (draft.terms !== null && terms === null) continue;
-    drafts.push({ id: draft.id, version: draft.version, scope, terms, status: draft.status as DraftStatus });
+    drafts.push({ id: draftId, version: draft.version, scope, terms, status: draft.status as DraftStatus });
     const approvals = record(draft.approvals) ?? {};
     acceptances.push({
-      draftId: draft.id,
+      draftId,
       version: draft.version,
       developer: record(approvals.developer) !== null,
       client: record(approvals.client) !== null,
@@ -175,16 +187,19 @@ function projectLedger(ledger: Record<string, unknown>, now: string, version: un
   let work: WitnessWork | null = null;
   for (const item of agreementsIn) {
     const agreement = record(item);
-    if (!agreement || typeof agreement.id !== 'string' || typeof agreement.draftId !== 'string') continue;
-    if (typeof agreement.version !== 'number') continue;
+    const agreementId = token(agreement?.id);
+    const draftId = token(agreement?.draftId);
+    if (!agreement || !agreementId || !draftId) continue;
+    if (typeof agreement.version !== 'number' || !Number.isInteger(agreement.version)) continue;
     const terms = text(agreement.terms, 80);
     if (!terms) continue;
-    if (!lock) lock = { agreementId: agreement.id, draftId: agreement.draftId, version: agreement.version, terms };
+    if (!lock) lock = { agreementId, draftId, version: agreement.version, terms };
     const execution = record(agreement.execution);
     if (!execution || work) continue;
     if (execution.worker == null) continue;
     if (execution.worker !== 'scripted') return null;
-    if (typeof execution.jobId !== 'string' || !WORK_STATUS.has(execution.status as WorkStatus)) continue;
+    const jobId = token(execution.jobId);
+    if (!jobId || !WORK_STATUS.has(execution.status as WorkStatus)) continue;
     const commit = typeof execution.resultCommit === 'string' && /^[0-9a-f]{7,40}$/.test(execution.resultCommit)
       ? execution.resultCommit.slice(0, 7)
       : null;
@@ -197,7 +212,7 @@ function projectLedger(ledger: Record<string, unknown>, now: string, version: un
         checks.push({ name: checkName, ok: row.ok });
       }
     }
-    work = { jobId: execution.jobId, status: execution.status as WorkStatus, worker: 'scripted', resultCommit: commit, checks };
+    work = { jobId, status: execution.status as WorkStatus, worker: 'scripted', resultCommit: commit, checks };
   }
 
   const updated = typeof ledger.updatedAt === 'number' && Number.isFinite(ledger.updatedAt) ? new Date(ledger.updatedAt).toISOString() : null;
@@ -211,6 +226,7 @@ function projectLedger(ledger: Record<string, unknown>, now: string, version: un
     heartbeatAt: now,
     lastEventAt: updated,
     reason: null,
+    accounts: text(name, 80) === FIXTURE_ROOM_NAME ? 'demo-fixtures' : 'unknown',
     switchVersion: text(version, 40),
     roomName: text(name, 80),
     drafts,

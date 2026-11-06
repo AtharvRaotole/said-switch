@@ -4,6 +4,7 @@ export { projectWitness, emptyView } from './view.js';
 export type { WitnessView } from './view.js';
 export {
   assertDemoHome,
+  assertDemoMattermostUrl,
   assertDemoNotaryUrl,
   assertDemoRoomId,
   assertDemoSwitchUrl,

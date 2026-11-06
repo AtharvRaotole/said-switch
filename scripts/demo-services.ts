@@ -19,10 +19,12 @@ const env = {
   SAID_HOME: process.env.SAID_HOME,
   SAID_ROOM_ID: roomId,
   SAID_WORKER: 'scripted',
-  SAID_PLATFORM: 'none',
+  SAID_PLATFORM: 'mattermost',
+  SAID_ALLOW_SAID_NAME_FALLBACK: '1',
   NOTARY_PORT: '8110',
   BUILDER_PORT: String(DEMO_BUILDER_PORT),
   SWITCH_URL: 'http://127.0.0.1:8100',
+  MATTERMOST_URL: 'http://127.0.0.1:8165',
 };
 if (DEMO_NOTARY_URL !== 'http://127.0.0.1:8110') {
   process.stderr.write('Demo notary port drifted.\n');

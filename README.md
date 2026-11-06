@@ -179,7 +179,7 @@ Measured with Node v22.23.4. `npm test` installs the demo client first, then run
 | --- | --- |
 | `npm run lint` | exit 0, no findings |
 | `npm run typecheck` | clean across workspaces |
-| `npm test` | 34 files, 300 passed, 0 skipped |
+| `npm test` | 35 files, 304 passed, 0 skipped |
 | Statements / Branches / Functions / Lines | 92.95% / 81.11% / 95.27% / 96.12% |
 | `@said/web` + `@said/console` production build | ok |
 | `npm run demo:offline -- --script --headless` | story complete (AGR-001 locked, JOB-AGR-001-1 completed) |
@@ -226,33 +226,38 @@ TESTING.md           Manual Telegram script
 
 ## Hosted read-only demo
 
-Public URL: pending. The hostname is not assigned, and this repository does not claim the demo is live. The page is `/witness` on the existing site. Until `VITE_SAID_WITNESS_URL` is set at build time, that page says the host is pending and shows no sample ledger.
+Public URL: pending. This is not a live judge URL. `/witness` says the host is pending until `VITE_SAID_WITNESS_URL` is set at build time. An internal-only room can show a gateway heartbeat and no ledger event. That is not the consent workflow.
 
-The gateway is a separate loopback process for a separate Switch. It reads only `http://127.0.0.1:8110/api/state` and publishes a fixed whitelist: draft, accepts, lock, and scripted work result. It has no POST route. A query string is refused, so a request cannot retarget it. It does not publish participant ids, enrollment codes, raw chat, start tokens, keys, or environment. Gateway check time and last ledger event time are different fields. When the demo source is down, mock, or the current Telegram room, the body says source offline.
+The consent path uses the bundled Mattermost on that second stack. Official `deploy/shared_resources/setup.py` on tag `switch-v0.31.0` creates the admin and the first local user with `POST /api/v4/users`, then `POST /api/v4/users/login`. The same admin call creates another local user. No external login provider is required. `npm run demo:fixtures` creates `fixture-developer` and `fixture-client` on `http://127.0.0.1:8165` only. They are fixtures, not two people. `/witness` says that when the room name is `Said fixture demo`.
 
-Pins: Node `>=22.12`. Switch server and console `0.31.0` (`ghcr.io/sandbox-quantum/switch-core:0.31.0`, tag `switch-v0.31.0`). Dedicated ports, all bound to `127.0.0.1`: Switch `8100`, notary `8110`, builder `8120`, gateway `8130`. If that stack also starts Mattermost, use host port `8165`, not `8065`. State directory `.said-demo`. Worker `scripted`.
+`npm run demo:fixtures -- --drive` posts the fixed lines with `POST /api/v4/posts` and returns only after the demo notary's own state contains AGR-001. It does not write the ledger. Docker runs the Switch stack. This environment has Python 3.12 and no Docker, so that stack was not executed here. A local HTTP test covers the Mattermost and notary calls.
+
+The gateway reads only `http://127.0.0.1:8110/api/state`. It has no POST route. Any query string is refused. CORS allows one origin, default `https://said-switch.pages.dev`. Published fields are draft, accepts, lock, and a scripted work result. Ids must match a short token. Scope is capped at 180 characters and terms at 80. Participant ids, enrollment codes, raw chat, start tokens, keys, and error stacks are not published. Gateway check time and last ledger event time are different. A mock, a Codex or Claude worker, or the private room becomes source offline with no ledger fields.
+
+Pins: Node `>=22.12`. Switch `0.31.0` (`ghcr.io/sandbox-quantum/switch-core:0.31.0`). Mattermost `mattermost/mattermost-team-edition:11.9.0`, the image that compose pins. Ports on `127.0.0.1`: Switch `8100`, Mattermost `8165`, notary `8110`, builder `8120`, gateway `8130`. Home `.said-demo`. Worker `scripted`.
 
 ```bash
 export SAID_HOME=.said-demo
 export SWITCH_URL=http://127.0.0.1:8100
 export SWITCH_REGISTRATION_KEY=<registration key from the demo Gateway>
 export SAID_WORKER=scripted
-export SAID_PLATFORM=none
+export SAID_PLATFORM=mattermost
+export MATTERMOST_URL=http://127.0.0.1:8165
+export MATTERMOST_ADMIN_USER=<demo admin>
+export MATTERMOST_ADMIN_PASSWORD=<demo admin password>
 export NOTARY_PORT=8110
 export BUILDER_PORT=8120
-npm run demo:room
-export SAID_ROOM_ID=<id printed by demo:room>
-export SAID_DEMO_ROOM_ID="$SAID_ROOM_ID"
+npm run demo:fixtures
 npm run register
+export SAID_ROOM_ID=<demo room id>
+export SAID_DEMO_ROOM_ID="$SAID_ROOM_ID"
+npm run enroll -- --developer "Fixture developer" --client "Fixture client" --wait
 npm run demo:services
+npm run demo:fixtures -- --drive
 npm run witness
 ```
 
-`demo:room` calls Switch `create_room` with `internal_only: true` and the agent names `said` and `builder`. Switch 0.31.0 supports that operation. It does not pass a bridge id or any username. Run it only against the demo server. The guards refuse port `8000`, the homes `.said` and `.said-live`, a Codex or Claude worker, and the current Telegram room.
-
-Start the demo Switch from the official `switch-v0.31.0` standalone compose in its own directory, with `API_HOST_PORT=8100`, `MATTERMOST_HOST_PORT=8165`, `SWITCH_BIND_ADDR=127.0.0.1`, and a new compose project name. Do not reuse the current stack's env, volumes, bot token, or Codex login.
-
-Two human accepts are not created by this repo. On Switch 0.31.0 an internal room has no external channel, and `add_users_to_room` only adds people who already exist on a bridge. Telegram cannot create a channel from `create_room`. A locked draft appears on `/witness` only after two real people enroll on that demo instance. Until then the page can show Switch connected and every consent stage waiting. Do not point the gateway at ports `8000`, `7410`, `7420`, or `7400`. The public hostname stays pending until the Cloudflare tunnel is attached to `127.0.0.1:8130`.
+Start the official standalone compose in its own directory, with `API_HOST_PORT=8100`, `MATTERMOST_HOST_PORT=8165`, `SWITCH_BIND_ADDR=127.0.0.1`, and a new compose project name. Do not reuse the current env, volumes, bot token, or Codex login. The seeded gateway admin creates a registration key with `POST /gateway/api-keys` after `POST /gateway/auth/login`. `npm run demo:room` remains the internal-only room and does not produce a consent record. The public hostname stays pending until a tunnel is attached to `127.0.0.1:8130`.
 
 ## License
 

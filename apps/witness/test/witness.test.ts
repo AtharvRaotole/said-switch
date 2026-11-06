@@ -110,6 +110,7 @@ describe('projectWitness', () => {
     expect(view.acceptances).toEqual([{ draftId: 'DRF-001', version: 1, developer: true, client: true }]);
     expect(view.lock).toMatchObject({ agreementId: 'AGR-001', draftId: 'DRF-001' });
     expect(view.work).toMatchObject({ jobId: 'JOB-AGR-001-1', status: 'COMPLETED', worker: 'scripted', resultCommit: '5dfc874' });
+    expect(view.accounts).toBe('unknown');
     const raw = JSON.stringify(view);
     expect(raw).not.toContain(PRIVATE_TELEGRAM_ROOM_ID);
     expect(raw).not.toContain('@switch-');
@@ -119,6 +120,18 @@ describe('projectWitness', () => {
     expect(raw).not.toContain('senderId');
     expect(raw).not.toContain('notaryPublicKey');
     expect(raw).not.toMatch(/said-start|apiKey|BEGIN /);
+  });
+
+  it('labels only the fixture room, and drops ids that are not short tokens', () => {
+    const named = liveState();
+    named.room = { id: DEMO_ROOM, name: 'Said fixture demo' };
+    expect(projectWitness(named, { now: NOW, demoRoomId: DEMO_ROOM }).accounts).toBe('demo-fixtures');
+    const poisoned = liveState();
+    const drafts = (poisoned.signedLedger as { payload: { drafts: Array<{ id: string }> } }).payload.drafts;
+    drafts[0]!.id = '@switch-user-dana:localhost';
+    const view = projectWitness(poisoned, { now: NOW, demoRoomId: DEMO_ROOM });
+    expect(view.drafts).toEqual([]);
+    expect(JSON.stringify(view)).not.toContain('@switch-');
   });
 
   it('shows a connected room with no ledger as live and eventless', () => {

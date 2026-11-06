@@ -16,6 +16,7 @@ function pendingView(): WitnessView {
     heartbeatAt: null,
     lastEventAt: null,
     reason: 'Public host is pending. This page is not connected to Switch.',
+    accounts: 'unknown',
     switchVersion: null,
     roomName: null,
     drafts: [],
@@ -76,7 +77,7 @@ export function WitnessPage() {
       <h1>Demo room</h1>
       <p className="witness-lead">
         {live
-          ? 'A separate Switch room. This page only reads it. The worker is scripted when work has run.'
+          ? 'Read only. A heartbeat means the gateway reached the demo notary. A ledger event means the room recorded one.'
           : 'Source offline. This page does not show a sample ledger, and it does not start work.'}
       </p>
       <p className="witness-status" data-live={live ? 'yes' : 'no'}>
@@ -113,7 +114,7 @@ export function WitnessPage() {
           <span>{acceptance ? 'Recorded' : 'Waiting'}</span>
           <small>
             {acceptance
-              ? `Developer ${acceptance.developer ? 'yes' : 'no'} · Client ${acceptance.client ? 'yes' : 'no'}`
+              ? `${view.accounts === 'demo-fixtures' ? 'Fixture developer' : 'Developer role'} ${acceptance.developer ? 'yes' : 'no'} · ${view.accounts === 'demo-fixtures' ? 'Fixture client' : 'Client role'} ${acceptance.client ? 'yes' : 'no'}`
               : 'No accepts yet'}
           </small>
         </li>
@@ -137,7 +138,11 @@ export function WitnessPage() {
 
       <p className="witness-foot">
         <a href="/">Back to Said</a>
-        <span>The Telegram video is a different run. This page cannot send a prompt.</span>
+        <span>
+          {view.accounts === 'demo-fixtures'
+            ? 'Fixture accounts on the demo Mattermost. Not two people.'
+            : 'This page cannot tell who sent an accept, and it cannot send a prompt.'}
+        </span>
       </p>
     </main>
   );

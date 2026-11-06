@@ -1,6 +1,7 @@
 import { basename, resolve } from 'node:path';
 import {
   DEMO_HOME_NAME,
+  DEMO_MATTERMOST_URL,
   DEMO_NOTARY_URL,
   DEMO_SWITCH_URL,
   PRIVATE_TELEGRAM_ROOM_ID,
@@ -12,6 +13,7 @@ export {
   DEMO_GATEWAY_PORT,
   DEMO_HOME_NAME,
   DEMO_MATTERMOST_PORT,
+  DEMO_MATTERMOST_URL,
   DEMO_NOTARY_URL,
   DEMO_SWITCH_URL,
   PRIVATE_TELEGRAM_ROOM_ID,
@@ -52,6 +54,13 @@ export function assertDemoNotaryUrl(raw: string): string {
     throw new DemoGuardError('Demo notary must be http://127.0.0.1:8110');
   }
   return DEMO_NOTARY_URL;
+}
+
+export function assertDemoMattermostUrl(raw: string): string {
+  const url = loopbackPort(raw, 'Demo Mattermost');
+  const path = url.pathname === '' ? '/' : url.pathname;
+  if (url.port !== '8165' || path !== '/') throw new DemoGuardError('Demo Mattermost must be http://127.0.0.1:8165');
+  return DEMO_MATTERMOST_URL;
 }
 
 export function assertDemoSwitchUrl(raw: string): string {
