@@ -131,6 +131,23 @@ export class SwitchOps {
     return this.call('list_rooms', withDefined({ include_archived: includeArchived }));
   }
 
+  /**
+   * Switch 0.31 `create_room` with `internal_only: true`.
+   * No bridge, no usernames, no external channel.
+   */
+  async createInternalRoom(input: { name: string; description: string; agentNames: string[] }): Promise<{ id: string; name: string }> {
+    const result = await this.call<{ id?: unknown; name?: unknown }>('create_room', {
+      name: input.name,
+      description: input.description,
+      agent_names: input.agentNames,
+      internal_only: true,
+    });
+    if (typeof result.id !== 'string' || typeof result.name !== 'string') {
+      throw new SwitchApiError(200, result, 'create_room did not return an id and a name');
+    }
+    return { id: result.id, name: result.name };
+  }
+
   /** Room membership detail, including `bridge_id` and `bridge_display_name`. No room connection required. */
   getRoomDetail(roomId: string): Promise<unknown> {
     return this.call('get_room_detail', { room_id: roomId });

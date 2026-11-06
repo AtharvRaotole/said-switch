@@ -171,15 +171,15 @@ npm -w @said/console run dev    # read-only console on :7400
 
 Static deploy (Cloudflare Pages or GitHub Pages): [docs/DEPLOY.md](docs/DEPLOY.md). The published site is https://said-switch.pages.dev.
 
-## Checks on main
+## Checks
 
-Measured on `main` with Node v22.23.4. `npm run test:coverage` installs the demo client first, then runs every test. 0 skipped.
+Measured with Node v22.23.4. `npm test` installs the demo client first, then runs every test. 0 skipped. The coverage percentages are the previous gated run. The new witness files sit outside that gate.
 
 | Check | Result |
 | --- | --- |
 | `npm run lint` | exit 0, no findings |
 | `npm run typecheck` | clean across workspaces |
-| `npm run test:coverage` | 32 files, 289 passed, 0 skipped |
+| `npm test` | 35 files, 304 passed, 0 skipped |
 | Statements / Branches / Functions / Lines | 92.95% / 81.11% / 95.27% / 96.12% |
 | `@said/web` + `@said/console` production build | ok |
 | `npm run demo:offline -- --script --headless` | story complete (AGR-001 locked, JOB-AGR-001-1 completed) |
@@ -204,6 +204,7 @@ apps/notary          Said room loop and ledger HTTP API
 apps/builder         Verify, run the worker, apply, receipt
 apps/console         Read-only Said Console
 apps/web             Landing site and in-browser playground
+apps/witness         Read-only gateway for a separate demo Switch
 apps/mock-switch     Offline Switch simulator
 packages/core        Domain engine, crypto, ledger
 packages/switch-client
@@ -222,6 +223,41 @@ TESTING.md           Manual Telegram script
 | Technical execution | 25% | Clean clone, `npm test`, `npm run demo:offline -- --script`, and [TESTING.md](TESTING.md) for the Telegram room. |
 | Creativity and impact | 25% | Bilateral scope control for a coding agent in a shared channel, with a ledger quote when the deal is disputed. |
 | Presentation | 20% | This page, the demo video, and the Hashnode write-up. |
+
+## Hosted read-only demo
+
+Public URL: pending. This is not a live judge URL. `/witness` says the host is pending until `VITE_SAID_WITNESS_URL` is set at build time. An internal-only room can show a gateway heartbeat and no ledger event. That is not the consent workflow.
+
+The consent path uses the bundled Mattermost on that second stack. Official `deploy/shared_resources/setup.py` on tag `switch-v0.31.0` creates the admin and the first local user with `POST /api/v4/users`, then `POST /api/v4/users/login`. The same admin call creates another local user. No external login provider is required. `npm run demo:fixtures` creates `fixture-developer` and `fixture-client` on `http://127.0.0.1:8165` only. They are fixtures, not two people. `/witness` says that when the room name is `Said fixture demo`.
+
+`npm run demo:fixtures -- --drive` posts the fixed lines with `POST /api/v4/posts` and returns only after the demo notary's own state contains AGR-001. It does not write the ledger. Docker runs the Switch stack. This environment has Python 3.12 and no Docker, so that stack was not executed here. A local HTTP test covers the Mattermost and notary calls.
+
+The gateway reads only `http://127.0.0.1:8110/api/state`. It has no POST route. Any query string is refused. CORS allows one origin, default `https://said-switch.pages.dev`. Published fields are draft, accepts, lock, and a scripted work result. Ids must match a short token. Scope is capped at 180 characters and terms at 80. Participant ids, enrollment codes, raw chat, start tokens, keys, and error stacks are not published. Gateway check time and last ledger event time are different. A mock, a Codex or Claude worker, or the private room becomes source offline with no ledger fields.
+
+Pins: Node `>=22.12`. Switch `0.31.0` (`ghcr.io/sandbox-quantum/switch-core:0.31.0`). Mattermost `mattermost/mattermost-team-edition:11.9.0`, the image that compose pins. Ports on `127.0.0.1`: Switch `8100`, Mattermost `8165`, notary `8110`, builder `8120`, gateway `8130`. Home `.said-demo`. Worker `scripted`.
+
+```bash
+export SAID_HOME=.said-demo
+export SWITCH_URL=http://127.0.0.1:8100
+export SWITCH_REGISTRATION_KEY=<registration key from the demo Gateway>
+export SAID_WORKER=scripted
+export SAID_PLATFORM=mattermost
+export MATTERMOST_URL=http://127.0.0.1:8165
+export MATTERMOST_ADMIN_USER=<demo admin>
+export MATTERMOST_ADMIN_PASSWORD=<demo admin password>
+export NOTARY_PORT=8110
+export BUILDER_PORT=8120
+npm run demo:fixtures
+npm run register
+export SAID_ROOM_ID=<demo room id>
+export SAID_DEMO_ROOM_ID="$SAID_ROOM_ID"
+npm run enroll -- --developer "Fixture developer" --client "Fixture client" --wait
+npm run demo:services
+npm run demo:fixtures -- --drive
+npm run witness
+```
+
+Start the official standalone compose in its own directory, with `API_HOST_PORT=8100`, `MATTERMOST_HOST_PORT=8165`, `SWITCH_BIND_ADDR=127.0.0.1`, and a new compose project name. Do not reuse the current env, volumes, bot token, or Codex login. The seeded gateway admin creates a registration key with `POST /gateway/api-keys` after `POST /gateway/auth/login`. `npm run demo:room` remains the internal-only room and does not produce a consent record. The public hostname stays pending until a tunnel is attached to `127.0.0.1:8130`.
 
 ## License
 

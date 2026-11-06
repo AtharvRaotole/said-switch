@@ -8,6 +8,8 @@ dist/
 .said/
 .said-offline/
 .said-live/
+.said-demo/
+.env.demo
 work/
 work-offline/
 

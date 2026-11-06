@@ -360,6 +360,10 @@ npm run dev`}</pre>
             </p>
             <p className="foot-label">Team</p>
             <p>Atharv Raotole</p>
+            <p className="foot-label">Read only demo</p>
+            <p>
+              <a href="/witness">Host pending. Not a live room yet.</a>
+            </p>
           </div>
         </div>
       </footer>
