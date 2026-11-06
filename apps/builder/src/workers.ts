@@ -30,6 +30,17 @@ export interface WorkerContext {
   log: (stream: LogStream, line: string) => void;
 }
 
+/** Exit status plus the CLI's own error lines, not a bare "Codex failed." */
+export function workerFailure(name: string, code: number, output: string): string {
+  const lines = plain(output)
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const errors = lines.filter((line) => /^(error:|Error:)/.test(line) || /unexpected argument/i.test(line));
+  const detail = tail((errors.length > 0 ? errors : lines).slice(-4).join(' '), 600);
+  return detail ? `${name} exited ${code}. ${detail}` : `${name} exited ${code}.`;
+}
+
 export async function runConfiguredWorker(ctx: WorkerContext): Promise<void> {
   if (ctx.worker === 'scripted') {
     ctx.log('system', 'scripted worker (no AI)');
@@ -51,7 +62,7 @@ export async function runConfiguredWorker(ctx: WorkerContext): Promise<void> {
     } catch (err) {
       throw new JobFailed(err instanceof Error ? err.message : 'Claude Code could not be started.', 'worker');
     }
-    if (result.code !== 0) throw new JobFailed('Claude Code failed.', 'worker');
+    if (result.code !== 0) throw new JobFailed(workerFailure('Claude Code', result.code, result.output), 'worker');
     return;
   }
 
@@ -63,5 +74,5 @@ export async function runConfiguredWorker(ctx: WorkerContext): Promise<void> {
   } catch (err) {
     throw new JobFailed(err instanceof Error ? err.message : 'Codex could not be started.', 'worker');
   }
-  if (result.code !== 0) throw new JobFailed('Codex failed.', 'worker');
+  if (result.code !== 0) throw new JobFailed(workerFailure('Codex', result.code, result.output), 'worker');
 }

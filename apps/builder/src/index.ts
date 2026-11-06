@@ -13,5 +13,5 @@ export { createBuilderServer } from './server.js';
 export { BuilderStateStore } from './state.js';
 export type { JobRecord, JobStep, JobView, LogEvent } from './types.js';
 export { freshSteps } from './types.js';
-export { resolveWorker, runConfiguredWorker } from './workers.js';
+export { resolveWorker, runConfiguredWorker, workerFailure } from './workers.js';
 export type { WorkerContext } from './workers.js';
